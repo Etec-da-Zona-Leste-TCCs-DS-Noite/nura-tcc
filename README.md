@@ -64,7 +64,6 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 > *Exemplo:*  
 > ![Tela inicial](./imagens/tela-inicial.png)  
-> *(Substitua pelo caminho e imagem reais do seu projeto)*
 
 ## Como Contribuir
 
@@ -76,9 +75,9 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Contato
 
-- Wellington Pereira: [github.com/wellingtonp](https://github.com/wellingtonp)  
-- Matheus Chagas: [github.com/matheuschagas](https://github.com/matheuschagas)  
-- Jairo Machado: [github.com/jairomachado](https://github.com/jairomachado)  
+- Wellington Pereira: [github.com/wellingtonp](https://github.com/Wellingtonpc17)  
+- Matheus Chagas: [github.com/matheuschagas](https://github.com/mcolasso)  
+- Jairo Machado: [github.com/jairomachado](https://github.com/jairoalves2741)  
 
 ## Roadmap
 
