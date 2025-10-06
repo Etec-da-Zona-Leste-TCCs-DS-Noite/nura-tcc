@@ -92,4 +92,4 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Este projeto está licenciado sob a Licença GNU. Veja o arquivo LICENSE para mais detalhes.
