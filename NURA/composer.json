@@ -1,0 +1,16 @@
+{
+    "name": "nura/ecommerce",
+    "description": "Plataforma digital para alimentação saudável e-commer com gestão personalizada de produtos para dietas especiais",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nura\\Ecommerce\\": "src/"
+        }
+    },
+    "require": {
+        "phpmailer/phpmailer": "*",
+        "vlucas/phpdotenv": "*",
+        "monolog/monolog": "*"
+    }
+}
