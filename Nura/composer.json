@@ -1,0 +1,12 @@
+{
+    "name": "admin/nura",
+    "description": "Plataforma digital para alimentação saúdavel e-commerce com gestão personalizada de produtos para dietas especiais.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Admin\\Nura\\": "src/"
+        }
+    },
+    "require": {}
+}
