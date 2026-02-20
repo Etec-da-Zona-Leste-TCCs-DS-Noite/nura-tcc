@@ -64,7 +64,6 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 > *Exemplo:*  
 > ![Tela inicial](./imagens/tela-inicial.png)  
-> *(Substitua pelo caminho e imagem reais do seu projeto)*
 
 ## Como Contribuir
 
@@ -76,16 +75,16 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Contato
 
-- Wellington Pereira: [github.com/wellingtonp](https://github.com/wellingtonp)  
-- Matheus Chagas: [github.com/matheuschagas](https://github.com/matheuschagas)  
-- Jairo Machado: [github.com/jairomachado](https://github.com/jairomachado)  
+- Wellington Pereira: [github.com/wellingtonp](https://github.com/Wellingtonpc17)  
+- Matheus Chagas: [github.com/matheuschagas](https://github.com/mcolasso)  
+- Jairo Machado: [github.com/jairomachado](https://github.com/jairoalves2741)  
 
 ## Roadmap
 
 - [x] Planejamento do projeto  
 - [x] Definição do tema e objetivos  
-- [x] Desenvolvimento do front-end responsivo  
-- [x] Implementação do sistema de filtros e carrinho de compras  
+- [ ] Desenvolvimento do front-end responsivo  
+- [ ] Implementação do sistema de filtros e carrinho de compras  
 - [ ] Desenvolvimento da área administrativa  
 - [ ] Integração com sistema de entrega  
 - [ ] Testes e ajustes finais  
@@ -93,4 +92,4 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Licença
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Este projeto está licenciado sob a Licença GNU. Veja o arquivo LICENSE para mais detalhes.
