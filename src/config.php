@@ -1,9 +1,9 @@
 <?php
-// Configurações do Banco de Dados
-$host = 'localhost';
-$usuario = 'root';      // Usuário padrão do XAMPP
-$senha = '';            // Senha padrão do XAMPP (geralmente vazia)
-$dbname = 'nura_db';    // Nome do banco de dados (vamos criar esse nome abaixo)
+// Configurações do Banco de Dados (Docker)
+$host = 'db';           // nome do serviço do banco no docker-compose
+$usuario = 'root';
+$senha = 'aluno123';    // mesma senha definida no docker-compose
+$dbname = 'nura_db';    // nome do banco
 
 try {
     // Cria a conexão usando PDO
