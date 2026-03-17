@@ -505,3 +505,137 @@ header {
     cursor: pointer;
     transition: 0.3s;
 }
+
+/* HERO CAROUSEL */
+
+.hero-carousel {
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+}
+
+.hero-track {
+    display: flex;
+    height: 100%;
+    transition: transform .6s ease;
+}
+
+.hero-slide {
+    min-width: 100%;
+    position: relative;
+}
+
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(.65);
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    max-width: 700px;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.hero-badge {
+    background: var(--primary);
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    font-size: .8rem;
+    font-weight: bold;
+}
+
+.hero-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.hero-prev {
+    left: 15px;
+}
+
+.hero-next {
+    right: 15px;
+}
+
+/* --- FOOTER --- */
+
+.footer {
+    background: var(--secondary);
+    color: var(--muted);
+    padding: 4rem 0 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.footer h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.footer h4 {
+    color: var(--foreground);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.footer p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.footer ul {
+    padding: 0;
+}
+
+.footer li {
+    margin-bottom: 0.5rem;
+}
+
+.footer a {
+    color: var(--muted);
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.footer a:hover {
+    color: var(--primary);
+}
+
+.footer-bottom {
+    margin-top: 2rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+}

@@ -33,7 +33,8 @@ if (isset($_SESSION['carrinho'])) {
                 <?php if ($nomeUsuario): ?>
                     <a href="perfil.php" style="display: flex; align-items: center; gap: 0.5rem; color: var(--foreground);">
                         <i class="ph-fill ph-user-circle" style="font-size: 1.2rem; color: var(--primary);"></i>
-                        Olá, <?php echo htmlspecialchars($nomeUsuario); ?>
+                        Olá,
+                            <?php echo htmlspecialchars($nomeUsuario); ?>
                     </a>
                 <?php else: ?>
                     <a href="cadastro.php">Minha Conta</a>
@@ -51,23 +52,23 @@ if (isset($_SESSION['carrinho'])) {
 
                     <?php if ($qtdCarrinho > 0): ?>
                         <span class="cart-badge" style="
-                            position: absolute; 
-                            top: -5px; 
-                            right: -5px; 
-                            background: var(--primary); 
-                            color: white; 
-                            font-size: 0.7rem; 
-                            font-weight: bold; 
-                            min-width: 18px; 
-                            height: 18px; 
-                            border-radius: 99px; 
-                            display: flex; 
-                            align-items: center; 
+                            position: absolute;
+                            top: -5px;
+                            right: -5px;
+                            background: var(--primary);
+                            color: white;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                            min-width: 18px;
+                            height: 18px;
+                            border-radius: 99px;
+                            display: flex;
+                            align-items: center;
                             justify-content: center;
                             padding: 0 4px;
                             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         ">
-                            <?php echo $qtdCarrinho; ?>
+                                <?php echo $qtdCarrinho; ?>
                         </span>
                     <?php endif; ?>
                 </a>
@@ -76,6 +77,44 @@ if (isset($_SESSION['carrinho'])) {
     </header>
 
     <main>
+        <section class="hero-carousel">
+            <div class="hero-track">
+
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Bowl saudável">
+                    <div class="hero-content">
+                        <span class="hero-badge">Sabor e Saúde</span>
+                        <h1>Energia Natural para o seu Dia</h1>
+                        <p>Pratos balanceados com ingredientes frescos e naturais.</p>
+                        <a href="produtos.php" class="btn btn-primary">Peça Agora</a>
+                    </div>
+                </div>
+
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd" alt="Salada">
+                    <div class="hero-content">
+                        <span class="hero-badge">Novo Menu</span>
+                        <h1>Saladas que são um Banquete</h1>
+                        <p>Combinações únicas de sabores e nutrientes.</p>
+                        <a href="produtos.php" class="btn btn-primary">Ver Cardápio</a>
+                    </div>
+                </div>
+
+                <div class="hero-slide">
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999" alt="Smoothie">
+                    <div class="hero-content">
+                        <span class="hero-badge">Detox</span>
+                        <h1>Smoothies que Transformam</h1>
+                        <p>Refresque-se com frutas naturais e superalimentos.</p>
+                        <a href="produtos.php" class="btn btn-primary">Comprar</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="hero-btn hero-prev">❮</button>
+            <button class="hero-btn hero-next">❯</button>
+        </section>
         <section
             style="padding: 4rem 0; text-align: center; background: linear-gradient(to bottom, white, var(--secondary));">
             <div class="container">
@@ -92,11 +131,8 @@ if (isset($_SESSION['carrinho'])) {
                     Descubra refeições deliciosas, nutritivas e preparadas com ingredientes frescos e naturais.
                 </p>
                 <div style="display: flex; gap: 1rem; justify-content: center;">
-                    <a href="produtos.php" class="btn btn-primary">Ver Cardápio <i
-                            class="ph-bold ph-arrow-right"></i></a>
-                    <a href="<?php echo $nomeUsuario ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost"
-                        style="border: 1px solid var(--border);">
-                        <?php echo $nomeUsuario ? 'Meu Perfil' : 'Criar Conta'; ?>
+                    <a href="produtos.php" class="btn btn-primary">
+                        Ver Cardápio <i class="ph-bold ph-arrow-right"></i>
                     </a>
                 </div>
             </div>
@@ -219,9 +255,43 @@ if (isset($_SESSION['carrinho'])) {
         </section>
     </main>
 
-    <footer>
-        <div class="container" style="text-align: center; padding: 2rem 0; color: var(--muted); font-size: 0.9rem;">
-            <p>&copy; 2025 Nura. Todos os direitos reservados.</p>
+    <footer class="footer">
+        <div class="container footer-grid">
+
+            <div>
+                <h3 class="logo">Nura<span>.</span></h3>
+                <p>Alimentação saudável feita com ingredientes naturais e muito amor.</p>
+            </div>
+
+            <div>
+                <h4>Explorar</h4>
+                <ul>
+                    <li><a href="index.php">Início</a></li>
+                    <li><a href="produtos.php">Cardápio</a></li>
+                    <li><a href="#">Sobre Nós</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>Suporte</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacidade</a></li>
+                    <li><a href="#">Termos</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>Contato</h4>
+                <p>📍 São Paulo - SP</p>
+                <p>📞 (11) 98765-4321</p>
+                <p>✉ contato@nura.com.br</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 Nura. Todos os direitos reservados.</p>
         </div>
     </footer>
 

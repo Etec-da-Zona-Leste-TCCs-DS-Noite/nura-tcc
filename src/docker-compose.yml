@@ -5,14 +5,18 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: aluno123
       MYSQL_DATABASE: nura_db
+    volumes:
+      - db_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
-      - 8080:80
+      - "8080:80"
     environment:
       PMA_ARBITRARY: 1
+    depends_on:
+      - db
 
   web:
     build:
@@ -26,7 +30,12 @@ services:
       - php-fpm
 
   php-fpm:
-    image: php:8.3-fpm
+    build:
+      context: .
+      dockerfile: Dockerfile-php
     container_name: fzl-php8.3-fpm
     volumes:
       - .:/var/www/html
+
+volumes:
+  db_data:
