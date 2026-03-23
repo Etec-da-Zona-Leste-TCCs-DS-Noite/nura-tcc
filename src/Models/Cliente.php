@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-class Usuario
+class Cliente
 {
     private $id;
     private $nome;
@@ -38,7 +38,7 @@ class Usuario
     {
         global $pdo;
         try {
-            $sql = "INSERT INTO usuarios (nome, email, senha) VALUES (:nome, :email, :senha)";
+            $sql = "INSERT INTO cliente (nome, email, senha) VALUES (:nome, :email, :senha)";
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':nome', $this->nome);
             $stmt->bindValue(':email', $this->email);
@@ -53,7 +53,7 @@ class Usuario
     public static function buscarPorId($id)
     {
         global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = :id");
+        $stmt = $pdo->prepare("SELECT * FROM cliente WHERE id = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,7 +62,7 @@ class Usuario
     public static function buscarPorEmail($email)
     {
         global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
+        $stmt = $pdo->prepare("SELECT * FROM cliente WHERE email = :email");
         $stmt->bindValue(':email', $email);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -75,12 +75,12 @@ class Usuario
         try {
             // Se a senha estiver preenchida, atualiza ela também
             if (!empty($this->senha)) {
-                $sql = "UPDATE usuarios SET nome = :nome, email = :email, senha = :senha WHERE id = :id";
+                $sql = "UPDATE cliente SET nome = :nome, email = :email, senha = :senha WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindValue(':senha', $this->senha);
             } else {
                 // Se não, atualiza só nome e email
-                $sql = "UPDATE usuarios SET nome = :nome, email = :email WHERE id = :id";
+                $sql = "UPDATE cliente SET nome = :nome, email = :email WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
             }
 
@@ -97,7 +97,7 @@ class Usuario
     {
         global $pdo;
         try {
-            $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = :id");
+            $stmt = $pdo->prepare("DELETE FROM cliente WHERE id = :id");
             $stmt->bindValue(':id', $id);
             return $stmt->execute();
         } catch (PDOException $e) {

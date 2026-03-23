@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once __DIR__ . '/../Models/Usuario.php';
+require_once __DIR__ . '/../Models/Cliente.php';
 
-class UsuarioController
+class ClienteController
 {
 
     public function login()
@@ -10,11 +10,11 @@ class UsuarioController
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $email = $_POST['email'];
             $senha = $_POST['senha'];
-            $dadosUsuario = Usuario::buscarPorEmail($email);
+            $dadosCliente = Cliente::buscarPorEmail($email);
 
-            if ($dadosUsuario && password_verify($senha, $dadosUsuario['senha'])) {
-                $_SESSION['usuario_id'] = $dadosUsuario['id'];
-                $_SESSION['usuario_nome'] = $dadosUsuario['nome']; // Guarda o nome na sessão
+            if ($dadosCliente && password_verify($senha, $dadosCliente['senha'])) {
+                $_SESSION['cliente_id'] = $dadosCliente['id'];
+                $_SESSION['cliente_nome'] = $dadosCliente['nome']; // Guarda o nome na sessão
                 header("Location: ../Views/perfil.php");
                 exit;
             } else {
@@ -26,16 +26,16 @@ class UsuarioController
     public function cadastrar()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $usuario = new Usuario();
-            $usuario->setNome($_POST['nome']);
-            $usuario->setEmail($_POST['email']);
-            $usuario->setSenha($_POST['senha']);
+            $cliente = new Cliente();
+            $cliente->setNome($_POST['nome']);
+            $cliente->setEmail($_POST['email']);
+            $cliente->setSenha($_POST['senha']);
 
-            $novoId = $usuario->salvar();
+            $novoId = $cliente->salvar();
 
             if ($novoId) {
-                $_SESSION['usuario_id'] = $novoId;
-                $_SESSION['usuario_nome'] = $_POST['nome'];
+                $_SESSION['cliente_id'] = $novoId;
+                $_SESSION['cliente_nome'] = $_POST['nome'];
                 header("Location: ../Views/perfil.php");
                 exit;
             } else {
@@ -46,24 +46,24 @@ class UsuarioController
 
     public function atualizar()
     {
-        if (!isset($_SESSION['usuario_id'])) {
+        if (!isset($_SESSION['cliente_id'])) {
             header("Location: ../index.php");
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $usuario = new Usuario();
-            $usuario->setId($_SESSION['usuario_id']);
-            $usuario->setNome($_POST['nome']);
-            $usuario->setEmail($_POST['email']);
+            $cliente = new Cliente();
+            $cliente->setId($_SESSION['cliente_id']);
+            $cliente->setNome($_POST['nome']);
+            $cliente->setEmail($_POST['email']);
 
-            // Se o usuário digitou senha, o Model vai atualizar. Se deixou vazio, o Model ignora.
+            // Se o cliente digitou senha, o Model vai atualizar. Se deixou vazio, o Model ignora.
             if (!empty($_POST['senha'])) {
-                $usuario->setSenha($_POST['senha']);
+                $cliente->setSenha($_POST['senha']);
             }
 
-            if ($usuario->atualizar()) {
-                $_SESSION['usuario_nome'] = $_POST['nome']; // Atualiza nome na sessão
+            if ($cliente->atualizar()) {
+                $_SESSION['cliente_nome'] = $_POST['nome']; // Atualiza nome na sessão
                 echo "<script>alert('Dados (e senha, se informada) atualizados!'); window.location='../Views/perfil.php';</script>";
             } else {
                 echo "Erro ao atualizar.";
@@ -73,11 +73,11 @@ class UsuarioController
 
     public function deletar()
     {
-        if (!isset($_SESSION['usuario_id'])) {
+        if (!isset($_SESSION['cliente_id'])) {
             header("Location: ../index.php");
             exit;
         }
-        if (Usuario::deletar($_SESSION['usuario_id'])) {
+        if (Cliente::deletar($_SESSION['cliente_id'])) {
             session_destroy();
             echo "<script>alert('Conta excluída.'); window.location='../index.php';</script>";
         }
@@ -92,7 +92,7 @@ class UsuarioController
 }
 
 if (isset($_GET['acao'])) {
-    $controller = new UsuarioController();
+    $controller = new ClienteController();
     $acao = $_GET['acao'];
     if ($acao == 'login')
         $controller->login();

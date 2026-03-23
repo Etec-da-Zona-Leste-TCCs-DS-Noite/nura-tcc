@@ -34,7 +34,7 @@
             </div>
 
             <div id="login-form" class="form-content active">
-                <form action="../Controller/UsuarioController.php?acao=login" method="POST">
+                <form action="../Controller/ClienteController.php?acao=login" method="POST">
                     <div class="form-group">
                         <label>Email</label>
                         <input type="email" name="email" class="input" placeholder="seu@email.com" required>
@@ -48,7 +48,7 @@
             </div>
 
             <div id="signup-form" class="form-content">
-                <form action="../Controller/UsuarioController.php?acao=cadastrar" method="POST">
+                <form action="../Controller/ClienteController.php?acao=cadastrar" method="POST">
                     <div class="form-group">
                         <label>Nome Completo</label>
                         <input type="text" name="nome" class="input" placeholder="Seu nome" required>

@@ -1,13 +1,24 @@
 <?php
 session_start();
-require_once __DIR__ . '/../Models/Usuario.php';
+require_once __DIR__ . '/../Models/Cliente.php';
+require_once __DIR__ . '/../Models/PerfilClinico.php';
 
-if (!isset($_SESSION['usuario_id'])) {
+if (!isset($_SESSION['cliente_id'])) {
     header("Location: cadastro.php");
     exit;
 }
 
-$dadosUsuario = Usuario::buscarPorId($_SESSION['usuario_id']);
+$dadosCliente = Cliente::buscarPorId($_SESSION['cliente_id']);
+
+// === BUSCA OS DADOS DE PERFIL CLÍNICO PARA PREENCHER OS CAMPOS ===
+// O Model fará a query via PDO. Se o perfil não existir, retorna array vazio ou null
+$perfilDb = PerfilClinico::buscarPorClienteId($_SESSION['cliente_id']);
+
+// Prepara as variáveis. Usamos ?? '' para que, se for a primeira vez, o campo fique vazio, blindando a view!
+$peso = $perfilDb['peso'] ?? '';
+$altura = $perfilDb['altura'] ?? '';
+$restricao = $perfilDb['restricao'] ?? '';
+$alergias = $perfilDb['alergias'] ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -34,10 +45,10 @@ $dadosUsuario = Usuario::buscarPorId($_SESSION['usuario_id']);
 
             <div class="header-actions">
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500;">
-                    <span id="header-user-name">Olá, <?php echo htmlspecialchars($dadosUsuario['nome']); ?></span>
+                    <span id="header-user-name">Olá, <?php echo htmlspecialchars($dadosCliente['nome'] ?? ''); ?></span>
                     <div
                         style="width: 35px; height: 35px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold;">
-                        <?php echo strtoupper(substr($dadosUsuario['nome'], 0, 1)); ?>
+                        <?php echo strtoupper(substr($dadosCliente['nome'] ?? 'C', 0, 1)); ?>
                     </div>
                 </div>
             </div>
@@ -52,35 +63,42 @@ $dadosUsuario = Usuario::buscarPorId($_SESSION['usuario_id']);
                 <nav class="sidebar-menu">
                     <button class="sidebar-link tab-btn active" data-target="personal-data"><i class="ph ph-user"></i>
                         Dados Pessoais</button>
+
+                    <!-- Aba de Perfil Clínico -->
+                    <button class="sidebar-link tab-btn" data-target="clinical-profile"><i class="ph ph-heartbeat"></i>
+                        Perfil Clínico</button>
+
                     <a href="#"
-                        onclick="if(confirm('Tem certeza?')) window.location.href='../Controller/UsuarioController.php?acao=deletar';"
+                        onclick="if(confirm('Tem certeza?')) window.location.href='../Controller/ClienteController.php?acao=deletar';"
                         class="sidebar-link" style="color: #ef4444;">
                         <i class="ph ph-trash"></i> Excluir Conta
                     </a>
-                    <a href="../Controller/UsuarioController.php?acao=sair" class="sidebar-link"
+                    <a href="../Controller/ClienteController.php?acao=sair" class="sidebar-link"
                         style="color: var(--muted);"><i class="ph ph-sign-out"></i> Sair</a>
                 </nav>
             </aside>
 
             <section class="profile-content">
+
+                <!-- ABA 1: Dados Pessoais -->
                 <div id="personal-data" class="form-content active">
                     <div class="card" style="box-shadow: none; padding: 0; border: none;">
                         <div class="card-content" style="padding: 0;">
                             <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Seus Dados</h2>
 
-                            <form action="../Controller/UsuarioController.php?acao=atualizar" method="POST">
+                            <form action="../Controller/ClienteController.php?acao=atualizar" method="POST">
                                 <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
                                     <div class="form-group">
                                         <label for="input-nome">Nome Completo</label>
                                         <input type="text" name="nome" class="input"
-                                            value="<?php echo htmlspecialchars($dadosUsuario['nome']); ?>">
+                                            value="<?php echo htmlspecialchars($dadosCliente['nome'] ?? ''); ?>">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="input-email">Email</label>
                                     <input type="email" name="email" class="input"
-                                        value="<?php echo htmlspecialchars($dadosUsuario['email']); ?>">
+                                        value="<?php echo htmlspecialchars($dadosCliente['email'] ?? ''); ?>">
                                 </div>
 
                                 <div class="form-group">
@@ -96,6 +114,86 @@ $dadosUsuario = Usuario::buscarPorId($_SESSION['usuario_id']);
                         </div>
                     </div>
                 </div>
+
+                <!-- ABA 2: Perfil Clínico -->
+                <div id="clinical-profile" class="form-content">
+                    <div class="card" style="box-shadow: none; padding: 0; border: none;">
+                        <div class="card-content" style="padding: 0;">
+                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Perfil Clínico</h2>
+                            <p style="color: var(--muted); margin-bottom: 1.5rem;">Preencha seus dados para habilitarmos
+                                as recomendações de alimentação.</p>
+
+                            <form action="../Controller/PerfilClinicoController.php?acao=salvar" method="POST">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>Peso (kg)</label>
+                                        <input type="number" step="0.1" name="peso" class="input" placeholder="Ex: 70.5"
+                                            value="<?php echo htmlspecialchars($peso); ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Altura (m)</label>
+                                        <input type="number" step="0.01" name="altura" class="input"
+                                            placeholder="Ex: 1.75" value="<?php echo htmlspecialchars($altura); ?>">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Restrição Alimentar</label>
+                                    <select name="restricao" class="input">
+                                        <option value="" <?php echo $restricao == '' ? 'selected' : ''; ?>>Nenhuma
+                                        </option>
+                                        <option value="intolerancia_lactose" <?php echo $restricao == 'intolerancia_lactose' ? 'selected' : ''; ?>>Intolerante à
+                                            lactose</option>
+                                        <option value="celiaco" <?php echo $restricao == 'celiaco' ? 'selected' : ''; ?>>
+                                            Celíaco (Zero Glúten)</option>
+                                        <option value="vegano" <?php echo $restricao == 'vegano' ? 'selected' : ''; ?>>
+                                            Vegano</option>
+                                        <option value="vegetariano" <?php echo $restricao == 'vegetariano' ? 'selected' : ''; ?>>Vegetariano</option>
+                                    </select>
+                                </div>
+
+                                <!-- BLOCO ALERGIAS -->
+                                <div class="form-group">
+                                    <label>Alergias (Marque se possuir)</label>
+                                    <div
+                                        style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <label
+                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                                            <input type="checkbox" name="alergias[]" value="amendoim" <?php echo in_array('amendoim', $alergias) ? 'checked' : ''; ?>> Amendoim /
+                                            Castanhas
+                                        </label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                                            <input type="checkbox" name="alergias[]" value="frutos_mar" <?php echo in_array('frutos_mar', $alergias) ? 'checked' : ''; ?>> Frutos do Mar
+                                        </label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                                            <input type="checkbox" name="alergias[]" value="soja" <?php echo in_array('soja', $alergias) ? 'checked' : ''; ?>> Soja
+                                        </label>
+                                        <label
+                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                                            <input type="checkbox" name="alergias[]" value="ovo" <?php echo in_array('ovo', $alergias) ? 'checked' : ''; ?>> Ovo
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                    <button type="submit" class="btn btn-primary">Salvar Perfil Clínico</button>
+
+                                    <!-- Botão de exclusão (Apenas aparece se o usuário de fato já gravou perfil antes!) -->
+                                    <?php if ($perfilDb): ?>
+                                        <a href="../Controller/PerfilClinicoController.php?acao=excluir"
+                                            onclick="return confirm('Tem certeza que deseja apagar os dados do seu perfil clínico?');"
+                                            class="btn"
+                                            style="background:var(--muted); color:white; border:none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration:none;">Deletar
+                                            Perfil</a>
+                                    <?php endif; ?>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </section>
         </div>
     </main>
