@@ -190,3 +190,21 @@ if (heroTrack) {
     }, 6000);
 
 }
+
+// --- MOBILE MENU TOGGLE ---
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (mobileBtn && navLinks) {
+        mobileBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = mobileBtn.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.replace('ph-list', 'ph-x');
+            } else {
+                icon.classList.replace('ph-x', 'ph-list');
+            }
+        });
+    }
+});

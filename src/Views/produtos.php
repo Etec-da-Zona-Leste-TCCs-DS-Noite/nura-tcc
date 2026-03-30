@@ -29,186 +29,9 @@ if (isset($_SESSION['carrinho'])) {
   }
 }
 
-// --- LISTA DE PRODUTOS COMPLETAMENTE RENOVADA E CORRIGIDA ---
-$produtos = [
-  // --- BOWLS ---
-  [
-    'id' => 1,
-    'nome' => 'Bowl Verde Vitality',
-    'desc' => 'Mix de folhas frescas, abacate, quinoa e grão de bico.',
-    'preco' => 32.90,
-    'img' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500',
-    'tag' => 'Bowls',
-    'alergias' => [],
-    'restricoes' => []
-  ],
-  [
-    'id' => 2,
-    'nome' => 'Poke de Salmão Defumado',
-    'desc' => 'Salmão fresco, arroz gohan, manga, sunomono e molho tarê.',
-    'preco' => 45.00,
-    'img' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500',
-    'tag' => 'Bowls',
-    'alergias' => ['frutos_mar', 'soja'],
-    'restricoes' => ['vegano', 'vegetariano', 'celiaco']
-  ],
-  [
-    'id' => 3,
-    'nome' => 'Bowl Proteico de Tofu',
-    'desc' => 'Tofu marinado no shoyu, edamame, cogumelos salteados e arroz integral.',
-    'preco' => 34.50,
-    'img' => 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?w=500',
-    'tag' => 'Bowls',
-    'alergias' => ['soja'],
-    'restricoes' => ['celiaco']
-  ],
-  [
-    'id' => 4,
-    'nome' => 'Mix Grelhado do Chef',
-    'desc' => 'Cubos de frango orgânico, batata doce, brócolis e ovo cozido.',
-    'preco' => 38.00,
-    'img' => 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=500',
-    'tag' => 'Bowls',
-    'alergias' => ['ovo'],
-    'restricoes' => ['vegano', 'vegetariano']
-  ],
-  [
-    'id' => 18,
-    'nome' => 'Bowl de Frango Teriyaki',
-    'desc' => 'Frango ao molho teriyaki natural, edamame, gergelim e cenoura.',
-    'preco' => 35.50,
-    'img' => 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500',
-    'tag' => 'Bowls',
-    'alergias' => ['soja'],
-    'restricoes' => ['vegano', 'vegetariano', 'celiaco']
-  ],
-
-  // --- SALADAS ---
-  [
-    'id' => 5,
-    'nome' => 'Salada Caesar Clássica',
-    'desc' => 'Alface romana, croutons, queijo parmesão e autêntico molho caesar.',
-    'preco' => 30.00,
-    'img' => 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=500',
-    'tag' => 'Saladas',
-    'alergias' => ['ovo', 'soja'],
-    'restricoes' => ['vegano', 'vegetariano', 'intolerancia_lactose', 'celiaco']
-  ],
-  [
-    'id' => 6,
-    'nome' => 'Salada Thai com Camarões',
-    'desc' => 'Camarões grelhados, cenoura ralada, castanha-de-caju e molho sweet chili.',
-    'preco' => 42.50,
-    'img' => 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500',
-    'tag' => 'Saladas',
-    'alergias' => ['frutos_mar', 'amendoim'],
-    'restricoes' => ['vegano', 'vegetariano']
-  ],
-  [
-    'id' => 7,
-    'nome' => 'Salada Color Nura',
-    'desc' => 'Tomate cereja, pepino, rabanete, repolho roxo e sementes de abóbora.',
-    'preco' => 28.50,
-    'img' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500',
-    'tag' => 'Saladas',
-    'alergias' => [],
-    'restricoes' => []
-  ],
-  [
-    'id' => 14,
-    'nome' => 'Salada Mediterrânea',
-    'desc' => 'Grão de bico, rúcula, lascas de queijo feta, azeitonas e molho balsâmico.',
-    'preco' => 31.00,
-    'img' => 'https://images.unsplash.com/photo-1551248429-40975aa4de74?w=500',
-    'tag' => 'Saladas',
-    'alergias' => [],
-    'restricoes' => ['vegano', 'intolerancia_lactose']
-  ],
-  [
-    'id' => 19,
-    'nome' => 'Salada Caprese Tostada',
-    'desc' => 'Mussarela de búfala fresca, tomates adocicados ao azeite e manjericão.',
-    'preco' => 33.00,
-    'img' => 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?w=500',
-    'tag' => 'Saladas',
-    'alergias' => [],
-    'restricoes' => ['vegano', 'intolerancia_lactose']
-  ],
-
-  // --- WRAPS & SANDUÍCHES ---
-  [
-    'id' => 8,
-    'nome' => 'Wrap Leve de Frango',
-    'desc' => 'Frango magro grelhado, cream cheese verde na tortilha de trigo.',
-    'preco' => 24.90,
-    'img' => 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=500',
-    'tag' => 'Wraps',
-    'alergias' => [],
-    'restricoes' => ['vegano', 'vegetariano', 'intolerancia_lactose', 'celiaco']
-  ],
-  [
-    'id' => 9,
-    'nome' => 'Wrap Doce de Amendoim',
-    'desc' => 'Massa integral, fatias de maçã, canela e pasta de amendoim caseira.',
-    'preco' => 22.90,
-    'img' => 'https://www.receitasnestle.com.br/sites/default/files/styles/recipe_detail_desktop_new/public/srh_recipes/bca8119743e8c9eb43c7c78fb6bf36e0.webp?itok=VPZxIonw',
-    'tag' => 'Wraps',
-    'alergias' => ['amendoim'],
-    'restricoes' => ['celiaco']
-  ],
-  [
-    'id' => 22,
-    'nome' => 'Sanduíche Caprese no Pão Sírio',
-    'desc' => 'Pão sírio levemente tostado recheado com mussarela de búfala, rúcula e tomate.',
-    'preco' => 26.90,
-    'img' => 'https://images.unsplash.com/photo-1619096252214-ef06c45683e3?w=500',
-    'tag' => 'Wraps',
-    'alergias' => [],
-    'restricoes' => ['vegano', 'intolerancia_lactose', 'celiaco']
-  ],
-
-  // --- SUCOS E BEBIDAS ---
-  [
-    'id' => 10,
-    'nome' => 'Smoothie Antioxidante',
-    'desc' => 'Maçã verde, abacaxi, couve, hortelã e um toque de limão.',
-    'preco' => 18.00,
-    'img' => 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=500',
-    'tag' => 'Sucos',
-    'alergias' => [],
-    'restricoes' => []
-  ],
-  [
-    'id' => 12,
-    'nome' => 'Limonada Suíça Fit',
-    'desc' => 'Limão galego original batido em clara de ovo (espuma) e bastante gelo.',
-    'preco' => 14.00,
-    'img' => 'https://img.freepik.com/fotos-gratis/fatias-de-frutas-perto-de-copo-de-bebida-com-gelo-e-ervas-na-mesa_23-2148107706.jpg?semt=ais_hybrid&w=740&q=80',
-    'tag' => 'Sucos',
-    'alergias' => ['ovo'],
-    'restricoes' => ['vegano']
-  ],
-  [
-    'id' => 17,
-    'nome' => 'Suco Sunshine Natural',
-    'desc' => 'Mistura imbatível de suco de cenoura, laranja e um leve toque de gengibre.',
-    'preco' => 15.50,
-    'img' => 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500',
-    'tag' => 'Sucos',
-    'alergias' => [],
-    'restricoes' => []
-  ],
-  [
-    'id' => 20,
-    'nome' => 'Suco Verde Metrópole',
-    'desc' => 'Aipo puro, pepino congelado, maçã verde importada e couve.',
-    'preco' => 17.50,
-    'img' => 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500',
-    'tag' => 'Sucos',
-    'alergias' => [],
-    'restricoes' => []
-  ]
-];
+require_once __DIR__ . '/../Controller/ProdutoController.php';
+$produtoController = new ProdutoController();
+$produtos = $produtoController->listarTodos();
 
 // Configuração das Categorias
 $categoriasDisplay = [
@@ -241,7 +64,8 @@ function filtrarPorTag($lista, $tag)
 
   <header>
     <div class="container header-inner">
-      <a href="index.php" class="logo">Nura<span>.</span></a>
+      <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
+          style="height: 80px; object-fit: contain;"></a>
       <nav class="nav-links">
         <a href="index.php">Início</a>
         <a href="produtos.php" style="color: var(--primary); font-weight: bold;">Produtos</a>
@@ -263,28 +87,119 @@ function filtrarPorTag($lista, $tag)
           <?php endif; ?>
         </a>
       </div>
+      <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
+        <i class="ph ph-list" style="font-size: 1.5rem;"></i>
+      </button>
     </div>
   </header>
 
   <main class="container" style="padding: 3rem 1.5rem;">
     <div style="text-align: center; margin-bottom: 4rem;">
-      <h1 style="font-size: 2.8rem; margin-bottom: 0.8rem; font-weight: 800; letter-spacing: -0.03em;">Cardápio Completo
+      <h1
+        style="font-size: clamp(2rem, 6vw, 2.8rem); margin-bottom: 0.8rem; font-weight: 800; letter-spacing: -0.03em;">
+        Cardápio Completo
       </h1>
 
-      <!-- Mensagem de Adaptação Clínica com Métrica de Peso e Altura Segura -->
+      <!-- Mensagem de Adaptação Clínica e Métrica de Saúde -->
       <?php if ($cliente_id): ?>
+        <?php
+        $mostrarImc = false;
+        if (!empty($pesoCliente) && !empty($alturaCliente) && $alturaCliente > 0) {
+          $mostrarImc = true;
+          $imc = $pesoCliente / ($alturaCliente * $alturaCliente);
+          $imcFormatado = number_format($imc, 1, ',', '.');
+
+          if ($imc < 18.5) {
+            $classificacao = 'Abaixo do peso';
+            $corImc = '#eab308'; // amarelo
+          } elseif ($imc < 24.9) {
+            $classificacao = 'Peso Saudável ❤️';
+            $corImc = '#10b981'; // verde
+          } elseif ($imc < 29.9) {
+            $classificacao = 'Sobrepeso (Atenção)';
+            $corImc = '#f59e0b'; // laranja
+          } else {
+            $classificacao = 'Acima do peso ideal';
+            $corImc = '#ef4444'; // vermelho
+          }
+        }
+        ?>
         <div
-          style="display: inline-flex; align-items: center; justify-content: center; background: rgba(16, 185, 129, 0.1); padding: 0.8rem 1.5rem; border-radius: 2rem; border: 1px solid rgba(16, 185, 129, 0.2); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05);">
-          <i class="ph-fill ph-check-circle" style="color: #10b981; font-size: 1.25rem; margin-right: 0.6rem;"></i>
-          <p style="color: #10b981; font-weight: 700; font-size: 0.95rem; margin: 0; letter-spacing: -0.01em;">
-            O cardápio está adaptado para suas alergias e restrições!
-            <?php if ($pesoCliente && $alturaCliente): ?>
-              <span style="opacity: 0.9; margin-left: 0.2rem; font-weight: 600;">
-                (<?php echo number_format($pesoCliente, 2, '.', ''); ?>kg
-                <?php echo number_format($alturaCliente, 2, '.', ''); ?>m)
-              </span>
-            <?php endif; ?>
-          </p>
+          style="background: white; border: 1px solid rgba(0,0,0,0.05); padding: 1.5rem; border-radius: 1rem; max-width: 580px; margin: 0 auto; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05); text-align: left;">
+
+          <?php
+          $mapaAlergiasCard = [
+            'amendoim' => 'Amendoim/Castanhas',
+            'frutos_mar' => 'Frutos do Mar',
+            'soja' => 'Soja',
+            'ovo' => 'Ovo'
+          ];
+          $mapaRestricoesCard = [
+            'intolerancia_lactose' => 'Intolerância à Lactose',
+            'celiaco' => 'Celíaco (Zero Glúten)',
+            'vegano' => 'Dieta Vegana',
+            'vegetariano' => 'Dieta Vegetariana'
+          ];
+
+          $tagsUsuario = [];
+          if (!empty($restricaoCliente) && isset($mapaRestricoesCard[$restricaoCliente])) {
+            $tagsUsuario[] = $mapaRestricoesCard[$restricaoCliente];
+          }
+          if (!empty($alergiasCliente)) {
+            foreach ($alergiasCliente as $al) {
+              if (isset($mapaAlergiasCard[$al]))
+                $tagsUsuario[] = "Alergia: " . $mapaAlergiasCard[$al];
+            }
+          }
+          ?>
+          <div
+            style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: <?php echo $mostrarImc ? '1.5rem' : '0'; ?>;">
+            <div
+              style="background: rgba(16, 185, 129, 0.1); padding: 0.6rem; border-radius: 50%; display: flex; flex-shrink: 0;">
+              <i class="ph-fill ph-check-circle" style="color: #10b981; font-size: 1.8rem;"></i>
+            </div>
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--foreground); margin: 0; line-height: 1.2;">
+                Olá, <?php echo htmlspecialchars(explode(' ', trim($nomeCliente ?? 'Visitante'))[0]); ?>!
+              </h3>
+              <p style="font-size: 0.9rem; color: var(--muted); margin: 0; margin-top: 0.2rem;">Seu cardápio está
+                customizado e seguro.</p>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem;">
+                <?php if (empty($tagsUsuario)): ?>
+                  <span
+                    style="font-size: 0.75rem; background: #f3f4f6; color: #6b7280; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 600;">Sem
+                    restrições cadastradas</span>
+                <?php else: ?>
+                  <?php foreach ($tagsUsuario as $t): ?>
+                    <span
+                      style="font-size: 0.75rem; background: #fee2e2; color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 700; border: 1px solid #fca5a5; display: inline-flex; align-items: center; gap: 0.2rem;">
+                      <i class="ph-bold ph-warning-circle"></i> <?php echo $t; ?>
+                    </span>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+
+          <?php if ($mostrarImc): ?>
+            <div
+              style="display: flex; gap: 2rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 1rem; margin-top: 0.5rem;">
+              <div>
+                <span
+                  style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--muted); margin-bottom: 0.3rem;">Seu
+                  IMC Atual</span>
+                <strong style="font-size: 1.3rem; color: var(--foreground);"><?php echo $imcFormatado; ?></strong>
+              </div>
+              <div>
+                <span
+                  style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--muted); margin-bottom: 0.3rem;">Classificação
+                  Nutricional</span>
+                <strong
+                  style="font-size: 1.05rem; display: inline-block; padding: 0.1rem 0.6rem; border-radius: 20px; background: <?php echo $corImc; ?>20; color: <?php echo $corImc; ?>;"><?php echo $classificacao; ?></strong>
+              </div>
+            </div>
+          <?php endif; ?>
         </div>
       <?php else: ?>
         <p style="color: var(--muted); font-size: 1.1rem;">Explore nossas opções e encontre a refeição ideal para a sua
@@ -302,7 +217,7 @@ function filtrarPorTag($lista, $tag)
 
       <section class="category-section" style="margin-bottom: 4rem;">
         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-          <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--foreground); white-space: nowrap;">
+          <h2 style="font-size: clamp(1.2rem, 5vw, 1.5rem); font-weight: 800; color: var(--foreground);">
             <?php echo $titulo; ?>
           </h2>
           <div style="flex: 1; height: 1px; background: rgba(0,0,0,0.05);"></div>
@@ -413,7 +328,8 @@ function filtrarPorTag($lista, $tag)
   <footer class="footer">
     <div class="container footer-grid">
       <div>
-        <h3 class="logo">Nura<span>.</span></h3>
+        <a href="index.php" class="logo" style="display: inline-block; margin-bottom: 1rem;"><img
+            src="../assets/img/NURA_logo.png" alt="Nura Logo" style="height: 105px; object-fit: contain;"></a>
         <p>Alimentação saudável feita com ingredientes naturais e muito amor.</p>
       </div>
       <div>

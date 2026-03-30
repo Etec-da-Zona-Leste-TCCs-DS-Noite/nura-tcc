@@ -25,49 +25,9 @@ if ($cliente_id) {
     }
 }
 
-// --- ARRAY DE PRODUTOS EM DESTAQUE (Com Alergias e Restrições injetados) ---
-$produtosDestaque = [
-    [
-        'id' => 1,
-        'nome' => 'Bowl Verde Vitality',
-        'desc' => 'Mix de folhas, abacate, quinoa, grão de bico e molho especial.',
-        'preco' => 32.90,
-        'img' => 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500',
-        'tag' => 'Bowls',
-        'alergias' => [],
-        'restricoes' => []
-    ],
-    [
-        'id' => 2,
-        'nome' => 'Salada Color Nura',
-        'desc' => 'Tomate cereja, pepino, rabanete, sementes e proteína vegetal.',
-        'preco' => 28.50,
-        'img' => 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500',
-        'tag' => 'Saladas',
-        'alergias' => [],
-        'restricoes' => []
-    ],
-    [
-        'id' => 3,
-        'nome' => 'Smoothie Detox',
-        'desc' => 'Couve, maçã, gengibre e limão. Energia pura para o seu dia.',
-        'preco' => 18.00,
-        'img' => 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500',
-        'tag' => 'Bebidas',
-        'alergias' => [],
-        'restricoes' => []
-    ],
-    [
-        'id' => 4,
-        'nome' => 'Wrap de Frango',
-        'desc' => 'Frango grelhado, alface americana e molho de iogurte natural.',
-        'preco' => 24.90,
-        'img' => 'https://images.unsplash.com/photo-1623428187969-5da2dcea5ebf?w=500',
-        'tag' => 'Wraps',
-        'alergias' => [],
-        'restricoes' => ['vegano', 'vegetariano', 'intolerancia_lactose', 'celiaco']
-    ]
-];
+require_once __DIR__ . '/../Controller/ProdutoController.php';
+$produtoController = new ProdutoController();
+$produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +44,7 @@ $produtosDestaque = [
 <body>
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo">Nura<span>.</span></a>
+            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo" style="height: 80px; object-fit: contain;"></a>
 
             <nav class="nav-links">
                 <a href="index.php" style="color: var(--primary); font-weight: bold;">Início</a>
@@ -131,6 +91,9 @@ $produtosDestaque = [
                     <?php endif; ?>
                 </a>
             </div>
+            <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
+                <i class="ph ph-list" style="font-size: 1.5rem;"></i>
+            </button>
         </div>
     </header>
 
@@ -287,7 +250,7 @@ $produtosDestaque = [
         <div class="container footer-grid">
 
             <div>
-                <h3 class="logo">Nura<span>.</span></h3>
+                <a href="index.php" class="logo" style="display: inline-block; margin-bottom: 1rem;"><img src="../assets/img/NURA_logo.png" alt="Nura Logo" style="height: 105px; object-fit: contain;"></a>
                 <p>Alimentação saudável feita com ingredientes naturais e muito amor.</p>
             </div>
 

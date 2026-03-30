@@ -25,7 +25,8 @@ $total = $subtotal + $frete;
 
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo">Nura<span>.</span></a>
+            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
+                    style="height: 80px; object-fit: contain;"></a>
             <nav class="nav-links">
                 <a href="index.php">Início</a>
                 <a href="produtos.php">Produtos</a>
@@ -37,6 +38,9 @@ $total = $subtotal + $frete;
                     <?php
                 endif; ?>
             </nav>
+            <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
+                <i class="ph ph-list" style="font-size: 1.5rem;"></i>
+            </button>
         </div>
     </header>
 

@@ -74,12 +74,21 @@ class ClienteController
     public function deletar()
     {
         if (!isset($_SESSION['cliente_id'])) {
-            header("Location: ../index.php");
+            header("Location: ../Views/index.php");
             exit;
         }
-        if (Cliente::deletar($_SESSION['cliente_id'])) {
+
+        $id = $_SESSION['cliente_id'];
+
+        // Importa e deleta o Perfil Clínico do banco ANTES de deletar o Cliente (previne falha de Chave Estrangeira restrita)
+        require_once __DIR__ . '/../Models/PerfilClinico.php';
+        PerfilClinico::deletar($id);
+
+        if (Cliente::deletar($id)) {
             session_destroy();
-            echo "<script>alert('Conta excluída.'); window.location='../index.php';</script>";
+            echo "<script>alert('Conta excluída com sucesso.'); window.location='../Views/index.php';</script>";
+        } else {
+            echo "<script>alert('Aconteceu um erro ao tentar excluir a sua conta. Tente novamente mais tarde.'); window.location='../Views/perfil.php';</script>";
         }
     }
 

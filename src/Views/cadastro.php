@@ -13,7 +13,8 @@
 
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo">Nura<span>.</span></a>
+            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
+                    style="height: 80px; object-fit: contain;"></a>
             <a href="index.php" style="font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
                 <i class="ph-bold ph-arrow-left"></i> Voltar
             </a>
@@ -24,7 +25,10 @@
         <div class="auth-card">
 
             <div class="auth-header">
-                <h1 class="logo" style="font-size: 2rem; margin-bottom: 0.5rem;">Nura<span>.</span></h1>
+                <div style="text-align: center; margin-bottom: 0.2rem;">
+                    <img src="../assets/img/NURA_logo.png" alt="Nura Logo"
+                        style="height: 120px; object-fit: contain; margin: 0 auto; display: block;">
+                </div>
                 <p style="color: var(--muted); font-size: 0.9rem;">Acesse sua conta ou crie uma nova</p>
             </div>
 
