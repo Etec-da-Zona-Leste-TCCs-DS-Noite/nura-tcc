@@ -86,9 +86,9 @@ $alergias = $perfilDb['alergias'] ?? [];
 
                 <!-- ABA 1: Dados Pessoais -->
                 <div id="personal-data" class="form-content active">
-                    <div class="card" style="box-shadow: none; padding: 0; border: none;">
-                        <div class="card-content" style="padding: 0;">
-                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Seus Dados</h2>
+                    <div class="card" style="box-shadow: none; padding: 0; border: none; overflow: visible;">
+                        <div class="card-content" style="padding: 0; padding-top: 0.3rem;">
+                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Seus Dados</h2>
 
                             <form action="../Controller/ClienteController.php?acao=atualizar" method="POST">
                                 <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
@@ -106,9 +106,23 @@ $alergias = $perfilDb['alergias'] ?? [];
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="input-telefone">Telefone</label>
+                                    <input type="text" name="telefone" class="input input-telefone"
+                                        value="<?php echo htmlspecialchars($dadosCliente['telefone'] ?? ''); ?>"
+                                        placeholder="(11) 90000-0000">
+                                </div>
+
+                                <div class="form-group">
                                     <label for="input-senha">Nova Senha</label>
-                                    <input type="password" name="senha" class="input"
-                                        placeholder="Deixe em branco para manter a atual">
+                                    <div style="position: relative;">
+                                        <input type="password" name="senha" class="input"
+                                            placeholder="Deixe em branco para manter a atual"
+                                            style="padding-right: 2.5rem;">
+                                        <button type="button" class="toggle-password"
+                                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div style="margin-top: 1rem;">
@@ -121,9 +135,9 @@ $alergias = $perfilDb['alergias'] ?? [];
 
                 <!-- ABA 2: Perfil Clínico -->
                 <div id="clinical-profile" class="form-content">
-                    <div class="card" style="box-shadow: none; padding: 0; border: none;">
-                        <div class="card-content" style="padding: 0;">
-                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Perfil Clínico</h2>
+                    <div class="card" style="box-shadow: none; padding: 0; border: none; overflow: visible;">
+                        <div class="card-content" style="padding: 0; padding-top: 0.3rem;">
+                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Perfil Clínico</h2>
                             <p style="color: var(--muted); margin-bottom: 1.5rem;">Preencha seus dados para habilitarmos
                                 as recomendações de alimentação.</p>
 

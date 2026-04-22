@@ -69,13 +69,17 @@ function filtrarPorTag($lista, $tag)
       <nav class="nav-links">
         <a href="index.php">Início</a>
         <a href="produtos.php" style="color: var(--primary); font-weight: bold;">Produtos</a>
-        <?php if ($nomeCliente): ?>
-          <a href="perfil.php">Olá, <?php echo htmlspecialchars($nomeCliente); ?></a>
-        <?php else: ?>
-          <a href="cadastro.php">Minha Conta</a>
-        <?php endif; ?>
+        <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>">Minha Conta</a>
       </nav>
       <div class="header-actions">
+        <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost" aria-label="Conta"
+          style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+          <?php if ($nomeCliente): ?>
+            <span style="font-size: 0.9rem; font-weight: 500; color: var(--foreground);">Olá,
+              <?php echo htmlspecialchars(explode(' ', trim($nomeCliente))[0]); ?></span>
+          <?php endif; ?>
+          <i class="ph ph-user" style="font-size: 1.2rem;"></i>
+        </a>
         <a href="carrinho.php" class="btn btn-ghost" style="position: relative;" aria-label="Carrinho">
           <i class="ph ph-shopping-cart" style="font-size: 1.2rem;"></i>
           <?php if ($qtdCarrinho > 0): ?>

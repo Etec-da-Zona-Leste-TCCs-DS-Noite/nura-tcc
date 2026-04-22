@@ -30,14 +30,17 @@ $total = $subtotal + $frete;
             <nav class="nav-links">
                 <a href="index.php">Início</a>
                 <a href="produtos.php">Produtos</a>
-                <?php if ($nomeCliente): ?>
-                    <a href="perfil.php">Olá, <?php echo htmlspecialchars($nomeCliente); ?></a>
-                    <?php
-                else: ?>
-                    <a href="cadastro.php">Minha Conta</a>
-                    <?php
-                endif; ?>
+                <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>">Minha Conta</a>
             </nav>
+            <div class="header-actions">
+                <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost"
+                    aria-label="Conta" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <?php if ($nomeCliente): ?>
+                        <span style="font-size: 0.9rem; font-weight: 500; color: var(--foreground);">Olá, <?php echo htmlspecialchars(explode(' ', trim($nomeCliente))[0]); ?></span>
+                    <?php endif; ?>
+                    <i class="ph ph-user" style="font-size: 1.2rem;"></i>
+                </a>
+            </div>
             <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
                 <i class="ph ph-list" style="font-size: 1.5rem;"></i>
             </button>
@@ -71,7 +74,8 @@ $total = $subtotal + $frete;
 
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                             <a href="carrinho_acoes.php?acao=atualizar&id=<?php echo $item['id']; ?>&qtd=<?php echo $item['qtd'] - 1; ?>"
-                                class="btn btn-ghost" style="border: 1px solid var(--border); padding: 0.3rem 0.6rem;">-</a>
+                                class="btn btn-ghost" style="border: 1px solid var(--border); padding: 0.3rem 0.6rem;"
+                                <?php echo $item['qtd'] == 1 ? "onclick=\"mostrarModalDelete(event, this.href);\"" : ""; ?>>-</a>
 
                             <span style="font-weight: 600; width: 20px; text-align: center;"><?php echo $item['qtd']; ?></span>
 
@@ -79,7 +83,8 @@ $total = $subtotal + $frete;
                                 class="btn btn-ghost" style="border: 1px solid var(--border); padding: 0.3rem 0.6rem;">+</a>
 
                             <a href="carrinho_acoes.php?acao=remover&id=<?php echo $item['id']; ?>" class="btn btn-ghost"
-                                style="color: #ef4444; margin-left: 0.5rem;" title="Remover item">
+                                style="color: #ef4444; margin-left: 0.5rem;" title="Remover item"
+                                onclick="mostrarModalDelete(event, this.href);">
                                 <i class="ph ph-trash"></i>
                             </a>
                         </div>
@@ -117,6 +122,39 @@ $total = $subtotal + $frete;
             <?php
         endif; ?>
     </main>
+
+    <!-- CUSTOM DELETE MODAL -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="custom-modal">
+            <div class="modal-icon">
+                <i class="ph-fill ph-warning-circle"></i>
+            </div>
+            <h2 class="modal-title">Poxa vida...</h2>
+            <p class="modal-text">Você tem certeza que deseja remover essa delícia do seu pedido? O seu prato vai ficar tão triste sem ele!</p>
+            <div class="modal-actions">
+                <a href="#" class="btn btn-primary" id="confirmDeleteLink">Sim, remover do carrinho</a>
+                <button class="btn btn-secondary" onclick="fecharModalDelete()">Não, manter no pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarModalDelete(event, urlOriginal) {
+            // Prevent default direct navigation
+            event.preventDefault();
+            
+            // Set the dynamic URL for the Yes button so it executes the specific update
+            document.getElementById('confirmDeleteLink').href = urlOriginal;
+            
+            // Open the beautiful CSS modal
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function fecharModalDelete() {
+            // Close the modal
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+    </script>
 </body>
 
 </html>

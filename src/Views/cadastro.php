@@ -45,7 +45,14 @@
                     </div>
                     <div class="form-group">
                         <label>Senha</label>
-                        <input type="password" name="senha" class="input" placeholder="••••••••" required>
+                        <div style="position: relative;">
+                            <input type="password" name="senha" class="input" placeholder="••••••••" required
+                                style="padding-right: 2.5rem;">
+                            <button type="button" class="toggle-password"
+                                style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
+                                <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">Entrar</button>
                 </form>
@@ -62,8 +69,19 @@
                         <input type="email" name="email" class="input" placeholder="seu@email.com" required>
                     </div>
                     <div class="form-group">
+                        <label>Telefone</label>
+                        <input type="text" name="telefone" class="input input-telefone" placeholder="(11) 90000-0000">
+                    </div>
+                    <div class="form-group">
                         <label>Senha</label>
-                        <input type="password" name="senha" class="input" placeholder="••••••••" required>
+                        <div style="position: relative;">
+                            <input type="password" name="senha" class="input" placeholder="••••••••" required
+                                style="padding-right: 2.5rem;">
+                            <button type="button" class="toggle-password"
+                                style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
+                                <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">Criar Conta</button>
                 </form>

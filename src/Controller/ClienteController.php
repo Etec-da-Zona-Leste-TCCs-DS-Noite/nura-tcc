@@ -29,6 +29,7 @@ class ClienteController
             $cliente = new Cliente();
             $cliente->setNome($_POST['nome']);
             $cliente->setEmail($_POST['email']);
+            $cliente->setTelefone($_POST['telefone'] ?? null);
             $cliente->setSenha($_POST['senha']);
 
             $novoId = $cliente->salvar();
@@ -56,6 +57,7 @@ class ClienteController
             $cliente->setId($_SESSION['cliente_id']);
             $cliente->setNome($_POST['nome']);
             $cliente->setEmail($_POST['email']);
+            $cliente->setTelefone($_POST['telefone'] ?? null);
 
             // Se o cliente digitou senha, o Model vai atualizar. Se deixou vazio, o Model ignora.
             if (!empty($_POST['senha'])) {

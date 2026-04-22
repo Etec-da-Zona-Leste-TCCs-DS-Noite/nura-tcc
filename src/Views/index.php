@@ -49,19 +49,15 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
             <nav class="nav-links">
                 <a href="index.php" style="color: var(--primary); font-weight: bold;">Início</a>
                 <a href="produtos.php">Produtos</a>
-                <?php if ($nomeCliente): ?>
-                    <a href="perfil.php" style="display: flex; align-items: center; gap: 0.5rem; color: var(--foreground);">
-                        <i class="ph-fill ph-user-circle" style="font-size: 1.2rem; color: var(--primary);"></i>
-                        Olá, <?php echo htmlspecialchars($nomeCliente); ?>
-                    </a>
-                <?php else: ?>
-                    <a href="cadastro.php">Minha Conta</a>
-                <?php endif; ?>
+                <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>">Minha Conta</a>
             </nav>
 
             <div class="header-actions">
                 <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost"
-                    aria-label="Conta">
+                    aria-label="Conta" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    <?php if ($nomeCliente): ?>
+                        <span style="font-size: 0.9rem; font-weight: 500; color: var(--foreground);">Olá, <?php echo htmlspecialchars(explode(' ', trim($nomeCliente))[0]); ?></span>
+                    <?php endif; ?>
                     <i class="ph ph-user" style="font-size: 1.2rem;"></i>
                 </a>
 
@@ -88,7 +84,8 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                         ">
                                 <?php echo $qtdCarrinho; ?>
                         </span>
-                    <?php endif; ?>
+                    <?php
+endif; ?>
                 </a>
             </div>
             <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
@@ -172,40 +169,40 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                 <div class="carousel-track">
                     <?php foreach ($produtosDestaque as $p): ?>
                         <?php
-                            $alergiasDesteProduto = $p['alergias'] ?? [];
-                            $incompativeisDesteProduto = $p['restricoes'] ?? [];
-                            
-                            $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
-                            $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
-                            
-                            $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
+    $alergiasDesteProduto = $p['alergias'] ?? [];
+    $incompativeisDesteProduto = $p['restricoes'] ?? [];
 
-                            $nomesConflito = [];
-                            $mapaAlergias = [
-                              'amendoim' => 'Amendoim/Castanhas',
-                              'frutos_mar' => 'Frutos do Mar',
-                              'soja' => 'Soja',
-                              'ovo' => 'Ovo'
-                            ];
-                            $mapaRestricoes = [
-                              'intolerancia_lactose' => 'Contém Lactose',
-                              'celiaco' => 'Contém Glúten',
-                              'vegano' => 'Contém Animais',
-                              'vegetariano' => 'Contém Carne M/T'
-                            ];
+    $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
+    $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
 
-                            if (!empty($conflitoAlergias)) {
-                              foreach ($conflitoAlergias as $c) {
-                                $nomesConflito[] = $mapaAlergias[$c] ?? $c;
-                              }
-                            }
+    $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
 
-                            if ($conflitoRestricao) {
-                              $nomesConflito[] = $mapaRestricoes[$restricaoCliente] ?? 'Restrição à sua Dieta';
-                            }
+    $nomesConflito = [];
+    $mapaAlergias = [
+        'amendoim' => 'Amendoim/Castanhas',
+        'frutos_mar' => 'Frutos do Mar',
+        'soja' => 'Soja',
+        'ovo' => 'Ovo'
+    ];
+    $mapaRestricoes = [
+        'intolerancia_lactose' => 'Contém Lactose',
+        'celiaco' => 'Contém Glúten',
+        'vegano' => 'Contém Animais',
+        'vegetariano' => 'Contém Carne M/T'
+    ];
 
-                            $textoConflito = implode(', ', $nomesConflito);
-                        ?>
+    if (!empty($conflitoAlergias)) {
+        foreach ($conflitoAlergias as $c) {
+            $nomesConflito[] = $mapaAlergias[$c] ?? $c;
+        }
+    }
+
+    if ($conflitoRestricao) {
+        $nomesConflito[] = $mapaRestricoes[$restricaoCliente] ?? 'Restrição à sua Dieta';
+    }
+
+    $textoConflito = implode(', ', $nomesConflito);
+?>
                         <div class="carousel-item">
                             <div class="card" style="height: 100%; transition: 0.3s; <?php echo $naoRecomendado ? 'opacity: 0.65; border: 2px solid #ef4444;' : ''; ?>">
                                 <div class="card-img-wrapper">
@@ -219,7 +216,8 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                                       <span style="color: #ef4444; font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 0.5rem; line-height: 1.2;">
                                         ⚠️  ALERTA<br>(<?php echo $textoConflito; ?>)
                                       </span>
-                                    <?php endif; ?>
+                                    <?php
+    endif; ?>
 
                                     <p class="card-desc"><?php echo $p['desc']; ?></p>
                                     <div class="card-price">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></div>
@@ -238,7 +236,8 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+                    <?php
+endforeach; ?>
                 </div>
 
                 <button class="carousel-btn next-btn"><i class="ph-bold ph-caret-right"></i></button>

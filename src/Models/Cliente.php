@@ -6,6 +6,7 @@ class Cliente
     private $id;
     private $nome;
     private $email;
+    private $telefone;
     private $senha; // A senha ficará guardada aqui
 
     // Getters e Setters
@@ -25,6 +26,10 @@ class Cliente
     {
         $this->email = $email;
     }
+    public function setTelefone($telefone)
+    {
+        $this->telefone = $telefone;
+    }
 
     // SetSenha: Só define se vier algo escrito
     public function setSenha($senha)
@@ -38,10 +43,11 @@ class Cliente
     {
         global $pdo;
         try {
-            $sql = "INSERT INTO cliente (nome, email, senha) VALUES (:nome, :email, :senha)";
+            $sql = "INSERT INTO cliente (nome, email, telefone, senha) VALUES (:nome, :email, :telefone, :senha)";
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':nome', $this->nome);
             $stmt->bindValue(':email', $this->email);
+            $stmt->bindValue(':telefone', $this->telefone);
             $stmt->bindValue(':senha', $this->senha);
             $stmt->execute();
             return $pdo->lastInsertId();
@@ -75,17 +81,18 @@ class Cliente
         try {
             // Se a senha estiver preenchida, atualiza ela também
             if (!empty($this->senha)) {
-                $sql = "UPDATE cliente SET nome = :nome, email = :email, senha = :senha WHERE id = :id";
+                $sql = "UPDATE cliente SET nome = :nome, email = :email, telefone = :telefone, senha = :senha WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
                 $stmt->bindValue(':senha', $this->senha);
             } else {
                 // Se não, atualiza só nome e email
-                $sql = "UPDATE cliente SET nome = :nome, email = :email WHERE id = :id";
+                $sql = "UPDATE cliente SET nome = :nome, email = :email, telefone = :telefone WHERE id = :id";
                 $stmt = $pdo->prepare($sql);
             }
 
             $stmt->bindValue(':nome', $this->nome);
             $stmt->bindValue(':email', $this->email);
+            $stmt->bindValue(':telefone', $this->telefone);
             $stmt->bindValue(':id', $this->id);
             return $stmt->execute();
         } catch (PDOException $e) {

@@ -208,3 +208,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// --- PASSWORD TOGGLE ---
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtns = document.querySelectorAll('.toggle-password');
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const input = this.previousElementSibling;
+            const icon = this.querySelector('i');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('ph-eye', 'ph-eye-slash');
+                icon.style.color = 'var(--primary)';
+            } else {
+                input.type = 'password';
+                icon.classList.replace('ph-eye-slash', 'ph-eye');
+                icon.style.color = 'var(--muted)';
+            }
+        });
+    });
+});
+
+// --- MASKS ---
+document.addEventListener('DOMContentLoaded', () => {
+    const telefoneInputs = document.querySelectorAll('.input-telefone');
+    telefoneInputs.forEach(input => {
+        input.addEventListener('input', function (e) {
+            let val = e.target.value.replace(/\D/g, '');
+            let formatted = val;
+            if (val.length > 2) {
+                formatted = `(${val.substring(0, 2)}) `;
+                if (val.length > 7) {
+                    formatted += `${val.substring(2, 7)}-${val.substring(7, 11)}`;
+                } else {
+                    formatted += val.substring(2, 7);
+                }
+            } else if (val.length > 0) {
+                formatted = `(${val}`;
+            }
+            e.target.value = formatted;
+        });
+    });
+});
