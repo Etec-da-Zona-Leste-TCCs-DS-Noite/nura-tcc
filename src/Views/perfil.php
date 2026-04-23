@@ -75,6 +75,10 @@ $alergias = $perfilDb['alergias'] ?? [];
                     <button class="sidebar-link tab-btn" data-target="clinical-profile"><i class="ph ph-heartbeat"></i>
                         Perfil Clínico</button>
 
+                    <!-- Aba do Gêmeo Digital (Avatar) -->
+                    <button class="sidebar-link tab-btn" data-target="digital-twin"><i class="ph ph-user-circle"></i>
+                        Meu Avatar</button>
+
                     <a href="#"
                         onclick="if(confirm('Tem certeza?')) window.location.href='../Controller/ClienteController.php?acao=deletar';"
                         class="sidebar-link" style="color: #ef4444;">
@@ -89,11 +93,10 @@ $alergias = $perfilDb['alergias'] ?? [];
 
                 <!-- ABA 1: Dados Pessoais -->
                 <div id="personal-data" class="form-content active">
-                    <div class="card" style="box-shadow: none; padding: 0; border: none; overflow: visible;">
-                        <div class="card-content" style="padding: 0; padding-top: 0.3rem;">
-                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Seus Dados</h2>
+                    <div class="profile-card">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Seus Dados</h2>
 
-                            <form action="../Controller/ClienteController.php?acao=atualizar" method="POST">
+                        <form action="../Controller/ClienteController.php?acao=atualizar" method="POST">
                                 <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
                                     <div class="form-group">
                                         <label for="input-nome">Nome Completo</label>
@@ -132,19 +135,17 @@ $alergias = $perfilDb['alergias'] ?? [];
                                     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                                 </div>
                             </form>
-                        </div>
                     </div>
                 </div>
 
                 <!-- ABA 2: Perfil Clínico -->
                 <div id="clinical-profile" class="form-content">
-                    <div class="card" style="box-shadow: none; padding: 0; border: none; overflow: visible;">
-                        <div class="card-content" style="padding: 0; padding-top: 0.3rem;">
-                            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Perfil Clínico</h2>
-                            <p style="color: var(--muted); margin-bottom: 1.5rem;">Preencha seus dados para habilitarmos
-                                as recomendações de alimentação.</p>
+                    <div class="profile-card">
+                        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Perfil Clínico</h2>
+                        <p style="color: var(--muted); margin-bottom: 1.5rem;">Preencha seus dados para habilitarmos
+                            as recomendações de alimentação.</p>
 
-                            <form action="../Controller/PerfilClinicoController.php?acao=salvar" method="POST">
+                        <form action="../Controller/PerfilClinicoController.php?acao=salvar" method="POST">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                     <div class="form-group">
                                         <label>Peso (kg)</label>
@@ -211,6 +212,100 @@ $alergias = $perfilDb['alergias'] ?? [];
                                     <?php endif; ?>
                                 </div>
                             </form>
+                    </div>
+                </div>
+
+                <!-- ABA 3: Meu Avatar (Gêmeo Digital) -->
+                <div id="digital-twin" class="form-content">
+                    <div class="profile-card" style="text-align: center; position: relative; overflow: hidden;">
+                        
+                        <!-- Padrão tecnológico de fundo -->
+                        <div style="position: absolute; inset: 0; background-image: radial-gradient(hsla(150, 20%, 60%, 0.15) 1px, transparent 1px); background-size: 24px 24px; opacity: 0.5; z-index: 0; pointer-events: none;"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; color: var(--foreground);">Seu Gêmeo Digital</h2>
+                            <p style="color: var(--muted); margin-bottom: 2rem;">Uma representação visual do seu perfil clínico de saúde.</p>
+                            
+                            <!-- Visual do Boneco -->
+                            <div style="background: linear-gradient(135deg, white 0%, var(--green-mist) 100%); border-radius: 1.5rem; padding: 3rem 1rem; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 2rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.02);">
+                                
+                                <div style="position: relative; width: 140px; height: 180px; margin: 0 auto; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    <!-- Sombra do boneco -->
+                                    <div style="position: absolute; bottom: -15px; left: 20px; width: 100px; height: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; filter: blur(3px);"></div>
+                                    
+                                    <?php 
+                                        // Lógica visual básica baseada no IMC
+                                        $corpoLargura = "100px";
+                                        $corpoCor = "var(--primary)";
+                                        $rostoCor = "#fcd34d";
+                                        $expressao = "M35,65 Q50,80 65,65"; // Sorriso padrão
+                                        
+                                        if(!empty($peso) && !empty($altura)) {
+                                            $imc = $peso / ($altura * $altura);
+                                            if($imc < 18.5) {
+                                                $corpoLargura = "80px"; // Magrinho
+                                                $corpoCor = "#38bdf8"; // Azul claro
+                                                $expressao = "M35,65 Q50,80 65,65"; // Sorriso
+                                            } elseif($imc >= 25 && $imc < 30) {
+                                                $corpoLargura = "120px"; // Gordinho
+                                                $corpoCor = "#f59e0b"; // Laranja
+                                                $expressao = "M35,68 Q50,68 65,68"; // Neutro
+                                            } elseif($imc >= 30) {
+                                                $corpoLargura = "130px"; // Obeso
+                                                $corpoCor = "#ef4444"; // Vermelho
+                                                $expressao = "M35,70 Q50,55 65,70"; // Triste
+                                            }
+                                        } else {
+                                            $corpoCor = "#cbd5e1"; // Cinza (Sem dados)
+                                            $rostoCor = "#e2e8f0";
+                                            $expressao = "M35,68 Q50,68 65,68"; // Neutro
+                                        }
+                                    ?>
+
+                                    <!-- Cabeça SVG -->
+                                    <svg viewBox="0 0 100 100" style="width: 70px; height: 70px; position: absolute; top: 0; left: 35px; z-index: 2; overflow: visible;">
+                                        <circle cx="50" cy="50" r="45" fill="<?php echo $rostoCor; ?>" stroke="var(--foreground)" stroke-width="4"/>
+                                        <!-- Olhos -->
+                                        <circle cx="35" cy="45" r="5" fill="var(--foreground)"/>
+                                        <circle cx="65" cy="45" r="5" fill="var(--foreground)"/>
+                                        <!-- Boca dinâmica -->
+                                        <path d="<?php echo $expressao; ?>" fill="none" stroke="var(--foreground)" stroke-width="4" stroke-linecap="round"/>
+                                    </svg>
+
+                                    <!-- Corpo SVG -->
+                                    <svg viewBox="0 0 100 100" style="width: <?php echo $corpoLargura; ?>; height: 100px; position: absolute; bottom: 0; left: calc(50% - <?php echo (int)$corpoLargura/2; ?>px); z-index: 1; overflow: visible;" preserveAspectRatio="none">
+                                        <rect x="5" y="10" width="90" height="90" rx="30" fill="<?php echo $corpoCor; ?>" stroke="var(--foreground)" stroke-width="4"/>
+                                        <!-- Logo Peito -->
+                                        <circle cx="50" cy="50" r="15" fill="white" stroke="var(--foreground)" stroke-width="3"/>
+                                        <text x="50" y="55" font-family="Outfit" font-weight="900" font-size="16" fill="var(--foreground)" text-anchor="middle">N</text>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left;">
+                                <div style="background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: 1rem;">
+                                    <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.5rem;">Status Físico</h4>
+                                    <p style="font-weight: 700; color: var(--foreground); font-size: 1.1rem;">
+                                        <?php 
+                                            if(!empty($peso) && !empty($altura)) {
+                                                echo number_format($imc, 1, ',', '.') . ' IMC';
+                                            } else {
+                                                echo 'Dados Incompletos';
+                                            }
+                                        ?>
+                                    </p>
+                                </div>
+                                <div style="background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: 1rem;">
+                                    <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.5rem;">Restrições Ativas</h4>
+                                    <p style="font-weight: 700; color: var(--foreground); font-size: 1.1rem;">
+                                        <?php 
+                                            $totalRestricoes = (!empty($restricao) ? 1 : 0) + (is_array($alergias) ? count($alergias) : 0);
+                                            echo $totalRestricoes > 0 ? $totalRestricoes . ' cadastradas' : 'Nenhuma';
+                                        ?>
+                                    </p>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

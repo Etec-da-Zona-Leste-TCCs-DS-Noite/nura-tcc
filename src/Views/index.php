@@ -137,7 +137,7 @@ endif; ?>
             <button class="hero-btn hero-next">❯</button>
         </section>
         <section
-            style="padding: 4rem 0; text-align: center; background: linear-gradient(to bottom, white, var(--secondary));">
+            style="padding: 4rem 0; text-align: center; background: linear-gradient(to bottom, white, var(--green-mist));">
             <div class="container">
                 <div
                     style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(22,163,74,0.1); color: var(--primary); padding: 0.4rem 1rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem;">

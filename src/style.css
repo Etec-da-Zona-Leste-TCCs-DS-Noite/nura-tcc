@@ -509,22 +509,20 @@ header .logo img {
     justify-content: center;
     min-height: calc(100vh - 4.5rem - 300px);
     padding: 3rem 1.5rem;
-    background: hsl(148, 30%, 89%);
+    background: linear-gradient(to bottom, white 0%, var(--green-mist) 100%);
     position: relative;
+    overflow: hidden;
 }
 
-/* Mancha radial suave para profundidade */
+/* Padrão de pontos sutil para um toque tecnológico e moderno */
 .auth-wrapper::before {
     content: '';
     position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, hsla(150, 35%, 82%, 0.6) 0%, transparent 70%);
-    pointer-events: none;
+    inset: 0;
+    background-image: radial-gradient(hsla(150, 20%, 60%, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
     z-index: 0;
+    pointer-events: none;
 }
 
 .auth-wrapper > * {
@@ -641,12 +639,12 @@ header .logo img {
 /* --- PERFIL --- */
 .profile-grid {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 280px 1fr;
     gap: 2.5rem;
     align-items: start;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .profile-grid {
         grid-template-columns: 1fr;
     }
@@ -657,6 +655,14 @@ header .logo img {
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 1.5rem;
     padding: 1.5rem 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.profile-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 1.5rem;
+    padding: 2rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
@@ -796,20 +802,49 @@ header .logo img {
 
 /* Footer da tela de login/cadastro — integrado ao fundo verde do auth */
 .auth-wrapper ~ footer {
-    background: hsl(148, 30%, 89%);
+    background: var(--green-mist);
     border-top: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-wrapper ~ footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(hsla(150, 20%, 60%, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.auth-wrapper ~ footer > * {
+    position: relative;
+    z-index: 1;
 }
 
 .auth-wrapper ~ footer p {
     color: hsl(155, 25%, 40%);
 }
 
-/* Footer das demais páginas — verde sólido, diferencia da área principal */
+/* Footer das demais páginas — minimalista e tecnológico */
 .footer {
-    background: hsl(148, 28%, 88%);
+    background: linear-gradient(to bottom, white 0%, var(--green-mist) 100%);
     color: var(--muted);
     padding: 5rem 0 2rem;
-    border-top: 1px solid hsl(150, 25%, 83%);
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(hsla(150, 20%, 60%, 0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .footer-grid {
@@ -818,6 +853,8 @@ header .logo img {
     justify-content: space-between;
     align-items: center;
     gap: 3rem;
+    position: relative;
+    z-index: 1;
 }
 
 .footer-grid>div {
@@ -880,11 +917,13 @@ header .logo img {
 .footer-bottom {
     margin-top: 4rem;
     text-align: center;
-    border-top: 1px solid hsl(150, 22%, 80%);
+    border-top: 1px solid hsla(150, 22%, 60%, 0.15);
     padding-top: 1.5rem;
     font-size: 0.85rem;
     color: var(--primary-hover);
     font-weight: 500;
+    position: relative;
+    z-index: 1;
 }
 
 .footer .logo {
