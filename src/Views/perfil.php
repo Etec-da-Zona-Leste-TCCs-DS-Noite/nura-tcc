@@ -10,6 +10,16 @@ if (!isset($_SESSION['cliente_id'])) {
 
 $dadosCliente = Cliente::buscarPorId($_SESSION['cliente_id']);
 
+$mostrarBoasVindasConta = !empty($_SESSION['conta_nova']);
+$toastBemVindoVolta = !empty($_SESSION['login_recente']);
+if ($mostrarBoasVindasConta) {
+    unset($_SESSION['conta_nova']);
+}
+if ($toastBemVindoVolta) {
+    unset($_SESSION['login_recente']);
+}
+$primeiroNomeConta = htmlspecialchars(explode(' ', trim($dadosCliente['nome'] ?? 'Cliente'))[0], ENT_QUOTES, 'UTF-8');
+
 // === BUSCA OS DADOS DE PERFIL CLÍNICO PARA PREENCHER OS CAMPOS ===
 // O Model fará a query via PDO. Se o perfil não existir, retorna array vazio ou null
 $perfilDb = PerfilClinico::buscarPorClienteId($_SESSION['cliente_id']);
@@ -39,53 +49,69 @@ $alergias = $perfilDb['alergias'] ?? [];
 
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
-                    style="height: 80px; object-fit: contain;"></a>
-            <div class="nav-links">
+            <a href="index.php" class="logo" aria-label="Nura — Início">
+                <img class="logo-img" src="../assets/img/NURA_logo.png" alt="">
+            </a>
+            <nav class="nav-links" aria-label="Principal">
                 <a href="index.php">Início</a>
                 <a href="produtos.php">Produtos</a>
                 <a href="carrinho.php">Carrinho</a>
-            </div>
+            </nav>
 
             <div class="header-actions">
-                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 500;">
-                    <span id="header-user-name">Olá, <?php echo htmlspecialchars($dadosCliente['nome'] ?? ''); ?></span>
-                    <div
-                        style="width: 35px; height: 35px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold;">
+                <div class="header-user-chip">
+                    <span id="header-user-name">Olá, <?php echo htmlspecialchars(explode(' ', trim($dadosCliente['nome'] ?? ''))[0]); ?></span>
+                    <div class="header-avatar" aria-hidden="true">
                         <?php echo strtoupper(substr($dadosCliente['nome'] ?? 'C', 0, 1)); ?>
                     </div>
                 </div>
             </div>
-            <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
-                <i class="ph ph-list" style="font-size: 1.5rem;"></i>
+            <button type="button" class="mobile-menu-btn btn btn-ghost" aria-label="Abrir menu">
+                <i class="ph ph-list header-icon" aria-hidden="true"></i>
             </button>
         </div>
     </header>
 
-    <main class="container" style="padding: 3rem 1.5rem;">
-        <h1 style="font-size: 2rem; margin-bottom: 2rem;">Minha Conta</h1>
+    <main class="container main-profile">
+        <h1 class="perfil-page-title">Minha conta</h1>
+
+        <?php if ($mostrarBoasVindasConta): ?>
+        <section class="welcome-hero" aria-labelledby="welcome-heading">
+            <div class="welcome-hero__glow" aria-hidden="true"></div>
+            <div class="welcome-hero__inner">
+                <div class="welcome-hero__visual" aria-hidden="true">
+                    <i class="ph-fill ph-confetti"></i>
+                </div>
+                <div class="welcome-hero__content">
+                    <p class="welcome-hero__eyebrow">Conta criada com sucesso</p>
+                    <h2 id="welcome-heading" class="welcome-hero__title">Bem-vindo(a), <?php echo $primeiroNomeConta; ?>!</h2>
+                    <p class="welcome-hero__text">Sua conta Nura está pronta. Explore o cardápio, personalize seu perfil clínico para alertas inteligentes e monte seu pedido com segurança.</p>
+                    <div class="welcome-hero__actions">
+                        <a href="produtos.php" class="btn btn-primary"><i class="ph-bold ph-storefront" aria-hidden="true"></i> Ver cardápio</a>
+                        <a href="carrinho.php" class="btn btn-outline"><i class="ph-bold ph-shopping-cart" aria-hidden="true"></i> Carrinho</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <?php endif; ?>
 
         <div class="profile-grid">
             <aside class="profile-sidebar">
-                <nav class="sidebar-menu">
-                    <button class="sidebar-link tab-btn active" data-target="personal-data"><i class="ph ph-user"></i>
-                        Dados Pessoais</button>
+                <nav class="sidebar-menu" aria-label="Seções da conta">
+                    <button type="button" class="sidebar-link tab-btn active" data-target="personal-data"><i class="ph ph-user" aria-hidden="true"></i>
+                        Dados pessoais</button>
 
-                    <!-- Aba de Perfil Clínico -->
-                    <button class="sidebar-link tab-btn" data-target="clinical-profile"><i class="ph ph-heartbeat"></i>
-                        Perfil Clínico</button>
+                    <button type="button" class="sidebar-link tab-btn" data-target="clinical-profile"><i class="ph ph-heartbeat" aria-hidden="true"></i>
+                        Perfil clínico</button>
 
-                    <!-- Aba do Gêmeo Digital (Avatar) -->
-                    <button class="sidebar-link tab-btn" data-target="digital-twin"><i class="ph ph-user-circle"></i>
-                        Meu Avatar</button>
+                    <button type="button" class="sidebar-link tab-btn" data-target="digital-twin"><i class="ph ph-user-circle" aria-hidden="true"></i>
+                        Meu avatar</button>
 
-                    <a href="#"
-                        onclick="if(confirm('Tem certeza?')) window.location.href='../Controller/ClienteController.php?acao=deletar';"
-                        class="sidebar-link" style="color: #ef4444;">
-                        <i class="ph ph-trash"></i> Excluir Conta
-                    </a>
-                    <a href="../Controller/ClienteController.php?acao=sair" class="sidebar-link"
-                        style="color: var(--muted);"><i class="ph ph-sign-out"></i> Sair</a>
+                    <button type="button" id="open-delete-account-modal" class="sidebar-link sidebar-link--danger sidebar-link--button">
+                        <i class="ph ph-trash" aria-hidden="true"></i> Excluir conta
+                    </button>
+                    <a href="../Controller/ClienteController.php?acao=sair" class="sidebar-link">
+                        <i class="ph ph-sign-out" aria-hidden="true"></i> Sair</a>
                 </nav>
             </aside>
 
@@ -94,45 +120,43 @@ $alergias = $perfilDb['alergias'] ?? [];
                 <!-- ABA 1: Dados Pessoais -->
                 <div id="personal-data" class="form-content active">
                     <div class="profile-card">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Seus Dados</h2>
+                        <h2>Seus dados</h2>
 
                         <form action="../Controller/ClienteController.php?acao=atualizar" method="POST">
-                                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                                <div class="form-grid-1">
                                     <div class="form-group">
-                                        <label for="input-nome">Nome Completo</label>
-                                        <input type="text" name="nome" class="input"
+                                        <label for="input-nome">Nome completo</label>
+                                        <input id="input-nome" type="text" name="nome" class="input"
                                             value="<?php echo htmlspecialchars($dadosCliente['nome'] ?? ''); ?>">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="input-email">Email</label>
-                                    <input type="email" name="email" class="input"
+                                    <input id="input-email" type="email" name="email" class="input"
                                         value="<?php echo htmlspecialchars($dadosCliente['email'] ?? ''); ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="input-telefone">Telefone</label>
-                                    <input type="text" name="telefone" class="input input-telefone"
+                                    <input id="input-telefone" type="text" name="telefone" class="input input-telefone"
                                         value="<?php echo htmlspecialchars($dadosCliente['telefone'] ?? ''); ?>"
                                         placeholder="(11) 90000-0000">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="input-senha">Nova Senha</label>
-                                    <div style="position: relative;">
-                                        <input type="password" name="senha" class="input"
-                                            placeholder="Deixe em branco para manter a atual"
-                                            style="padding-right: 2.5rem;">
-                                        <button type="button" class="toggle-password"
-                                            style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
+                                    <label for="input-senha">Nova senha</label>
+                                    <div class="password-field">
+                                        <input id="input-senha" type="password" name="senha" class="input"
+                                            placeholder="Deixe em branco para manter a atual" autocomplete="new-password">
+                                        <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
+                                            <i class="ph ph-eye" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </div>
 
-                                <div style="margin-top: 1rem;">
-                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                <div class="profile-actions">
+                                    <button type="submit" class="btn btn-primary">Salvar alterações</button>
                                 </div>
                             </form>
                     </div>
@@ -141,12 +165,11 @@ $alergias = $perfilDb['alergias'] ?? [];
                 <!-- ABA 2: Perfil Clínico -->
                 <div id="clinical-profile" class="form-content">
                     <div class="profile-card">
-                        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; line-height: 1.2;">Perfil Clínico</h2>
-                        <p style="color: var(--muted); margin-bottom: 1.5rem;">Preencha seus dados para habilitarmos
-                            as recomendações de alimentação.</p>
+                        <h2>Perfil clínico</h2>
+                        <p class="lead">Preencha seus dados para habilitarmos as recomendações de alimentação.</p>
 
                         <form action="../Controller/PerfilClinicoController.php?acao=salvar" method="POST">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-grid-2">
                                     <div class="form-group">
                                         <label>Peso (kg)</label>
                                         <input type="number" step="0.1" name="peso" class="input" placeholder="Ex: 70.5"
@@ -176,39 +199,33 @@ $alergias = $perfilDb['alergias'] ?? [];
 
                                 <!-- BLOCO ALERGIAS -->
                                 <div class="form-group">
-                                    <label>Alergias (Marque se possuir)</label>
-                                    <div
-                                        style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;">
-                                        <label
-                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
-                                            <input type="checkbox" name="alergias[]" value="amendoim" <?php echo in_array('amendoim', $alergias) ? 'checked' : ''; ?>> Amendoim /
-                                            Castanhas
+                                    <label>Alergias (marque se possuir)</label>
+                                    <div class="checkbox-list">
+                                        <label>
+                                            <input type="checkbox" name="alergias[]" value="amendoim" <?php echo in_array('amendoim', $alergias) ? 'checked' : ''; ?>>
+                                            Amendoim / castanhas
                                         </label>
-                                        <label
-                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
-                                            <input type="checkbox" name="alergias[]" value="frutos_mar" <?php echo in_array('frutos_mar', $alergias) ? 'checked' : ''; ?>> Frutos do Mar
+                                        <label>
+                                            <input type="checkbox" name="alergias[]" value="frutos_mar" <?php echo in_array('frutos_mar', $alergias) ? 'checked' : ''; ?>>
+                                            Frutos do mar
                                         </label>
-                                        <label
-                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
-                                            <input type="checkbox" name="alergias[]" value="soja" <?php echo in_array('soja', $alergias) ? 'checked' : ''; ?>> Soja
+                                        <label>
+                                            <input type="checkbox" name="alergias[]" value="soja" <?php echo in_array('soja', $alergias) ? 'checked' : ''; ?>>
+                                            Soja
                                         </label>
-                                        <label
-                                            style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
-                                            <input type="checkbox" name="alergias[]" value="ovo" <?php echo in_array('ovo', $alergias) ? 'checked' : ''; ?>> Ovo
+                                        <label>
+                                            <input type="checkbox" name="alergias[]" value="ovo" <?php echo in_array('ovo', $alergias) ? 'checked' : ''; ?>>
+                                            Ovo
                                         </label>
                                     </div>
                                 </div>
 
-                                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                                    <button type="submit" class="btn btn-primary">Salvar Perfil Clínico</button>
+                                <div class="profile-actions">
+                                    <button type="submit" class="btn btn-primary">Salvar perfil clínico</button>
 
-                                    <!-- Botão de exclusão (Apenas aparece se o usuário de fato já gravou perfil antes!) -->
                                     <?php if ($perfilDb): ?>
-                                        <a href="../Controller/PerfilClinicoController.php?acao=excluir"
-                                            onclick="return confirm('Tem certeza que deseja apagar os dados do seu perfil clínico?');"
-                                            class="btn"
-                                            style="background:var(--muted); color:white; border:none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration:none;">Deletar
-                                            Perfil</a>
+                                        <button type="button" id="clinical-delete-trigger" class="btn-muted-solid"
+                                            data-href="../Controller/PerfilClinicoController.php?acao=excluir">Deletar perfil</button>
                                     <?php endif; ?>
                                 </div>
                             </form>
@@ -217,21 +234,17 @@ $alergias = $perfilDb['alergias'] ?? [];
 
                 <!-- ABA 3: Meu Avatar (Gêmeo Digital) -->
                 <div id="digital-twin" class="form-content">
-                    <div class="profile-card" style="text-align: center; position: relative; overflow: hidden;">
-                        
-                        <!-- Padrão tecnológico de fundo -->
-                        <div style="position: absolute; inset: 0; background-image: radial-gradient(hsla(150, 20%, 60%, 0.15) 1px, transparent 1px); background-size: 24px 24px; opacity: 0.5; z-index: 0; pointer-events: none;"></div>
-                        
-                        <div style="position: relative; z-index: 1;">
-                            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; color: var(--foreground);">Seu Gêmeo Digital</h2>
-                            <p style="color: var(--muted); margin-bottom: 2rem;">Uma representação visual do seu perfil clínico de saúde.</p>
-                            
-                            <!-- Visual do Boneco -->
-                            <div style="background: linear-gradient(135deg, white 0%, var(--green-mist) 100%); border-radius: 1.5rem; padding: 3rem 1rem; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 2rem; box-shadow: inset 0 0 20px rgba(0,0,0,0.02);">
-                                
-                                <div style="position: relative; width: 140px; height: 180px; margin: 0 auto; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                    <!-- Sombra do boneco -->
-                                    <div style="position: absolute; bottom: -15px; left: 20px; width: 100px; height: 15px; background: rgba(0,0,0,0.05); border-radius: 50%; filter: blur(3px);"></div>
+                    <div class="profile-card digital-twin-card">
+                        <div class="digital-twin-bg" aria-hidden="true"></div>
+
+                        <div class="digital-twin-inner">
+                            <h2>Seu gêmeo digital</h2>
+                            <p class="lead" style="margin-bottom: 2rem;">Uma representação visual do seu perfil clínico de saúde.</p>
+
+                            <div class="avatar-stage">
+
+                                <div class="digital-twin-mascot">
+                                    <div class="digital-twin-mascot-shadow" aria-hidden="true"></div>
                                     
                                     <?php 
                                         // Lógica visual básica baseada no IMC
@@ -281,24 +294,24 @@ $alergias = $perfilDb['alergias'] ?? [];
                                     </svg>
                                 </div>
                             </div>
-                            
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: left;">
-                                <div style="background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: 1rem;">
-                                    <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.5rem;">Status Físico</h4>
-                                    <p style="font-weight: 700; color: var(--foreground); font-size: 1.1rem;">
-                                        <?php 
-                                            if(!empty($peso) && !empty($altura)) {
+
+                            <div class="avatar-stat-grid">
+                                <div class="avatar-stat">
+                                    <h4>Status físico</h4>
+                                    <p>
+                                        <?php
+                                            if (!empty($peso) && !empty($altura)) {
                                                 echo number_format($imc, 1, ',', '.') . ' IMC';
                                             } else {
-                                                echo 'Dados Incompletos';
+                                                echo 'Dados incompletos';
                                             }
                                         ?>
                                     </p>
                                 </div>
-                                <div style="background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: 1rem;">
-                                    <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.5rem;">Restrições Ativas</h4>
-                                    <p style="font-weight: 700; color: var(--foreground); font-size: 1.1rem;">
-                                        <?php 
+                                <div class="avatar-stat">
+                                    <h4>Restrições ativas</h4>
+                                    <p>
+                                        <?php
                                             $totalRestricoes = (!empty($restricao) ? 1 : 0) + (is_array($alergias) ? count($alergias) : 0);
                                             echo $totalRestricoes > 0 ? $totalRestricoes . ' cadastradas' : 'Nenhuma';
                                         ?>
@@ -314,6 +327,76 @@ $alergias = $perfilDb['alergias'] ?? [];
         </div>
     </main>
 
+    <!-- Exclusão de conta — motivo (UX) -->
+    <div class="modal-overlay" id="deleteAccountModal" role="dialog" aria-modal="true" aria-labelledby="delete-account-title">
+        <div class="custom-modal custom-modal--wide delete-account-modal">
+            <div class="modal-icon" style="background: var(--danger-soft); color: var(--danger);">
+                <i class="ph-fill ph-warning-circle" aria-hidden="true"></i>
+            </div>
+            <h2 class="modal-title" id="delete-account-title">Encerrar sua conta</h2>
+            <p class="modal-text">Esta ação é permanente: seus dados e pedidos associados a esta conta serão apagados. Para prosseguir, diga-nos o motivo.</p>
+            <form id="delete-account-form">
+                <fieldset class="delete-account-fieldset">
+                    <legend class="delete-account-legend">Motivo da saída</legend>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="nao_uso">
+                        <span>Não uso mais o serviço</span>
+                    </label>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="privacidade">
+                        <span>Preocupações com privacidade ou dados</span>
+                    </label>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="outra_opcao">
+                        <span>Encontrei outra opção melhor</span>
+                    </label>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="experiencia">
+                        <span>Experiência ou suporte insatisfatórios</span>
+                    </label>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="preco">
+                        <span>Preço ou entrega</span>
+                    </label>
+                    <label class="delete-reason-option">
+                        <input type="radio" name="motivo" value="outro">
+                        <span>Outro motivo</span>
+                    </label>
+                    <div id="delete-account-detalhe-wrap" class="delete-account-detalhe-wrap">
+                        <label for="delete-account-detalhe" class="delete-account-legend" style="margin-top: 0.75rem;">Descreva (obrigatório se “Outro”)</label>
+                        <textarea id="delete-account-detalhe" name="detalhe" class="delete-account-detalhe" rows="3" maxlength="500" placeholder="Conte em uma frase..."></textarea>
+                    </div>
+                </fieldset>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-danger-solid btn-full">Excluir minha conta</button>
+                    <button type="button" class="btn btn-secondary btn-full" id="cancel-delete-account">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="clinicalDeleteModal" role="dialog" aria-modal="true" aria-labelledby="clinical-delete-title">
+        <div class="custom-modal">
+            <div class="modal-icon" style="background: var(--danger-soft); color: var(--danger);">
+                <i class="ph-fill ph-heartbeat" aria-hidden="true"></i>
+            </div>
+            <h2 class="modal-title" id="clinical-delete-title">Apagar perfil clínico?</h2>
+            <p class="modal-text">Suas alergias, restrições e medidas usadas no cardápio serão removidas do sistema. Você pode cadastrar de novo depois.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-danger-solid btn-full" id="confirm-clinical-delete">Sim, apagar dados clínicos</button>
+                <button type="button" class="btn btn-secondary btn-full" id="cancel-clinical-delete">Não, manter</button>
+            </div>
+        </div>
+    </div>
+
+    <?php if (!empty($toastBemVindoVolta)): ?>
+    <script>
+        window.__NURA_SESSION_TOAST__ = <?php echo json_encode([
+            'msg' => 'Que bom ter você de volta, ' . explode(' ', trim($dadosCliente['nome'] ?? 'Cliente'))[0] . '!',
+            'type' => 'success',
+        ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_UNESCAPED_UNICODE); ?>;
+    </script>
+    <?php endif; ?>
     <script src="../script.js"></script>
 </body>
 

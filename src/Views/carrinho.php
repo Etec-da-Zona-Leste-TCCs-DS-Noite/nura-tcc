@@ -16,6 +16,7 @@ $total = $subtotal + $frete;
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nura - Carrinho</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,71 +25,71 @@ $total = $subtotal + $frete;
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
-<body>
+<body class="page-carrinho">
 
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
-                    style="height: 80px; object-fit: contain;"></a>
-            <nav class="nav-links">
+            <a href="index.php" class="logo" aria-label="Nura — Início">
+                <img class="logo-img" src="../assets/img/NURA_logo.png" alt="">
+            </a>
+            <nav class="nav-links" aria-label="Principal">
                 <a href="index.php">Início</a>
                 <a href="produtos.php">Produtos</a>
                 <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>">Minha Conta</a>
             </nav>
             <div class="header-actions">
                 <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost"
-                    aria-label="Conta" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+                    aria-label="Conta">
                     <?php if ($nomeCliente): ?>
-                        <span style="font-size: 0.9rem; font-weight: 500; color: var(--foreground);">Olá, <?php echo htmlspecialchars(explode(' ', trim($nomeCliente))[0]); ?></span>
+                        <span class="header-user-label">Olá, <?php echo htmlspecialchars(explode(' ', trim($nomeCliente))[0]); ?></span>
                     <?php endif; ?>
-                    <i class="ph ph-user" style="font-size: 1.2rem;"></i>
+                    <i class="ph ph-user header-icon" aria-hidden="true"></i>
                 </a>
             </div>
-            <button class="mobile-menu-btn btn btn-ghost" aria-label="Abrir Menu">
-                <i class="ph ph-list" style="font-size: 1.5rem;"></i>
+            <button type="button" class="mobile-menu-btn btn btn-ghost" aria-label="Abrir menu">
+                <i class="ph ph-list header-icon" aria-hidden="true"></i>
             </button>
         </div>
     </header>
 
-    <main class="container" style="padding: 3rem 0; max-width: 800px;">
-        <h1 style="margin-bottom: 2rem;">Seu Carrinho</h1>
+    <main class="container cart-page">
+        <h1 class="cart-page-title">Seu carrinho</h1>
 
         <?php if (empty($carrinho)): ?>
-            <div style="text-align: center; padding: 4rem; border: 2px dashed var(--border); border-radius: var(--radius);">
-                <i class="ph ph-shopping-cart" style="font-size: 3rem; color: var(--muted); margin-bottom: 1rem;"></i>
-                <p style="color: var(--muted); margin-bottom: 1.5rem;">Seu carrinho está vazio.</p>
-                <a href="produtos.php" class="btn btn-primary">Ver Cardápio</a>
+            <div class="cart-empty">
+                <i class="ph ph-shopping-cart cart-empty-icon" aria-hidden="true"></i>
+                <p>Seu carrinho está vazio.</p>
+                <a href="produtos.php" class="btn btn-primary">Ver cardápio</a>
             </div>
             <?php
         else: ?>
 
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="cart-lines">
                 <?php foreach ($carrinho as $item): ?>
-                    <div class="order-card" style="display: flex; gap: 1rem; align-items: center; padding: 1rem;">
-                        <img src="<?php echo $item['img']; ?>" alt="Foto"
-                            style="width: 80px; height: 80px; object-fit: cover; border-radius: var(--radius);">
+                    <div class="order-card">
+                        <img src="<?php echo htmlspecialchars($item['img']); ?>" alt="<?php echo htmlspecialchars($item['nome']); ?>" class="order-card-thumb">
 
-                        <div style="flex: 1;">
-                            <h3 style="font-size: 1rem; font-weight: 600;"><?php echo $item['nome']; ?></h3>
-                            <div style="color: var(--primary); font-weight: 700;">
+                        <div class="order-card-body">
+                            <h3><?php echo htmlspecialchars($item['nome']); ?></h3>
+                            <div class="order-card-price">
                                 R$ <?php echo number_format($item['preco'], 2, ',', '.'); ?>
                             </div>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <a href="carrinho_acoes.php?acao=atualizar&id=<?php echo $item['id']; ?>&qtd=<?php echo $item['qtd'] - 1; ?>"
-                                class="btn btn-ghost" style="border: 1px solid var(--border); padding: 0.3rem 0.6rem;"
-                                <?php echo $item['qtd'] == 1 ? "onclick=\"mostrarModalDelete(event, this.href);\"" : ""; ?>>-</a>
+                        <div class="qty-row">
+                            <a href="carrinho_acoes.php?acao=atualizar&id=<?php echo (int)$item['id']; ?>&qtd=<?php echo (int)$item['qtd'] - 1; ?>"
+                                class="btn btn-ghost qty-btn"
+                                <?php echo $item['qtd'] == 1 ? 'onclick="mostrarModalDelete(event, this.href);"' : ''; ?>>−</a>
 
-                            <span style="font-weight: 600; width: 20px; text-align: center;"><?php echo $item['qtd']; ?></span>
+                            <span class="qty-value"><?php echo (int)$item['qtd']; ?></span>
 
-                            <a href="carrinho_acoes.php?acao=atualizar&id=<?php echo $item['id']; ?>&qtd=<?php echo $item['qtd'] + 1; ?>"
-                                class="btn btn-ghost" style="border: 1px solid var(--border); padding: 0.3rem 0.6rem;">+</a>
+                            <a href="carrinho_acoes.php?acao=atualizar&id=<?php echo (int)$item['id']; ?>&qtd=<?php echo (int)$item['qtd'] + 1; ?>"
+                                class="btn btn-ghost qty-btn">+</a>
 
-                            <a href="carrinho_acoes.php?acao=remover&id=<?php echo $item['id']; ?>" class="btn btn-ghost"
-                                style="color: #ef4444; margin-left: 0.5rem;" title="Remover item"
+                            <a href="carrinho_acoes.php?acao=remover&id=<?php echo (int)$item['id']; ?>" class="btn btn-ghost cart-remove"
+                                title="Remover item"
                                 onclick="mostrarModalDelete(event, this.href);">
-                                <i class="ph ph-trash"></i>
+                                <i class="ph ph-trash" aria-hidden="true"></i>
                             </a>
                         </div>
                     </div>
@@ -96,28 +97,26 @@ $total = $subtotal + $frete;
                 endforeach; ?>
             </div>
 
-            <div style="background: var(--secondary); padding: 2rem; border-radius: var(--radius); margin-top: 2rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+            <div class="cart-summary">
+                <div class="cart-summary-row">
                     <span>Subtotal</span>
                     <span>R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.8rem;">
+                <div class="cart-summary-row">
                     <span>Entrega</span>
                     <span>R$ <?php echo number_format($frete, 2, ',', '.'); ?></span>
                 </div>
-                <div
-                    style="display: flex; justify-content: space-between; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; margin-top: 1rem; font-size: 1.5rem; font-weight: 700; color: var(--primary);">
+                <div class="cart-summary-total">
                     <span>Total</span>
                     <span>R$ <?php echo number_format($total, 2, ',', '.'); ?></span>
                 </div>
 
                 <?php if ($nomeCliente): ?>
-                    <button class="btn btn-primary btn-full" style="margin-top: 1.5rem; padding: 1rem;"
-                        onclick="alert('Compra finalizada! (Simulação)')">Finalizar Pedido</button>
+                    <button type="button" id="btn-checkout-demo" class="btn btn-primary btn-full" style="margin-top: 1.5rem; padding: 1rem;">Finalizar pedido</button>
                     <?php
                 else: ?>
-                    <button class="btn btn-primary btn-full" style="margin-top: 1.5rem; padding: 1rem;"
-                        onclick="window.location.href='cadastro.php'">Faça Login para Finalizar</button>
+                    <button type="button" class="btn btn-primary btn-full" style="margin-top: 1.5rem; padding: 1rem;"
+                        onclick="window.location.href='cadastro.php'">Faça login para finalizar</button>
                     <?php
                 endif; ?>
             </div>
@@ -127,37 +126,32 @@ $total = $subtotal + $frete;
     </main>
 
     <!-- CUSTOM DELETE MODAL -->
-    <div class="modal-overlay" id="deleteModal">
+    <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
         <div class="custom-modal">
             <div class="modal-icon">
-                <i class="ph-fill ph-warning-circle"></i>
+                <i class="ph-fill ph-warning-circle" aria-hidden="true"></i>
             </div>
-            <h2 class="modal-title">Poxa vida...</h2>
+            <h2 class="modal-title" id="delete-modal-title">Poxa vida...</h2>
             <p class="modal-text">Você tem certeza que deseja remover essa delícia do seu pedido? O seu prato vai ficar tão triste sem ele!</p>
             <div class="modal-actions">
                 <a href="#" class="btn btn-primary" id="confirmDeleteLink">Sim, remover do carrinho</a>
-                <button class="btn btn-secondary" onclick="fecharModalDelete()">Não, manter no pedido</button>
+                <button type="button" class="btn btn-secondary" onclick="fecharModalDelete()">Não, manter no pedido</button>
             </div>
         </div>
     </div>
 
     <script>
         function mostrarModalDelete(event, urlOriginal) {
-            // Prevent default direct navigation
             event.preventDefault();
-            
-            // Set the dynamic URL for the Yes button so it executes the specific update
             document.getElementById('confirmDeleteLink').href = urlOriginal;
-            
-            // Open the beautiful CSS modal
             document.getElementById('deleteModal').classList.add('active');
         }
 
         function fecharModalDelete() {
-            // Close the modal
             document.getElementById('deleteModal').classList.remove('active');
         }
     </script>
+    <script src="../script.js"></script>
 </body>
 
 </html>

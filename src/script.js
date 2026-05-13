@@ -1,4 +1,92 @@
+/**
+ * Notificações Nura — substitui alert() e mensagens via redirect PHP (?nura_flash)
+ */
+window.NuraNotify = window.NuraNotify || {};
+(function () {
+    let toastHost;
+    let hideTimer;
+
+    function ensureToastHost() {
+        if (!toastHost) {
+            toastHost = document.createElement('div');
+            toastHost.id = 'nura-toast-host';
+            toastHost.setAttribute('role', 'status');
+            toastHost.setAttribute('aria-live', 'polite');
+            document.body.appendChild(toastHost);
+        }
+        return toastHost;
+    }
+
+    window.NuraNotify.toast = function (message, type) {
+        if (!message) return;
+        type = type === 'error' ? 'error' : type === 'info' ? 'info' : 'success';
+        const el = ensureToastHost();
+        clearTimeout(hideTimer);
+        const icon =
+            type === 'error'
+                ? 'ph-fill ph-x-circle'
+                : type === 'info'
+                    ? 'ph-fill ph-info'
+                    : 'ph-fill ph-check-circle';
+        el.className = 'nura-toast-host nura-toast-host--' + type;
+        el.innerHTML =
+            '<i class="' + icon + ' nura-toast-host__icon" aria-hidden="true"></i><span class="nura-toast-host__text"></span>';
+        el.querySelector('.nura-toast-host__text').textContent = message;
+        requestAnimationFrame(function () {
+            el.classList.add('is-visible');
+        });
+        hideTimer = setTimeout(function () {
+            el.classList.remove('is-visible');
+        }, 4200);
+    };
+
+    window.NuraNotify.readFlashFromUrl = function () {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const flash = params.get('nura_flash');
+            const ft = (params.get('nura_ft') || 'success').toLowerCase();
+            if (!flash) return;
+            const type = ft === 'error' ? 'error' : ft === 'info' ? 'info' : 'success';
+            window.NuraNotify.toast(decodeURIComponent(flash), type);
+            params.delete('nura_flash');
+            params.delete('nura_ft');
+            const q = params.toString();
+            const url = window.location.pathname + (q ? '?' + q : '') + window.location.hash;
+            window.history.replaceState({}, document.title, url);
+        } catch (e) {
+            /* noop */
+        }
+    };
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
+    window.NuraNotify.readFlashFromUrl();
+
+    if (window.__NURA_SESSION_TOAST__ && window.__NURA_SESSION_TOAST__.msg) {
+        window.NuraNotify.toast(window.__NURA_SESSION_TOAST__.msg, window.__NURA_SESSION_TOAST__.type || 'success');
+        delete window.__NURA_SESSION_TOAST__;
+    }
+
+    /* --- 0. HEADER SCROLL TRANSITION --- */
+    const siteHeader = document.querySelector('header');
+    if (siteHeader) {
+        let ticking = false;
+        const SCROLL_THRESHOLD = 50;
+
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    siteHeader.classList.toggle('header--scrolled', window.scrollY > SCROLL_THRESHOLD);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', onScroll, { passive: true });
+        // Set initial state in case page loads already scrolled
+        onScroll();
+    }
 
     /* --- 1. LÓGICA DAS ABAS (AUTH e Perfil) --- */
     const tabBtns = document.querySelectorAll('.tab-btn');
@@ -22,14 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const track = container.querySelector('.carousel-track');
         const prevBtn = container.querySelector('.prev-btn');
         const nextBtn = container.querySelector('.next-btn');
-        // Seleciona apenas os itens DESTE container
         const items = container.querySelectorAll('.carousel-item');
 
         if (!track || items.length === 0) return;
 
         let currentIndex = 0;
         let autoPlayInterval;
-        // Tempo levemente aleatório para não rodarem todos iguais
         const autoPlayDelay = 5000 + Math.random() * 2000;
 
         const getItemsVisible = () => window.innerWidth >= 768 ? 3 : 1;
@@ -42,13 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const moveNext = () => {
             const itemsVisible = getItemsVisible();
-            // Calcula o índice máximo possível
             const maxIndex = Math.max(0, items.length - itemsVisible);
 
             if (currentIndex < maxIndex) {
                 currentIndex++;
             } else {
-                currentIndex = 0; // Loop para o início
+                currentIndex = 0;
             }
             updateCarousel();
         };
@@ -63,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nextBtn) nextBtn.addEventListener('click', () => { moveNext(); resetAutoPlay(); });
         if (prevBtn) prevBtn.addEventListener('click', () => { movePrev(); resetAutoPlay(); });
 
-        // Touch Swipe Logic
         let touchStartX = 0;
         let touchEndX = 0;
         track.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
@@ -73,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (touchEndX - touchStartX > 50) { movePrev(); resetAutoPlay(); }
         }, { passive: true });
 
-        // AutoPlay Logic
         function startAutoPlay() { autoPlayInterval = setInterval(moveNext, autoPlayDelay); }
         function stopAutoPlay() { clearInterval(autoPlayInterval); }
         function resetAutoPlay() { stopAutoPlay(); startAutoPlay(); }
@@ -81,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         container.addEventListener('mouseenter', stopAutoPlay);
         container.addEventListener('mouseleave', startAutoPlay);
 
-        // Inicializa
         window.addEventListener('resize', updateCarousel);
         updateCarousel();
         startAutoPlay();
@@ -109,12 +191,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     if (data.sucesso) {
                         atualizarContadorCarrinho(data.novaQtd);
-                        mostrarToast("Produto adicionado ao carrinho!");
+                        window.NuraNotify.toast('Produto adicionado ao carrinho!', 'success');
                     }
                 })
                 .catch(error => {
                     console.error('Erro:', error);
-                    alert('Ocorreu um erro. Tente novamente.');
+                    window.NuraNotify.toast('Não foi possível adicionar. Tente novamente.', 'error');
                 })
                 .finally(() => {
                     btn.innerHTML = originalText;
@@ -133,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'cart-badge';
-                badge.style.cssText = "position: absolute; top: -5px; right: -5px; background: var(--primary); color: white; font-size: 0.7rem; font-weight: bold; min-width: 18px; height: 18px; border-radius: 99px; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
                 cartIconContainer.appendChild(badge);
             }
             badge.textContent = qtd;
@@ -142,25 +223,92 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function mostrarToast(mensagem) {
-        let toast = document.getElementById('toast-notification');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'toast-notification';
-            toast.style.cssText = "position: fixed; bottom: 20px; right: 20px; background: #1a1a1a; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; font-weight: 500; font-family: sans-serif;";
-            document.body.appendChild(toast);
-        }
-        toast.innerHTML = `<i class="ph-fill ph-check-circle" style="color: #22c55e;"></i> ${mensagem}`;
-        requestAnimationFrame(() => {
-            toast.style.transform = 'translateY(0)';
-            toast.style.opacity = '1';
+    /* --- Checkout demo (carrinho) --- */
+    const btnCheckout = document.getElementById('btn-checkout-demo');
+    if (btnCheckout) {
+        btnCheckout.addEventListener('click', () => {
+            window.NuraNotify.toast('Pedido simulado! Em um app real, você seguiria para o pagamento.', 'success');
         });
-        setTimeout(() => {
-            toast.style.transform = 'translateY(100px)';
-            toast.style.opacity = '0';
-        }, 3000);
+    }
+
+    /* --- Exclusão de conta (perfil) — motivo obrigatório --- */
+    const deleteAccountModal = document.getElementById('deleteAccountModal');
+    const openDeleteAccountBtn = document.getElementById('open-delete-account-modal');
+    const cancelDeleteAccountBtn = document.getElementById('cancel-delete-account');
+    const deleteAccountForm = document.getElementById('delete-account-form');
+    const deleteAccountDetalheWrap = document.getElementById('delete-account-detalhe-wrap');
+    const deleteAccountDetalhe = document.getElementById('delete-account-detalhe');
+
+    function openModal(el) {
+        if (el) el.classList.add('active');
+    }
+    function closeModal(el) {
+        if (el) el.classList.remove('active');
+    }
+
+    if (deleteAccountModal && openDeleteAccountBtn) {
+        openDeleteAccountBtn.addEventListener('click', e => {
+            e.preventDefault();
+            openModal(deleteAccountModal);
+        });
+        cancelDeleteAccountBtn?.addEventListener('click', () => closeModal(deleteAccountModal));
+        deleteAccountModal.addEventListener('click', e => {
+            if (e.target === deleteAccountModal) closeModal(deleteAccountModal);
+        });
+        deleteAccountForm?.querySelectorAll('input[name="motivo"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const show = radio.value === 'outro' && radio.checked;
+                if (deleteAccountDetalheWrap) {
+                    deleteAccountDetalheWrap.classList.toggle('is-visible', show);
+                }
+                if (deleteAccountDetalhe && !show) deleteAccountDetalhe.value = '';
+            });
+        });
+        deleteAccountForm?.addEventListener('submit', e => {
+            e.preventDefault();
+            const fd = new FormData(deleteAccountForm);
+            const motivo = fd.get('motivo');
+            if (!motivo) {
+                window.NuraNotify.toast('Selecione um motivo para continuar.', 'info');
+                return;
+            }
+            let detalhe = (fd.get('detalhe') || '').toString().trim();
+            if (motivo === 'outro' && detalhe.length < 3) {
+                window.NuraNotify.toast('Descreva brevemente o motivo (mínimo 3 caracteres).', 'info');
+                return;
+            }
+            const base = '../Controller/ClienteController.php?acao=deletar';
+            const url =
+                base +
+                '&motivo=' +
+                encodeURIComponent(motivo) +
+                (detalhe ? '&detalhe=' + encodeURIComponent(detalhe) : '');
+            window.location.href = url;
+        });
+    }
+
+    /* --- Exclusão perfil clínico (confirmação estilizada) --- */
+    const clinicalModal = document.getElementById('clinicalDeleteModal');
+    const clinicalDeleteTrigger = document.getElementById('clinical-delete-trigger');
+    const clinicalDeleteHref = clinicalDeleteTrigger?.getAttribute('data-href') || '';
+    const cancelClinicalBtn = document.getElementById('cancel-clinical-delete');
+    const confirmClinicalBtn = document.getElementById('confirm-clinical-delete');
+
+    if (clinicalModal && clinicalDeleteHref) {
+        clinicalDeleteTrigger.addEventListener('click', e => {
+            e.preventDefault();
+            openModal(clinicalModal);
+        });
+        cancelClinicalBtn?.addEventListener('click', () => closeModal(clinicalModal));
+        clinicalModal.addEventListener('click', e => {
+            if (e.target === clinicalModal) closeModal(clinicalModal);
+        });
+        confirmClinicalBtn?.addEventListener('click', () => {
+            window.location.href = clinicalDeleteHref;
+        });
     }
 });
+
 /* HERO CAROUSEL */
 
 const heroTrack = document.querySelector('.hero-track');
@@ -177,12 +325,12 @@ if (heroTrack) {
     document.querySelector('.hero-next').onclick = () => {
         heroIndex = (heroIndex + 1) % slides.length;
         updateHero();
-    }
+    };
 
     document.querySelector('.hero-prev').onclick = () => {
         heroIndex = (heroIndex - 1 + slides.length) % slides.length;
         updateHero();
-    }
+    };
 
     setInterval(() => {
         heroIndex = (heroIndex + 1) % slides.length;
@@ -250,4 +398,54 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.value = formatted;
         });
     });
+
+    // --- FORM VALIDATION (AUTH) ---
+    const emailInputs = document.querySelectorAll('input[type="email"]');
+    emailInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            const val = e.target.value;
+            const successIcon = e.target.parentElement.querySelector('.input-success-icon');
+            if (successIcon) {
+                const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+                successIcon.style.display = isValid ? 'block' : 'none';
+            }
+        });
+    });
+
+    const signupPassword = document.getElementById('signup-senha');
+    const strengthFill = document.getElementById('strength-fill');
+    const strengthText = document.getElementById('strength-text');
+
+    if (signupPassword && strengthFill && strengthText) {
+        signupPassword.addEventListener('input', function(e) {
+            const val = e.target.value;
+            let strength = 0;
+            
+            if (val.length >= 8) strength += 25;
+            if (/[A-Z]/.test(val)) strength += 25;
+            if (/[0-9]/.test(val)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(val)) strength += 25;
+
+            strengthFill.style.width = strength + '%';
+
+            if (val.length === 0) {
+                strengthFill.style.width = '0%';
+                strengthFill.style.background = 'transparent';
+                strengthText.textContent = 'Mínimo 8 caracteres';
+                strengthText.style.color = 'var(--muted)';
+            } else if (strength < 50) {
+                strengthFill.style.background = 'var(--danger)';
+                strengthText.textContent = 'Senha fraca';
+                strengthText.style.color = 'var(--danger)';
+            } else if (strength < 100) {
+                strengthFill.style.background = 'var(--warning)';
+                strengthText.textContent = 'Senha média';
+                strengthText.style.color = 'var(--warning)';
+            } else {
+                strengthFill.style.background = 'var(--green-leaf)';
+                strengthText.textContent = 'Senha forte!';
+                strengthText.style.color = 'var(--green-leaf)';
+            }
+        });
+    }
 });

@@ -10,7 +10,7 @@ class PerfilClinicoController
 
             // Requisito básico: ter certeza de que há um cliente logado na sessão
             if (!isset($_SESSION['cliente_id'])) {
-                echo "<script>alert('Você precisa estar logado para salvar as informações médicas.'); window.location='../Views/cadastro.php';</script>";
+                header('Location: ../Views/cadastro.php?nura_ft=info&nura_flash=' . rawurlencode('Faça login para salvar as informações do perfil clínico.'));
                 exit;
             }
 
@@ -48,9 +48,9 @@ class PerfilClinicoController
                     'restricao' => $restricao,
                     'alergias' => $alergias
                 ];
-                echo "<script>alert('Perfil Clínico salvo com sucesso!'); window.location='../Views/perfil.php';</script>";
+                header('Location: ../Views/perfil.php?nura_ft=success&nura_flash=' . rawurlencode('Perfil clínico salvo com sucesso.'));
             } else {
-                echo "<script>alert('Erro ao salvar no banco. Verifique se criou a tabela.'); window.location='../Views/perfil.php';</script>";
+                header('Location: ../Views/perfil.php?nura_ft=error&nura_flash=' . rawurlencode('Erro ao salvar. Verifique os dados ou a configuração do banco.'));
             }
             exit;
         }
@@ -71,9 +71,9 @@ class PerfilClinicoController
         if ($sucesso) {
             // Remove da Sessão local do usuário
             unset($_SESSION['perfil_clinico']);
-            echo "<script>alert('Perfil Clínico excluído com sucesso!'); window.location='../Views/perfil.php';</script>";
+            header('Location: ../Views/perfil.php?nura_ft=success&nura_flash=' . rawurlencode('Perfil clínico removido com sucesso.'));
         } else {
-            echo "<script>alert('Erro ao excluir o perfil. Tente novamente.'); window.location='../Views/perfil.php';</script>";
+            header('Location: ../Views/perfil.php?nura_ft=error&nura_flash=' . rawurlencode('Não foi possível excluir o perfil clínico.'));
         }
         exit;
     }

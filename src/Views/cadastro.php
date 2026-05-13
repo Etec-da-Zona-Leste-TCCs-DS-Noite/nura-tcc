@@ -12,90 +12,142 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 
-<body>
+<body class="page-auth">
 
     <header>
         <div class="container header-inner">
-            <a href="index.php" class="logo"><img src="../assets/img/NURA_logo.png" alt="Nura Logo"
-                    style="height: 80px; object-fit: contain;"></a>
-            <a href="index.php" style="font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                <i class="ph-bold ph-arrow-left"></i> Voltar
+            <a href="index.php" class="logo" aria-label="Nura — Início">
+                <img class="logo-img" src="../assets/img/NURA_logo.png" alt="">
+            </a>
+            <a href="index.php" class="back-link">
+                <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Voltar
             </a>
         </div>
     </header>
 
-    <div class="auth-wrapper">
-        <div class="auth-card">
+    <div class="auth-split">
+        <div class="auth-split-image">
+            <div class="auth-image-content">
+                <h2>Alimentação saudável que transforma seu dia.</h2>
+                <p>Ingredientes frescos, refeições balanceadas e muito sabor entregues na sua porta.</p>
+            </div>
+        </div>
 
-            <div class="auth-header">
-                <div style="text-align: center; margin-bottom: 0.2rem;">
-                    <img src="../assets/img/NURA_logo.png" alt="Nura Logo"
-                        style="height: 120px; object-fit: contain; margin: 0 auto; display: block;">
+        <div class="auth-split-form">
+            <div class="auth-card">
+
+                <div class="auth-header">
+                    <div class="auth-logo-wrap">
+                        <img class="auth-logo" src="../assets/img/NURA_logo.png" alt="Nura">
+                    </div>
+                    <p class="auth-tagline">Bem-vindo(a) de volta! Acesse ou crie sua conta.</p>
                 </div>
-                <p style="color: var(--muted); font-size: 0.9rem;">Acesse sua conta ou crie uma nova</p>
-            </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" data-target="login-form">Login</button>
-                <button class="tab-btn" data-target="signup-form">Cadastro</button>
-            </div>
+                <div class="tabs" role="tablist" aria-label="Login ou cadastro">
+                    <button type="button" class="tab-btn active" data-target="login-form" role="tab" aria-selected="true" aria-controls="login-form" id="tab-login">Login</button>
+                    <button type="button" class="tab-btn" data-target="signup-form" role="tab" aria-selected="false" aria-controls="signup-form" id="tab-signup">Cadastro</button>
+                </div>
 
-            <div id="login-form" class="form-content active">
-                <form action="../Controller/ClienteController.php?acao=login" method="POST">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" class="input" placeholder="seu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Senha</label>
-                        <div style="position: relative;">
-                            <input type="password" name="senha" class="input" placeholder="••••••••" required
-                                style="padding-right: 2.5rem;">
-                            <button type="button" class="toggle-password"
-                                style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
-                                <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
-                            </button>
+                <div class="social-login">
+                    <button type="button" class="btn btn-social" aria-label="Entrar com Google">
+                        <img src="https://authjs.dev/img/providers/google.svg" alt="Google" width="20" height="20">
+                        <span>Continuar com Google</span>
+                    </button>
+                    <button type="button" class="btn btn-social" aria-label="Entrar com Apple">
+                        <img src="https://authjs.dev/img/providers/apple.svg" alt="Apple" width="20" height="20">
+                        <span>Continuar com Apple</span>
+                    </button>
+                </div>
+
+                <div class="auth-divider">
+                    <span>ou</span>
+                </div>
+
+                <div id="login-form" class="form-content active" role="tabpanel" aria-labelledby="tab-login">
+                    <form action="../Controller/ClienteController.php?acao=login" method="POST">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-envelope input-icon" aria-hidden="true"></i>
+                                <input id="login-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
+                                <i class="ph-fill ph-check-circle input-success-icon" aria-hidden="true" style="display:none;"></i>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Entrar</button>
-                </form>
-            </div>
-
-            <div id="signup-form" class="form-content">
-                <form action="../Controller/ClienteController.php?acao=cadastrar" method="POST">
-                    <div class="form-group">
-                        <label>Nome Completo</label>
-                        <input type="text" name="nome" class="input" placeholder="Seu nome" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" class="input" placeholder="seu@email.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Telefone</label>
-                        <input type="text" name="telefone" class="input input-telefone" placeholder="(11) 90000-0000">
-                    </div>
-                    <div class="form-group">
-                        <label>Senha</label>
-                        <div style="position: relative;">
-                            <input type="password" name="senha" class="input" placeholder="••••••••" required
-                                style="padding-right: 2.5rem;">
-                            <button type="button" class="toggle-password"
-                                style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent; cursor: pointer; color: var(--muted); padding: 5px; display: flex; align-items: center; justify-content: center;">
-                                <i class="ph ph-eye" style="font-size: 1.2rem;"></i>
-                            </button>
+                        <div class="form-group">
+                            <label for="login-senha">Senha</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-lock input-icon" aria-hidden="true"></i>
+                                <input id="login-senha" type="password" name="senha" class="input input-with-icon" placeholder="••••••••" required autocomplete="current-password">
+                                <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
+                                    <i class="ph ph-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Criar Conta</button>
-                </form>
-            </div>
+                        
+                        <div class="auth-options">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember" id="remember-me">
+                                <span class="checkbox-custom"></span>
+                                Lembrar de mim
+                            </label>
+                            <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                        </div>
 
+                        <button type="submit" class="btn btn-primary btn-full">Entrar na minha conta</button>
+                    </form>
+                </div>
+
+                <div id="signup-form" class="form-content" role="tabpanel" aria-labelledby="tab-signup">
+                    <form action="../Controller/ClienteController.php?acao=cadastrar" method="POST">
+                        <div class="form-group">
+                            <label for="signup-nome">Nome completo</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-user input-icon" aria-hidden="true"></i>
+                                <input id="signup-nome" type="text" name="nome" class="input input-with-icon" placeholder="Seu nome" required autocomplete="name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-envelope input-icon" aria-hidden="true"></i>
+                                <input id="signup-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
+                                <i class="ph-fill ph-check-circle input-success-icon" aria-hidden="true" style="display:none;"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-telefone">Telefone</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-phone input-icon" aria-hidden="true"></i>
+                                <input id="signup-telefone" type="text" name="telefone" class="input input-with-icon input-telefone" placeholder="(11) 90000-0000" autocomplete="tel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-senha">Senha</label>
+                            <div class="input-wrapper">
+                                <i class="ph ph-lock input-icon" aria-hidden="true"></i>
+                                <input id="signup-senha" type="password" name="senha" class="input input-with-icon" placeholder="Crie uma senha forte" required autocomplete="new-password">
+                                <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
+                                    <i class="ph ph-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+                                <span class="strength-text" id="strength-text">Mínimo 8 caracteres</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Criar minha conta</button>
+                    </form>
+                </div>
+
+                <p class="auth-trust" style="margin-top: 1.5rem; text-align: center;"><i class="ph-fill ph-shield-check" aria-hidden="true"></i> Compra e dados protegidos</p>
+
+            </div>
         </div>
     </div>
 
-    <footer>
-        <div class="container" style="text-align: center; padding: 2rem 0;">
-            <p style="color: var(--muted); font-size: 0.85rem;">&copy; 2025 Nura. Todos os direitos reservados.</p>
+    <footer class="auth-footer">
+        <div class="container">
+            <p>&copy; 2026 Nura. Todos os direitos reservados.</p>
         </div>
     </footer>
 

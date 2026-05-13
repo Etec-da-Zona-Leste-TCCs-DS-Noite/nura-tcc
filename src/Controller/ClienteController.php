@@ -15,10 +15,12 @@ class ClienteController
             if ($dadosCliente && password_verify($senha, $dadosCliente['senha'])) {
                 $_SESSION['cliente_id'] = $dadosCliente['id'];
                 $_SESSION['cliente_nome'] = $dadosCliente['nome']; // Guarda o nome na sessão
+                $_SESSION['login_recente'] = true;
                 header("Location: ../Views/perfil.php");
                 exit;
             } else {
-                echo "<script>alert('Email ou senha incorretos!'); window.location='../Views/cadastro.php';</script>";
+                header('Location: ../Views/cadastro.php?nura_ft=error&nura_flash=' . rawurlencode('Email ou senha incorretos.'));
+                exit;
             }
         }
     }
@@ -37,10 +39,12 @@ class ClienteController
             if ($novoId) {
                 $_SESSION['cliente_id'] = $novoId;
                 $_SESSION['cliente_nome'] = $_POST['nome'];
+                $_SESSION['conta_nova'] = true;
                 header("Location: ../Views/perfil.php");
                 exit;
             } else {
-                echo "<script>alert('Erro no cadastro.'); window.location='../Views/cadastro.php';</script>";
+                header('Location: ../Views/cadastro.php?nura_ft=error&nura_flash=' . rawurlencode('Erro no cadastro. Tente outro e-mail ou tente novamente.'));
+                exit;
             }
         }
     }
@@ -66,9 +70,11 @@ class ClienteController
 
             if ($cliente->atualizar()) {
                 $_SESSION['cliente_nome'] = $_POST['nome']; // Atualiza nome na sessão
-                echo "<script>alert('Dados (e senha, se informada) atualizados!'); window.location='../Views/perfil.php';</script>";
+                header('Location: ../Views/perfil.php?nura_ft=success&nura_flash=' . rawurlencode('Dados atualizados com sucesso.'));
+                exit;
             } else {
-                echo "Erro ao atualizar.";
+                header('Location: ../Views/perfil.php?nura_ft=error&nura_flash=' . rawurlencode('Não foi possível atualizar seus dados.'));
+                exit;
             }
         }
     }
@@ -82,15 +88,24 @@ class ClienteController
 
         $id = $_SESSION['cliente_id'];
 
+        if (!empty($_GET['motivo'])) {
+            error_log('[Nura] Exclusão de conta — cliente_id=' . (int) $id . ' motivo=' . substr($_GET['motivo'], 0, 64));
+        }
+        if (!empty($_GET['detalhe'])) {
+            error_log('[Nura] Exclusão de conta — detalhe=' . substr($_GET['detalhe'], 0, 200));
+        }
+
         // Importa e deleta o Perfil Clínico do banco ANTES de deletar o Cliente (previne falha de Chave Estrangeira restrita)
         require_once __DIR__ . '/../Models/PerfilClinico.php';
         PerfilClinico::deletar($id);
 
         if (Cliente::deletar($id)) {
             session_destroy();
-            echo "<script>alert('Conta excluída com sucesso.'); window.location='../Views/index.php';</script>";
+            header('Location: ../Views/index.php?nura_ft=success&nura_flash=' . rawurlencode('Sua conta foi encerrada. Até logo!'));
+            exit;
         } else {
-            echo "<script>alert('Aconteceu um erro ao tentar excluir a sua conta. Tente novamente mais tarde.'); window.location='../Views/perfil.php';</script>";
+            header('Location: ../Views/perfil.php?nura_ft=error&nura_flash=' . rawurlencode('Não foi possível excluir a conta. Tente novamente mais tarde.'));
+            exit;
         }
     }
 
