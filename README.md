@@ -80,6 +80,17 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 - Matheus Chagas: [github.com/matheuschagas](https://github.com/matheuschagas)  
 - Jairo Machado: [github.com/jairomachado](https://github.com/jairomachado)  
 
+## Roadmap
+
+- [x] Planejamento do projeto  
+- [x] Definição do tema e objetivos  
+- [x] Desenvolvimento do front-end responsivo  
+- [x] Implementação do sistema de filtros e carrinho de compras  
+- [ ] Desenvolvimento da área administrativa  
+- [ ] Integração com sistema de entrega  
+- [ ] Testes e ajustes finais  
+- [ ] Deploy e documentação completa  
+
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.

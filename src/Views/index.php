@@ -27,7 +27,8 @@ if ($cliente_id) {
 
 require_once __DIR__ . '/../Controller/ProdutoController.php';
 $produtoController = new ProdutoController();
-$produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
+// Buscamos 12 produtos para preencher bem a tela inicial
+$produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
 ?>
 
 <!DOCTYPE html>
@@ -154,55 +155,27 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                 <div class="carousel-track">
                     <?php foreach ($produtosDestaque as $p): ?>
                         <?php
-    $alergiasDesteProduto = $p['alergias'] ?? [];
-    $incompativeisDesteProduto = $p['restricoes'] ?? [];
+                        $alergiasDesteProduto = $p['alergias'] ?? [];
+                        $incompativeisDesteProduto = $p['restricoes'] ?? [];
 
-    $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
-    $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
+                        $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
+                        $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
 
-    $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
+                        $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
 
-    $nomesConflito = [];
-    $mapaAlergias = [
-        'amendoim' => 'Amendoim/Castanhas',
-        'frutos_mar' => 'Frutos do Mar',
-        'soja' => 'Soja',
-        'ovo' => 'Ovo'
-    ];
-    $mapaRestricoes = [
-        'intolerancia_lactose' => 'Contém Lactose',
-        'celiaco' => 'Contém Glúten',
-        'vegano' => 'Contém Animais',
-        'vegetariano' => 'Contém Carne M/T'
-    ];
-
-    if (!empty($conflitoAlergias)) {
-        foreach ($conflitoAlergias as $c) {
-            $nomesConflito[] = $mapaAlergias[$c] ?? $c;
-        }
-    }
-
-    if ($conflitoRestricao) {
-        $nomesConflito[] = $mapaRestricoes[$restricaoCliente] ?? 'Restrição à sua Dieta';
-    }
-
-    $textoConflito = implode(', ', $nomesConflito);
-?>
+                        // Se tiver restrição, ignoramos totalmente o produto da Home
+                        if ($naoRecomendado) {
+                            continue;
+                        }
+                        ?>
                         <div class="carousel-item">
-                            <article class="card<?php echo $naoRecomendado ? ' card--warn' : ''; ?>">
+                            <article class="card">
                                 <div class="card-img-wrapper">
                                     <img src="<?php echo $p['img']; ?>" alt="<?php echo htmlspecialchars($p['nome']); ?>" class="card-img">
                                     <span class="card-badge"><?php echo $p['tag']; ?></span>
                                 </div>
                                 <div class="card-content">
                                     <h3 class="card-title"><?php echo $p['nome']; ?></h3>
-
-                                    <?php if ($naoRecomendado): ?>
-                                      <span class="card-alert-inline" role="status">
-                                        <i class="ph-fill ph-warning" aria-hidden="true"></i> Alerta: <?php echo htmlspecialchars($textoConflito); ?>
-                                      </span>
-                                    <?php endif; ?>
-
                                     <p class="card-desc"><?php echo $p['desc']; ?></p>
                                     <div class="card-price" aria-label="Preço">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></div>
                                 </div>
@@ -212,9 +185,8 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 4);
                                         <input type="hidden" name="nome" value="<?php echo $p['nome']; ?>">
                                         <input type="hidden" name="preco" value="<?php echo $p['preco']; ?>">
                                         <input type="hidden" name="img" value="<?php echo $p['img']; ?>">
-                                        <button type="submit" class="btn btn-primary btn-full<?php echo $naoRecomendado ? ' btn--danger-outline' : ''; ?>">
-                                            <i class="ph-bold ph-shopping-cart" aria-hidden="true"></i>
-                                            <?php echo $naoRecomendado ? 'Adicionar assim mesmo' : 'Adicionar'; ?>
+                                        <button type="submit" class="btn btn-primary btn-full">
+                                            <i class="ph-bold ph-shopping-cart" aria-hidden="true"></i> Adicionar
                                         </button>
                                     </form>
                                 </div>

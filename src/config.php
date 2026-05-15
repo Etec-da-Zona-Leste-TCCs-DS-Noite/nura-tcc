@@ -5,6 +5,8 @@ $usuario = 'root';
 $senha = 'aluno123';    // mesma senha definida no docker-compose
 $dbname = 'nura_db';    // nome do banco
 
+define('NURA_SECRET_KEY', 'nura-tcc-secret-key-256-bit-aes');
+
 try {
     // Cria a conexão usando PDO
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $usuario, $senha);

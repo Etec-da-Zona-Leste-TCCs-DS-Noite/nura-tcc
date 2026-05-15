@@ -2655,4 +2655,86 @@ button.sidebar-link--button {
     gap: 0.4rem;
     font-size: 0.8rem;
     color: var(--muted);
+}/* --- GLOBAL PAGE TRANSITION --- */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--background);
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.page-transition-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.page-transition-overlay.processing {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+:root[data-theme='dark'] .page-transition-overlay.processing {
+    background: rgba(15, 23, 42, 0.95);
+}
+
+.transition-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+.transition-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--foreground);
+    text-align: center;
+}
+
+.transition-subtext {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- FLY-TO-CART ANIMATION --- */
+.fly-to-cart-element {
+    position: fixed;
+    z-index: 999999;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 15px var(--primary-glow);
+    transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.8s ease;
+}
+
+.cart-bounce {
+    animation: cartBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes cartBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) translateY(-2px); color: var(--primary); }
+    100% { transform: scale(1); }
 }

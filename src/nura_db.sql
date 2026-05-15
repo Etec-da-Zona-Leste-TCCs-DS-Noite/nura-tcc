@@ -47,3 +47,19 @@ INSERT INTO produtos (id, nome, descricao, preco, img, tag, alergias, restricoes
 (19, 'Salada Caprese Tostada', 'Mussarela de búfala fresca, tomates adocicados ao azeite e manjericão.', 33.00, 'https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?w=500', 'Saladas', '[]', '["vegano", "intolerancia_lactose"]'),
 (20, 'Suco Verde Metrópole', 'Aipo puro, pepino congelado, maçã verde importada e couve.', 17.50, 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500', 'Sucos', '[]', '[]'),
 (22, 'Sanduíche Caprese no Pão Sírio', 'Pão sírio levemente tostado recheado com mussarela de búfala, rúcula e tomate.', 26.90, 'https://images.unsplash.com/photo-1619096252214-ef06c45683e3?w=500', 'Wraps', '[]', '["vegano", "intolerancia_lactose", "celiaco"]');
+
+-- 4. Cria a Tabela de Pedidos
+CREATE TABLE IF NOT EXISTS pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    frete DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    endereco TEXT,
+    metodo_pagamento VARCHAR(50) DEFAULT 'PIX',
+    dados_pagamento TEXT,
+    itens JSON NOT NULL,
+    status VARCHAR(50) DEFAULT 'Em Preparo',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
+);

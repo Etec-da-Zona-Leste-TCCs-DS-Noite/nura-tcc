@@ -107,6 +107,9 @@ $alergias = $perfilDb['alergias'] ?? [];
                     <button type="button" class="sidebar-link tab-btn" data-target="digital-twin"><i class="ph ph-user-circle" aria-hidden="true"></i>
                         Meu avatar</button>
 
+                    <a href="pedidos.php" class="sidebar-link">
+                        <i class="ph ph-receipt" aria-hidden="true"></i> Meus pedidos</a>
+
                     <button type="button" id="open-delete-account-modal" class="sidebar-link sidebar-link--danger sidebar-link--button">
                         <i class="ph ph-trash" aria-hidden="true"></i> Excluir conta
                     </button>

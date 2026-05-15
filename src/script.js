@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.sucesso) {
+                        animarParaCarrinho(btn);
                         atualizarContadorCarrinho(data.novaQtd);
                         window.NuraNotify.toast('Produto adicionado ao carrinho!', 'success');
                     }
@@ -218,18 +219,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 cartIconContainer.appendChild(badge);
             }
             badge.textContent = qtd;
+            
+            // Efeito bounce no ícone do carrinho
+            const icon = cartIconContainer.querySelector('.ph-shopping-cart') || cartIconContainer;
+            icon.classList.remove('cart-bounce');
+            void icon.offsetWidth; // trigger reflow
+            icon.classList.add('cart-bounce');
         } else if (badge) {
             badge.remove();
         }
     }
 
-    /* --- Checkout demo (carrinho) --- */
-    const btnCheckout = document.getElementById('btn-checkout-demo');
-    if (btnCheckout) {
-        btnCheckout.addEventListener('click', () => {
-            window.NuraNotify.toast('Pedido simulado! Em um app real, você seguiria para o pagamento.', 'success');
+    function animarParaCarrinho(btnElement) {
+        const cartLink = document.querySelector('a[href="carrinho.php"]') || document.querySelector('a[aria-label="Carrinho"]');
+        if (!cartLink || !btnElement) return;
+
+        const btnRect = btnElement.getBoundingClientRect();
+        const cartRect = cartLink.getBoundingClientRect();
+
+        const flyEl = document.createElement('div');
+        flyEl.className = 'fly-to-cart-element';
+        
+        // Posição inicial (centro do botão)
+        const startX = btnRect.left + btnRect.width / 2 - 10;
+        const startY = btnRect.top + btnRect.height / 2 - 10;
+        
+        flyEl.style.left = startX + 'px';
+        flyEl.style.top = startY + 'px';
+        
+        document.body.appendChild(flyEl);
+
+        // Posição final (centro do ícone do carrinho)
+        const endX = cartRect.left + cartRect.width / 2 - 10;
+        const endY = cartRect.top + cartRect.height / 2 - 10;
+
+        // Anima via requestAnimationFrame para garantir fluidez
+        requestAnimationFrame(() => {
+            flyEl.style.transform = `translate(${endX - startX}px, ${endY - startY}px) scale(0.3)`;
+            flyEl.style.opacity = '0.3';
         });
+
+        // Limpa o elemento após a transição
+        setTimeout(() => {
+            flyEl.remove();
+        }, 800);
     }
+
+
 
     /* --- Exclusão de conta (perfil) — motivo obrigatório --- */
     const deleteAccountModal = document.getElementById('deleteAccountModal');
@@ -448,4 +484,78 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+/* --- GLOBAL PAGE TRANSITION --- */
+function mostrarOverlayGlobal(titulo = '', subtitulo = '', isProcessing = false) {
+    let overlay = document.getElementById('global-page-transition');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'global-page-transition';
+        overlay.className = 'page-transition-overlay';
+        
+        const spinner = document.createElement('div');
+        spinner.className = 'transition-spinner';
+        
+        const titleEl = document.createElement('div');
+        titleEl.id = 'transition-title';
+        titleEl.className = 'transition-text';
+        
+        const subtextEl = document.createElement('div');
+        subtextEl.id = 'transition-subtext';
+        subtextEl.className = 'transition-subtext';
+        
+        overlay.appendChild(spinner);
+        overlay.appendChild(titleEl);
+        overlay.appendChild(subtextEl);
+        document.body.appendChild(overlay);
+    }
+    
+    document.getElementById('transition-title').textContent = titulo;
+    document.getElementById('transition-subtext').textContent = subtitulo;
+    
+    if (isProcessing) {
+        overlay.classList.add('processing');
+    } else {
+        overlay.classList.remove('processing');
+    }
+    
+    overlay.classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Interceptar cliques em links para a transição global
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            const target = this.getAttribute('target');
+            
+            // Ignorar links vazios, âncoras internas, JS, etc
+            if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || target === '_blank') {
+                return;
+            }
+            
+            // Se tiver uma classe q ignora (ex: accordion), pula
+            if (this.classList.contains('no-transition')) return;
+            
+            // Permite o click fluir se o control/cmd/shift estiver pressionado (nova aba)
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+            
+            // Mostrar transição padrão (apenas loader)
+            e.preventDefault();
+            mostrarOverlayGlobal('', '');
+            
+            setTimeout(() => {
+                window.location.href = href;
+            }, 300); // tempo curtinho pra dar o fade in do overlay
+        });
+    });
+
+    // Se a página está voltando do cache do browser (back button)
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+            const overlay = document.getElementById('global-page-transition');
+            if (overlay) overlay.classList.remove('active');
+        }
+    });
 });
