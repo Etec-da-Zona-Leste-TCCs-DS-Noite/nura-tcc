@@ -88,122 +88,68 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
         </div>
     </header>
 
-    <main>
-        <section class="hero-carousel" aria-roledescription="carousel" aria-label="Destaques">
-            <div class="hero-track">
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Bowl saudável com vegetais frescos">
-                    <div class="hero-content">
-                        <span class="hero-badge">Sabor e Saúde</span>
-                        <h1>Energia natural para o seu dia</h1>
-                        <p>Pratos balanceados com ingredientes frescos e naturais.</p>
-                        <a href="produtos.php" class="btn btn-primary">Peça agora</a>
-                    </div>
-                </div>
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd" alt="Salada colorida em bowl">
-                    <div class="hero-content">
-                        <span class="hero-badge">Novo menu</span>
-                        <h1>Saladas que são um banquete</h1>
-                        <p>Combinações únicas de sabores e nutrientes.</p>
-                        <a href="produtos.php" class="btn btn-primary">Ver cardápio</a>
-                    </div>
-                </div>
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999" alt="Smoothie e ingredientes naturais">
-                    <div class="hero-content">
-                        <span class="hero-badge">Detox</span>
-                        <h1>Smoothies que transformam</h1>
-                        <p>Refresque-se com frutas naturais e superalimentos.</p>
-                        <a href="produtos.php" class="btn btn-primary">Comprar</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <button type="button" class="hero-btn hero-prev" aria-label="Slide anterior">
-                <i class="ph-bold ph-caret-left" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="hero-btn hero-next" aria-label="Próximo slide">
-                <i class="ph-bold ph-caret-right" aria-hidden="true"></i>
-            </button>
-        </section>
-
-        <section class="intro-band" aria-labelledby="intro-heading">
-            <div class="container">
-                <p class="pill-badge"><i class="ph-fill ph-leaf" aria-hidden="true"></i> 100% natural e saudável</p>
-                <h1 id="intro-heading" class="intro-title">
-                    Alimentação saudável <br>
-                    <span class="text-gradient">feita com amor</span>
-                </h1>
-                <p class="intro-lead">
-                    Descubra refeições deliciosas, nutritivas e preparadas com ingredientes frescos e naturais.
-                </p>
-                <div class="intro-actions">
-                    <a href="produtos.php" class="btn btn-primary">
-                        Ver cardápio <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="container featured-section" aria-labelledby="featured-heading">
-            <header class="section-head">
-                <h2 id="featured-heading">Produtos em destaque</h2>
-                <p>Confira alguns dos nossos pratos mais populares.</p>
+    <main class="container" style="padding-top: 4rem; padding-bottom: 4rem;">
+        <div style="max-width: 800px; margin: 0 auto; line-height: 1.8; color: var(--foreground);">
+            <header style="text-align: center; margin-bottom: 4rem;">
+                <h1 style="font-family: var(--font-heading); font-size: 3rem; font-weight: 900; color: var(--primary-deep); margin-bottom: 1rem;">Promoções Exclusivas</h1>
+                <p style="font-size: 1.25rem; color: var(--muted);">Aproveite nossas ofertas especiais e garanta uma alimentação saudável por muito menos.</p>
             </header>
+        </div>
 
-            <div class="carousel-container">
-                <button type="button" class="carousel-btn prev-btn" aria-label="Anterior"><i class="ph-bold ph-caret-left" aria-hidden="true"></i></button>
-
-                <div class="carousel-track">
-                    <?php foreach ($produtosDestaque as $p): ?>
-                        <?php
-                        $alergiasDesteProduto = $p['alergias'] ?? [];
-                        $incompativeisDesteProduto = $p['restricoes'] ?? [];
-
-                        $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
-                        $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
-
-                        $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
-
-                        // Se tiver restrição, ignoramos totalmente o produto da Home
-                        if ($naoRecomendado) {
-                            continue;
-                        }
-                        ?>
-                        <div class="carousel-item">
-                            <article class="card">
-                                <div class="card-img-wrapper">
-                                    <img src="<?php echo $p['img']; ?>" alt="<?php echo htmlspecialchars($p['nome']); ?>" class="card-img">
-                                    <span class="card-badge"><?php echo $p['tag']; ?></span>
-                                </div>
-                                <div class="card-content">
-                                    <h3 class="card-title"><?php echo $p['nome']; ?></h3>
-                                    <p class="card-desc"><?php echo $p['desc']; ?></p>
-                                    <div class="card-price" aria-label="Preço">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></div>
-                                </div>
-                                <div class="card-footer">
-                                    <form action="carrinho_acoes.php?acao=adicionar" method="POST">
-                                        <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-                                        <input type="hidden" name="nome" value="<?php echo $p['nome']; ?>">
-                                        <input type="hidden" name="preco" value="<?php echo $p['preco']; ?>">
-                                        <input type="hidden" name="img" value="<?php echo $p['img']; ?>">
-                                        <button type="submit" class="btn btn-primary btn-full">
-                                            <i class="ph-bold ph-shopping-cart" aria-hidden="true"></i> Adicionar
-                                        </button>
-                                    </form>
-                                </div>
-                            </article>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <button type="button" class="carousel-btn next-btn" aria-label="Próximo"><i class="ph-bold ph-caret-right" aria-hidden="true"></i></button>
+        <section class="category-section" aria-labelledby="cat-promocoes" style="margin-top: 2rem;">
+            <div class="category-heading">
+                <h2 id="cat-promocoes">Ofertas do Dia</h2>
+                <span class="rule" aria-hidden="true"></span>
             </div>
+
+            <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+                <?php
+                $temPromocao = false;
+                foreach ($produtoController->listarTodos() as $p):
+                    if (mb_strtolower(trim($p['tag']), 'UTF-8') !== 'promoção') continue;
+                    $temPromocao = true;
+                    
+                    $alergiasDesteProduto = $p['alergias'] ?? [];
+                    $incompativeisDesteProduto = $p['restricoes'] ?? [];
+                    $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
+                    $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
+                    $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
+                    
+                    if ($naoRecomendado) continue;
+                ?>
+                    <article class="card">
+                        <div class="card-img-wrapper">
+                            <img src="<?php echo $p['img']; ?>" alt="<?php echo htmlspecialchars($p['nome']); ?>" class="card-img">
+                            <span class="card-badge" style="background: hsl(0, 84%, 60%); color: white;"><?php echo $p['tag']; ?></span>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title"><?php echo $p['nome']; ?></h3>
+                            <p class="card-desc"><?php echo $p['desc']; ?></p>
+                            <div class="card-price" aria-label="Preço">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></div>
+                        </div>
+                        <div class="card-footer">
+                            <form action="carrinho_acoes.php?acao=adicionar" method="POST">
+                                <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
+                                <input type="hidden" name="nome" value="<?php echo $p['nome']; ?>">
+                                <input type="hidden" name="preco" value="<?php echo $p['preco']; ?>">
+                                <input type="hidden" name="img" value="<?php echo $p['img']; ?>">
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    <i class="ph-bold ph-shopping-cart" aria-hidden="true"></i> Adicionar à Sacola
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+
+            <?php if (!$temPromocao): ?>
+                <div style="text-align: center; padding: 3rem 1rem;">
+                    <i class="ph ph-tag" style="font-size: 3rem; color: var(--muted); margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 1rem;">Nenhuma promoção ativa no momento</h3>
+                    <p style="color: var(--muted); margin-bottom: 2rem;">Fique de olho! Em breve teremos novas ofertas para você.</p>
+                    <a href="produtos.php" class="btn btn-outline">Ver todo o cardápio</a>
+                </div>
+            <?php endif; ?>
         </section>
     </main>
 
@@ -222,7 +168,7 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
                 <ul>
                     <li><a href="index.php">Início</a></li>
                     <li><a href="produtos.php">Cardápio</a></li>
-                    <li><a href="promocoes.php">Promoções</a></li>
+                    <li><a href="produtos.php?categoria=promocoes">Promoções</a></li>
                     <li><a href="perfil.php">Minha Conta</a></li>
                     <li><a href="carrinho.php">Meu Carrinho</a></li>
                 </ul>

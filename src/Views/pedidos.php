@@ -39,6 +39,13 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                 <a href="carrinho.php">Carrinho</a>
             </nav>
 
+            <form class="header-search" action="produtos.php" method="GET">
+                <div class="search-input-wrapper">
+                    <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+                    <input type="text" name="busca" placeholder="Buscar pratos..." aria-label="Buscar" required>
+                </div>
+            </form>
+
             <div class="header-actions">
                 <div class="header-user-chip" onclick="window.location.href='perfil.php'" style="cursor: pointer;">
                     <span id="header-user-name">Olá, <?php echo htmlspecialchars(explode(' ', trim($dadosCliente['nome'] ?? ''))[0]); ?></span>
@@ -72,18 +79,18 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                 </div>
             <?php else: ?>
                 <!-- Abas de Filtro -->
-                <div class="tabs" style="display: flex; gap: 0.5rem; background: transparent; border: none; padding: 0; margin-bottom: 2.5rem; flex-wrap: wrap;">
-                    <button class="tab-btn active" data-filter="Todos" style="background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">Todos</button>
-                    <button class="tab-btn" data-filter="Em Preparo" style="background: transparent; border: 1px solid transparent;">Em Preparo</button>
-                    <button class="tab-btn" data-filter="Pagamento Pendente" style="background: transparent; border: 1px solid transparent;">Pagamento Pendente</button>
-                    <button class="tab-btn" data-filter="Concluído" style="background: transparent; border: 1px solid transparent;">Concluídos</button>
-                    <button class="tab-btn" data-filter="Reembolsado" style="background: transparent; border: 1px solid transparent;">Reembolsados</button>
+                <div class="tabs pedido-filter-tabs">
+                    <button class="tab-btn active" data-filter="Todos">Todos</button>
+                    <button class="tab-btn" data-filter="Em Preparo">Em Preparo</button>
+                    <button class="tab-btn" data-filter="Pagamento Pendente">Pagamento Pendente</button>
+                    <button class="tab-btn" data-filter="Concluído">Concluídos</button>
+                    <button class="tab-btn" data-filter="Reembolsado">Reembolsados</button>
                 </div>
 
                 <div class="pedidos-list" style="display: flex; flex-direction: column; gap: 2rem;">
                     <?php foreach ($pedidos as $pedido): ?>
                         <div class="profile-card pedido-item" data-status="<?php echo htmlspecialchars($pedido['status']); ?>" style="margin-bottom: 0; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; transition: 0.3s;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem;">
+                            <div class="pedido-header">
                                     <div>
                                         <h3 style="margin: 0; font-family: 'Outfit'; font-size: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
                                             <i class="ph-fill ph-package" style="color: var(--primary);"></i> Pedido #<?php echo str_pad($pedido['id'], 4, '0', STR_PAD_LEFT); ?>
@@ -103,7 +110,7 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                                     </div>
                                 </div>
                                 
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+                                <div class="pedido-details-grid">
                                     <div>
                                         <h4 style="font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.75rem;"><i class="ph ph-shopping-bag"></i> Itens</h4>
                                         <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; background: var(--surface-hover); padding: 1rem; border-radius: 1rem;">
@@ -129,7 +136,7 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                                     </div>
                                 </div>
 
-                                <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;">
+                                <div class="pedido-total-block">
                                     <div style="display: flex; justify-content: space-between; width: 250px; font-size: 0.9rem; color: var(--muted);">
                                         <span>Subtotal</span>
                                         <span>R$ <?php echo number_format($pedido['subtotal'] ?? 0, 2, ',', '.'); ?></span>
@@ -161,16 +168,10 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                     // Remove active de todos
                     tabs.forEach(t => {
                         t.classList.remove('active');
-                        t.style.background = 'transparent';
-                        t.style.border = '1px solid transparent';
-                        t.style.boxShadow = 'none';
                     });
 
                     // Adiciona no clicado
                     tab.classList.add('active');
-                    tab.style.background = 'var(--surface)';
-                    tab.style.border = '1px solid var(--border)';
-                    tab.style.boxShadow = 'var(--shadow-sm)';
 
                     const filter = tab.getAttribute('data-filter');
 

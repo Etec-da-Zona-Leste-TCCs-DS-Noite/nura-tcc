@@ -88,123 +88,64 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
         </div>
     </header>
 
-    <main>
-        <section class="hero-carousel" aria-roledescription="carousel" aria-label="Destaques">
-            <div class="hero-track">
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c" alt="Bowl saudável com vegetais frescos">
-                    <div class="hero-content">
-                        <span class="hero-badge">Sabor e Saúde</span>
-                        <h1>Energia natural para o seu dia</h1>
-                        <p>Pratos balanceados com ingredientes frescos e naturais.</p>
-                        <a href="produtos.php" class="btn btn-primary">Peça agora</a>
-                    </div>
-                </div>
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd" alt="Salada colorida em bowl">
-                    <div class="hero-content">
-                        <span class="hero-badge">Novo menu</span>
-                        <h1>Saladas que são um banquete</h1>
-                        <p>Combinações únicas de sabores e nutrientes.</p>
-                        <a href="produtos.php" class="btn btn-primary">Ver cardápio</a>
-                    </div>
-                </div>
-
-                <div class="hero-slide">
-                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999" alt="Smoothie e ingredientes naturais">
-                    <div class="hero-content">
-                        <span class="hero-badge">Detox</span>
-                        <h1>Smoothies que transformam</h1>
-                        <p>Refresque-se com frutas naturais e superalimentos.</p>
-                        <a href="produtos.php" class="btn btn-primary">Comprar</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <button type="button" class="hero-btn hero-prev" aria-label="Slide anterior">
-                <i class="ph-bold ph-caret-left" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="hero-btn hero-next" aria-label="Próximo slide">
-                <i class="ph-bold ph-caret-right" aria-hidden="true"></i>
-            </button>
-        </section>
-
-        <section class="intro-band" aria-labelledby="intro-heading">
-            <div class="container">
-                <p class="pill-badge"><i class="ph-fill ph-leaf" aria-hidden="true"></i> 100% natural e saudável</p>
-                <h1 id="intro-heading" class="intro-title">
-                    Alimentação saudável <br>
-                    <span class="text-gradient">feita com amor</span>
-                </h1>
-                <p class="intro-lead">
-                    Descubra refeições deliciosas, nutritivas e preparadas com ingredientes frescos e naturais.
-                </p>
-                <div class="intro-actions">
-                    <a href="produtos.php" class="btn btn-primary">
-                        Ver cardápio <i class="ph-bold ph-arrow-right" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="container featured-section" aria-labelledby="featured-heading">
-            <header class="section-head">
-                <h2 id="featured-heading">Produtos em destaque</h2>
-                <p>Confira alguns dos nossos pratos mais populares.</p>
+    <main class="container" style="padding-top: 4rem; padding-bottom: 4rem;">
+        <div style="max-width: 800px; margin: 0 auto; line-height: 1.8; color: var(--foreground);">
+            <header style="text-align: center; margin-bottom: 4rem;">
+                <h1 style="font-family: var(--font-heading); font-size: 3rem; font-weight: 900; color: var(--primary-deep); margin-bottom: 1rem;">Trabalhe Conosco</h1>
+                <p style="font-size: 1.25rem; color: var(--muted);">Faça parte da revolução da alimentação saudável.</p>
             </header>
 
-            <div class="carousel-container">
-                <button type="button" class="carousel-btn prev-btn" aria-label="Anterior"><i class="ph-bold ph-caret-left" aria-hidden="true"></i></button>
+            <section style="margin-bottom: 3rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">Nossa Cultura</h2>
+                <p>Na Nura, somos apaixonados pelo que fazemos. Buscamos pessoas criativas, engajadas e que acreditem que a alimentação tem o poder de transformar vidas. Nosso ambiente de trabalho é colaborativo, diverso e focado no bem-estar não só dos nossos clientes, mas de toda a nossa equipe.</p>
+            </section>
 
-                <div class="carousel-track">
-                    <?php foreach ($produtosDestaque as $p): ?>
-                        <?php
-                        $alergiasDesteProduto = $p['alergias'] ?? [];
-                        $incompativeisDesteProduto = $p['restricoes'] ?? [];
-
-                        $conflitoAlergias = array_intersect($alergiasCliente, $alergiasDesteProduto);
-                        $conflitoRestricao = ($restricaoCliente && in_array($restricaoCliente, $incompativeisDesteProduto));
-
-                        $naoRecomendado = !empty($conflitoAlergias) || $conflitoRestricao;
-
-                        // Se tiver restrição, ignoramos totalmente o produto da Home
-                        if ($naoRecomendado) {
-                            continue;
-                        }
-                        ?>
-                        <div class="carousel-item">
-                            <article class="card">
-                                <div class="card-img-wrapper">
-                                    <img src="<?php echo $p['img']; ?>" alt="<?php echo htmlspecialchars($p['nome']); ?>" class="card-img">
-                                    <span class="card-badge"><?php echo $p['tag']; ?></span>
-                                </div>
-                                <div class="card-content">
-                                    <h3 class="card-title"><?php echo $p['nome']; ?></h3>
-                                    <p class="card-desc"><?php echo $p['desc']; ?></p>
-                                    <div class="card-price" aria-label="Preço">R$ <?php echo number_format($p['preco'], 2, ',', '.'); ?></div>
-                                </div>
-                                <div class="card-footer">
-                                    <form action="carrinho_acoes.php?acao=adicionar" method="POST">
-                                        <input type="hidden" name="id" value="<?php echo $p['id']; ?>">
-                                        <input type="hidden" name="nome" value="<?php echo $p['nome']; ?>">
-                                        <input type="hidden" name="preco" value="<?php echo $p['preco']; ?>">
-                                        <input type="hidden" name="img" value="<?php echo $p['img']; ?>">
-                                        <button type="submit" class="btn btn-primary btn-full">
-                                            <i class="ph-bold ph-shopping-cart" aria-hidden="true"></i> Adicionar
-                                        </button>
-                                    </form>
-                                </div>
-                            </article>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-                <button type="button" class="carousel-btn next-btn" aria-label="Próximo"><i class="ph-bold ph-caret-right" aria-hidden="true"></i></button>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <article style="background: var(--surface); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <h3 style="color: var(--primary); font-size: 1.25rem; margin-bottom: 0.5rem;"><i class="ph-bold ph-star" aria-hidden="true" style="margin-right: 0.5rem;"></i>Benefícios</h3>
+                    <ul style="list-style: none; padding: 0; color: var(--muted);">
+                        <li style="margin-bottom: 0.5rem;">• Plano de saúde e odontológico</li>
+                        <li style="margin-bottom: 0.5rem;">• Vale-alimentação Nura</li>
+                        <li style="margin-bottom: 0.5rem;">• Horários flexíveis</li>
+                        <li>• Programa de desenvolvimento contínuo</li>
+                    </ul>
+                </article>
+                <article style="background: var(--surface); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <h3 style="color: var(--primary); font-size: 1.25rem; margin-bottom: 0.5rem;"><i class="ph-bold ph-briefcase" aria-hidden="true" style="margin-right: 0.5rem;"></i>Vagas Abertas</h3>
+                    <ul style="list-style: none; padding: 0; color: var(--muted);">
+                        <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                            <span>Auxiliar de Cozinha</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">São Paulo, SP</span>
+                        </li>
+                        <li style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                            <span>Nutricionista Pleno</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">Híbrido</span>
+                        </li>
+                        <li style="display: flex; justify-content: space-between;">
+                            <span>Atendimento ao Cliente</span> <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700;">Remoto</span>
+                        </li>
+                    </ul>
+                </article>
             </div>
-        </section>
+            
+            <section style="margin-bottom: 3rem; background: hsla(150, 40%, 95%, 1); padding: 2.5rem; border-radius: 1rem; border: 1px solid hsla(150, 40%, 85%, 1);">
+                <h2 style="font-family: var(--font-heading); font-size: 1.75rem; color: var(--primary-deep); margin-bottom: 1rem; text-align: center;">Envie seu Currículo</h2>
+                <p style="text-align: center; color: var(--foreground); margin-bottom: 2rem;">Não encontrou a vaga ideal? Deixe seu currículo em nosso banco de talentos!</p>
+                <form action="#" method="POST" style="max-width: 500px; margin: 0 auto;">
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" placeholder="Seu Nome Completo" class="input" style="width: 100%; padding: 0.85rem;" required>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <input type="email" placeholder="Seu E-mail" class="input" style="width: 100%; padding: 0.85rem;" required>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" placeholder="Área de Interesse" class="input" style="width: 100%; padding: 0.85rem;" required>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <textarea placeholder="Fale um pouco sobre você..." class="input" rows="4" style="width: 100%; padding: 0.85rem;" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">Enviar Candidatura</button>
+                </form>
+            </section>
+        </div>
     </main>
 
     <footer class="footer">
@@ -222,7 +163,7 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
                 <ul>
                     <li><a href="index.php">Início</a></li>
                     <li><a href="produtos.php">Cardápio</a></li>
-                    <li><a href="promocoes.php">Promoções</a></li>
+                    <li><a href="produtos.php?categoria=promocoes">Promoções</a></li>
                     <li><a href="perfil.php">Minha Conta</a></li>
                     <li><a href="carrinho.php">Meu Carrinho</a></li>
                 </ul>

@@ -127,6 +127,14 @@ if ($frete <= 0 && $subtotal > 0) {
                 <a href="../produtos.php">Produtos</a>
                 <a href="../perfil.php">Minha Conta</a>
             </nav>
+
+            <form class="header-search" action="../produtos.php" method="GET">
+                <div class="search-input-wrapper">
+                    <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+                    <input type="text" name="busca" placeholder="Buscar pratos..." aria-label="Buscar" required>
+                </div>
+            </form>
+
             <div class="header-actions">
                 <a href="../perfil.php" class="btn btn-ghost" aria-label="Conta">
                     <?php if ($nomeCliente): ?>
@@ -163,7 +171,7 @@ if ($frete <= 0 && $subtotal > 0) {
                         <input type="text" name="endereco" class="input input-large" value="<?php echo htmlspecialchars($endereco); ?>" readonly style="background: var(--surface-hover); color: var(--muted);">
                     </div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+                    <div class="checkout-form-grid-2">
                         <div class="form-group">
                             <label>Número *</label>
                             <input type="text" id="input-numero" name="numero" class="input input-large" required placeholder="Ex: 123">

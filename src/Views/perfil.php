@@ -58,6 +58,13 @@ $alergias = $perfilDb['alergias'] ?? [];
                 <a href="carrinho.php">Carrinho</a>
             </nav>
 
+            <form class="header-search" action="produtos.php" method="GET">
+                <div class="search-input-wrapper">
+                    <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+                    <input type="text" name="busca" placeholder="Buscar pratos..." aria-label="Buscar" required>
+                </div>
+            </form>
+
             <div class="header-actions">
                 <div class="header-user-chip">
                     <span id="header-user-name">Olá, <?php echo htmlspecialchars(explode(' ', trim($dadosCliente['nome'] ?? ''))[0]); ?></span>
@@ -400,6 +407,117 @@ $alergias = $perfilDb['alergias'] ?? [];
         ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_UNESCAPED_UNICODE); ?>;
     </script>
     <?php endif; ?>
+    <footer class="footer" style="margin-top: 4rem;">
+        <div class="container footer-grid">
+
+            <div class="footer-brand">
+                <a href="index.php" class="logo" aria-label="Nura — Início">
+                    <img class="logo-img-footer" src="../assets/img/NURA_logo.png" alt="">
+                </a>
+                <p>Alimentação saudável feita com ingredientes naturais e muito amor.</p>
+            </div>
+
+            <div class="footer-nav-col">
+                <h4>Explorar</h4>
+                <ul>
+                    <li><a href="index.php">Início</a></li>
+                    <li><a href="produtos.php">Cardápio</a></li>
+                    <li><a href="promocoes.php">Promoções</a></li>
+                    <li><a href="perfil.php">Minha Conta</a></li>
+                    <li><a href="carrinho.php">Meu Carrinho</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-about-col">
+                <h4>Sobre Nós</h4>
+                <ul>
+                    <li><a href="sobre.php">Sobre a Nura</a></li>
+                    <li><a href="alimentacao.php">Alimentação Saudável</a></li>
+                    <li><a href="sustentabilidade.php">Sustentabilidade</a></li>
+                    <li><a href="trabalhe-conosco.php">Trabalhe Conosco</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contato</h4>
+                <ul class="footer-contact-list">
+                    <li>
+                        <span class="fc-icon" aria-hidden="true">📍</span>
+                        <span>São Paulo — SP</span>
+                    </li>
+                    <li>
+                        <span class="fc-icon" aria-hidden="true">📞</span>
+                        <span>(11) 98765-4321</span>
+                    </li>
+                    <li>
+                        <span class="fc-icon" aria-hidden="true">✉</span>
+                        <a href="mailto:contato@nura.com.br">contato@nura.com.br</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-trust">
+                <!-- Formas de Pagamento -->
+                <div class="footer-payments">
+                    <div class="footer-payments-icons">
+                        <span class="payment-badge" title="Visa" aria-label="Visa">
+                            <svg viewBox="0 0 48 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <text x="0" y="13" font-family="Arial" font-weight="900" font-size="14" fill="#1A1F71">VISA</text>
+                            </svg>
+                        </span>
+                        <span class="payment-badge" title="Mastercard" aria-label="Mastercard">
+                            <svg viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <circle cx="14" cy="12" r="10" fill="#EB001B"/>
+                                <circle cx="24" cy="12" r="10" fill="#F79E1B"/>
+                                <path d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z" fill="#FF5F00"/>
+                            </svg>
+                        </span>
+                        <span class="payment-badge" title="Elo" aria-label="Elo">
+                            <svg viewBox="0 0 42 18" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <rect x="0" y="0" width="42" height="18" rx="3" fill="#fff" opacity="0"/>
+                                <text x="1" y="14" font-family="Arial" font-weight="900" font-size="14" fill="#FFB800">elo</text>
+                            </svg>
+                        </span>
+                        <span class="payment-badge payment-badge--amex" title="American Express" aria-label="American Express">
+                            <svg viewBox="0 0 50 18" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <text x="0" y="14" font-family="Arial" font-weight="900" font-size="11" fill="#2E77BC">AMEX</text>
+                            </svg>
+                        </span>
+                        <span class="payment-badge payment-badge--pix" title="Pix" aria-label="Pix">
+                            <svg viewBox="0 0 36 24" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <path d="M17.4 5.6l3 3a1 1 0 0 0 1.4 0l3-3a2.5 2.5 0 0 1 3.5 0l.1.1-4.8 4.8a2 2 0 0 1-2.8 0l-4.8-4.8.1-.1a2.5 2.5 0 0 1 3.3 0z" fill="#32BCAD"/>
+                                <path d="M28.4 8.2l.1.1a2.5 2.5 0 0 1 0 3.5l-3 3a1 1 0 0 0 0 1.4l3 3a2.5 2.5 0 0 1 0 3.5l-.1.1-4.8-4.8a2 2 0 0 1 0-2.8l4.8-4.8z" fill="#32BCAD"/>
+                                <path d="M18.6 18.4l-3-3a1 1 0 0 0-1.4 0l-3 3a2.5 2.5 0 0 1-3.5 0l-.1-.1 4.8-4.8a2 2 0 0 1 2.8 0l4.8 4.8-.1.1a2.5 2.5 0 0 1-3.3 0z" fill="#32BCAD"/>
+                                <path d="M7.6 15.8l-.1-.1a2.5 2.5 0 0 1 0-3.5l3-3a1 1 0 0 0 0-1.4l-3-3a2.5 2.5 0 0 1 0-3.5l.1-.1 4.8 4.8a2 2 0 0 1 0 2.8L7.6 15.8z" fill="#32BCAD"/>
+                            </svg>
+                        </span>
+                        <span class="payment-badge payment-badge--debit" title="Débito" aria-label="Débito">
+                            <svg viewBox="0 0 38 16" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
+                                <text x="0" y="13" font-family="Arial" font-weight="700" font-size="11" fill="#5A6B7B">Débito</text>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="footer-safe-badge">
+                    <div class="safe-badge-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="safe-badge-icon" aria-hidden="true">
+                            <path d="M12 2L3 5.5v6c0 5.25 3.75 10.15 9 11.35C17.25 21.65 21 16.75 21 11.5v-6L12 2z" fill="#34A853"/>
+                            <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div class="safe-badge-text">
+                            <span class="safe-badge-title">Site Seguro</span>
+                            <span class="safe-badge-sub">Google Safe Browsing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p>© 2026 Nura. Todos os direitos reservados.</p>
+        </div>
+    </footer>
     <script src="../script.js"></script>
 </body>
 

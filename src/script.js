@@ -124,6 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemsVisible = getItemsVisible();
             const moveAmount = 100 / itemsVisible;
             track.style.transform = `translateX(-${currentIndex * moveAmount}%)`;
+
+            // Hide buttons if not enough items
+            if (items.length <= itemsVisible) {
+                if (prevBtn) prevBtn.style.display = 'none';
+                if (nextBtn) nextBtn.style.display = 'none';
+            } else {
+                if (prevBtn) prevBtn.style.display = 'flex';
+                if (nextBtn) nextBtn.style.display = 'flex';
+            }
         };
 
         const moveNext = () => {
@@ -219,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cartIconContainer.appendChild(badge);
             }
             badge.textContent = qtd;
-            
+
             // Efeito bounce no ícone do carrinho
             const icon = cartIconContainer.querySelector('.ph-shopping-cart') || cartIconContainer;
             icon.classList.remove('cart-bounce');
@@ -239,14 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const flyEl = document.createElement('div');
         flyEl.className = 'fly-to-cart-element';
-        
+
         // Posição inicial (centro do botão)
         const startX = btnRect.left + btnRect.width / 2 - 10;
         const startY = btnRect.top + btnRect.height / 2 - 10;
-        
+
         flyEl.style.left = startX + 'px';
         flyEl.style.top = startY + 'px';
-        
+
         document.body.appendChild(flyEl);
 
         // Posição final (centro do ícone do carrinho)
@@ -438,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FORM VALIDATION (AUTH) ---
     const emailInputs = document.querySelectorAll('input[type="email"]');
     emailInputs.forEach(input => {
-        input.addEventListener('input', function(e) {
+        input.addEventListener('input', function (e) {
             const val = e.target.value;
             const successIcon = e.target.parentElement.querySelector('.input-success-icon');
             if (successIcon) {
@@ -453,10 +462,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const strengthText = document.getElementById('strength-text');
 
     if (signupPassword && strengthFill && strengthText) {
-        signupPassword.addEventListener('input', function(e) {
+        signupPassword.addEventListener('input', function (e) {
             const val = e.target.value;
             let strength = 0;
-            
+
             if (val.length >= 8) strength += 25;
             if (/[A-Z]/.test(val)) strength += 25;
             if (/[0-9]/.test(val)) strength += 25;
@@ -493,58 +502,59 @@ function mostrarOverlayGlobal(titulo = '', subtitulo = '', isProcessing = false)
         overlay = document.createElement('div');
         overlay.id = 'global-page-transition';
         overlay.className = 'page-transition-overlay';
-        
+
         const spinner = document.createElement('div');
         spinner.className = 'transition-spinner';
-        
+
         const titleEl = document.createElement('div');
         titleEl.id = 'transition-title';
         titleEl.className = 'transition-text';
-        
+
         const subtextEl = document.createElement('div');
         subtextEl.id = 'transition-subtext';
         subtextEl.className = 'transition-subtext';
-        
+
         overlay.appendChild(spinner);
         overlay.appendChild(titleEl);
         overlay.appendChild(subtextEl);
         document.body.appendChild(overlay);
     }
-    
+
     document.getElementById('transition-title').textContent = titulo;
     document.getElementById('transition-subtext').textContent = subtitulo;
-    
+
     if (isProcessing) {
         overlay.classList.add('processing');
     } else {
         overlay.classList.remove('processing');
     }
-    
+
     overlay.classList.add('active');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     // Interceptar cliques em links para a transição global
     document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
+            if (e.defaultPrevented) return;
             const href = this.getAttribute('href');
             const target = this.getAttribute('target');
-            
+
             // Ignorar links vazios, âncoras internas, JS, etc
             if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || target === '_blank') {
                 return;
             }
-            
+
             // Se tiver uma classe q ignora (ex: accordion), pula
             if (this.classList.contains('no-transition')) return;
-            
+
             // Permite o click fluir se o control/cmd/shift estiver pressionado (nova aba)
             if (e.ctrlKey || e.metaKey || e.shiftKey) return;
-            
+
             // Mostrar transição padrão (apenas loader)
             e.preventDefault();
             mostrarOverlayGlobal('', '');
-            
+
             setTimeout(() => {
                 window.location.href = href;
             }, 300); // tempo curtinho pra dar o fade in do overlay
@@ -557,5 +567,146 @@ document.addEventListener('DOMContentLoaded', () => {
             const overlay = document.getElementById('global-page-transition');
             if (overlay) overlay.classList.remove('active');
         }
+    });
+
+    // --- Live Search Autocomplete ---
+    const searchForms = document.querySelectorAll('.header-search');
+    searchForms.forEach(form => {
+        const input = form.querySelector('input[name="busca"]');
+        const wrapper = form.querySelector('.search-input-wrapper');
+        if (!input || !wrapper) return;
+
+        // Remove autocomplete padrão do HTML
+        input.setAttribute('autocomplete', 'off');
+
+        // Cria o container do dropdown
+        const dropdown = document.createElement('div');
+        dropdown.className = 'search-results-dropdown';
+        dropdown.setAttribute('aria-live', 'polite');
+        wrapper.appendChild(dropdown);
+
+        let timeout = null;
+        let currentFocus = -1;
+
+        input.addEventListener('input', function() {
+            const query = this.value.trim();
+            clearTimeout(timeout);
+
+            if (query.length < 2) {
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            dropdown.classList.add('active');
+            dropdown.innerHTML = '<div class="search-loading"><i class="ph ph-spinner" aria-hidden="true"></i></div>';
+
+            timeout = setTimeout(() => {
+                let basePath = 'api/search.php';
+                if (window.location.pathname.includes('/Checkout/')) {
+                    basePath = '../../api/search.php';
+                } else if (window.location.pathname.includes('/Views/')) {
+                    basePath = '../api/search.php';
+                }
+                
+                fetch(`${basePath}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        currentFocus = -1;
+                        if (!data || data.length === 0) {
+                            dropdown.innerHTML = '<div class="search-dropdown-empty"><i class="ph ph-magnifying-glass" aria-hidden="true"></i>Nenhum resultado encontrado</div>';
+                            return;
+                        }
+
+                        const list = document.createElement('ul');
+                        list.className = 'search-dropdown-list';
+                        
+                        data.forEach((item) => {
+                            const li = document.createElement('li');
+                            const a = document.createElement('a');
+                            a.className = 'search-dropdown-item';
+                            a.href = item.url;
+                            
+                            // Visual
+                            let visualHtml = '';
+                            if (item.type === 'product' && item.image) {
+                                visualHtml = `<img src="${item.image}" class="search-item-img" alt="">`;
+                            } else {
+                                visualHtml = `<div class="search-item-icon"><i class="ph ${item.icon || 'ph-file-text'}" aria-hidden="true"></i></div>`;
+                            }
+
+                            // Tag
+                            let tagHtml = item.tag ? `<span class="search-item-tag">${item.tag}</span>` : '';
+
+                            a.innerHTML = `
+                                ${visualHtml}
+                                <div class="search-item-content">
+                                    <div class="search-item-title">${item.title} ${tagHtml}</div>
+                                    <div class="search-item-desc">${item.description || ''}</div>
+                                </div>
+                            `;
+
+                            li.appendChild(a);
+                            list.appendChild(li);
+                        });
+
+                        dropdown.innerHTML = '';
+                        dropdown.appendChild(list);
+                    })
+                    .catch(() => {
+                        dropdown.innerHTML = '<div class="search-dropdown-empty"><i class="ph ph-warning-circle" aria-hidden="true"></i>Erro ao buscar. Tente novamente.</div>';
+                    });
+            }, 300);
+        });
+
+        // Navegação por Teclado
+        input.addEventListener('keydown', function(e) {
+            const items = dropdown.querySelectorAll('.search-dropdown-item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentFocus++;
+                addActive(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentFocus--;
+                addActive(items);
+            } else if (e.key === 'Enter') {
+                if (currentFocus > -1 && dropdown.classList.contains('active')) {
+                    e.preventDefault();
+                    items[currentFocus].click();
+                }
+            } else if (e.key === 'Escape') {
+                dropdown.classList.remove('active');
+                input.blur();
+            }
+        });
+
+        function addActive(items) {
+            if (!items || items.length === 0) return;
+            removeActive(items);
+            if (currentFocus >= items.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (items.length - 1);
+            items[currentFocus].classList.add('focused');
+            items[currentFocus].scrollIntoView({ block: 'nearest' });
+        }
+
+        function removeActive(items) {
+            for (let i = 0; i < items.length; i++) {
+                items[i].classList.remove('focused');
+            }
+        }
+
+        // Clicar fora para fechar
+        document.addEventListener('click', function(e) {
+            if (!form.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Focar novamente abre o painel se houver texto
+        input.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2 && dropdown.innerHTML !== '') {
+                dropdown.classList.add('active');
+            }
+        });
     });
 });

@@ -35,6 +35,14 @@ foreach ($carrinho as $item) {
                 <a href="produtos.php">Produtos</a>
                 <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>">Minha Conta</a>
             </nav>
+
+            <form class="header-search" action="produtos.php" method="GET">
+                <div class="search-input-wrapper">
+                    <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+                    <input type="text" name="busca" placeholder="Buscar pratos..." aria-label="Buscar" required>
+                </div>
+            </form>
+
             <div class="header-actions">
                 <a href="<?php echo $nomeCliente ? 'perfil.php' : 'cadastro.php'; ?>" class="btn btn-ghost"
                     aria-label="Conta">
