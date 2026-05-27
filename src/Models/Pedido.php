@@ -126,5 +126,26 @@ class Pedido
         }
         return $resultados;
     }
+
+    public static function buscarTodos()
+    {
+        global $pdo;
+        $sql = "SELECT p.*, c.id as cliente_real_id, c.nome as cliente_nome, c.email as cliente_email, c.telefone as cliente_telefone 
+                FROM pedidos p 
+                JOIN cliente c ON p.cliente_id = c.id 
+                ORDER BY p.created_at DESC";
+        $stmt = $pdo->query($sql);
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($resultados as &$r) {
+            $r['id'] = (int) $r['id'];
+            $r['cliente_id'] = (int) $r['cliente_id'];
+            $r['total'] = (float) $r['total'];
+            $r['subtotal'] = (float) ($r['subtotal'] ?? 0);
+            $r['frete'] = (float) ($r['frete'] ?? 0);
+            $r['itens'] = json_decode($r['itens'] ?? '[]', true) ?: [];
+        }
+        return $resultados;
+    }
 }
 ?>

@@ -11,6 +11,7 @@ class Produto
     private $tag;
     private $alergias;
     private $restricoes;
+    private $estoque;
 
     // Getters e Setters padronizados
     public function getId()
@@ -93,6 +94,15 @@ class Produto
         }
     }
 
+    public function getEstoque()
+    {
+        return (int)($this->estoque ?? 0);
+    }
+    public function setEstoque($estoque)
+    {
+        $this->estoque = (int)$estoque;
+    }
+
     /* =======================================================
        OPERAÇÕES DE BANCO DE DADOS (CRUD)
        ======================================================= */
@@ -101,8 +111,8 @@ class Produto
     {
         global $pdo;
         try {
-            $sql = "INSERT INTO produtos (nome, descricao, preco, img, tag, alergias, restricoes) 
-                    VALUES (:nome, :descricao, :preco, :img, :tag, :alergias, :restricoes)";
+            $sql = "INSERT INTO produtos (nome, descricao, preco, img, tag, alergias, restricoes, estoque) 
+                    VALUES (:nome, :descricao, :preco, :img, :tag, :alergias, :restricoes, :estoque)";
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':nome', $this->nome);
             $stmt->bindValue(':descricao', $this->descricao);
@@ -111,6 +121,7 @@ class Produto
             $stmt->bindValue(':tag', $this->tag);
             $stmt->bindValue(':alergias', $this->alergias);
             $stmt->bindValue(':restricoes', $this->restricoes);
+            $stmt->bindValue(':estoque', $this->estoque ?? 15, PDO::PARAM_INT);
             $stmt->execute();
             return $pdo->lastInsertId();
         } catch (PDOException $e) {
@@ -124,7 +135,7 @@ class Produto
         global $pdo;
         try {
             $sql = "UPDATE produtos 
-                    SET nome = :nome, descricao = :descricao, preco = :preco, img = :img, tag = :tag, alergias = :alergias, restricoes = :restricoes 
+                    SET nome = :nome, descricao = :descricao, preco = :preco, img = :img, tag = :tag, alergias = :alergias, restricoes = :restricoes, estoque = :estoque 
                     WHERE id = :id";
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':nome', $this->nome);
@@ -134,6 +145,7 @@ class Produto
             $stmt->bindValue(':tag', $this->tag);
             $stmt->bindValue(':alergias', $this->alergias);
             $stmt->bindValue(':restricoes', $this->restricoes);
+            $stmt->bindValue(':estoque', $this->estoque ?? 15, PDO::PARAM_INT);
             $stmt->bindValue(':id', $this->id);
             return $stmt->execute();
         } catch (PDOException $e) {
@@ -152,6 +164,7 @@ class Produto
         foreach ($resultados as &$r) {
             $r['id'] = (int) $r['id'];
             $r['preco'] = (float) $r['preco'];
+            $r['estoque'] = (int) ($r['estoque'] ?? 0);
             $r['alergias'] = json_decode($r['alergias'] ?? '[]', true) ?: [];
             $r['restricoes'] = json_decode($r['restricoes'] ?? '[]', true) ?: [];
             $r['desc'] = $r['descricao']; // Retorna "desc" também para a view não quebrar
@@ -170,6 +183,7 @@ class Produto
         if ($resultado) {
             $resultado['id'] = (int) $resultado['id'];
             $resultado['preco'] = (float) $resultado['preco'];
+            $resultado['estoque'] = (int) ($resultado['estoque'] ?? 0);
             $resultado['alergias'] = json_decode($resultado['alergias'] ?? '[]', true) ?: [];
             $resultado['restricoes'] = json_decode($resultado['restricoes'] ?? '[]', true) ?: [];
             $resultado['desc'] = $resultado['descricao'];

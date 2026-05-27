@@ -149,6 +149,11 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                                         <span>Total pago</span>
                                         <span style="color: var(--primary);">R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></span>
                                     </div>
+                                    <div style="margin-top: 1rem; width: 250px;">
+                                        <a href="Checkout/comprovante.php?id=<?php echo $pedido['id']; ?>" target="_blank" class="btn btn-outline" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;">
+                                            <i class="ph ph-receipt"></i> Ver Nota Fiscal
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         <?php endforeach; ?>

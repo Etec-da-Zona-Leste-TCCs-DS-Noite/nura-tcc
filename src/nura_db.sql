@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS produtos (
     img VARCHAR(500),
     tag VARCHAR(100),
     alergias JSON,
-    restricoes JSON
+    restricoes JSON,
+    estoque INT NOT NULL DEFAULT 15
 );
 
 INSERT INTO produtos (id, nome, descricao, preco, img, tag, alergias, restricoes) VALUES
@@ -63,3 +64,17 @@ CREATE TABLE IF NOT EXISTS pedidos (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
 );
+
+-- 5. Cria a Tabela de Administradores
+CREATE TABLE IF NOT EXISTS admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insere Administrador Padrão
+INSERT INTO admin (id, nome, email, senha) VALUES
+(1, 'Administrador Nura', 'admin@nura.com', '$2y$10$FyyOW92LPnX0q0x6kF2G8u25bbx6SyraHy.wP0xsrT7GHYP4IqjTy')
+ON DUPLICATE KEY UPDATE id=id;

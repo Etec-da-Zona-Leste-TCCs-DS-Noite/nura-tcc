@@ -81,7 +81,25 @@ class PedidoController
             // Em um sistema real, validaria se o usuário tem permissão para isso, 
             // mas como é TCC/simulação, atualizamos direto.
             Pedido::atualizarStatus($id, 'Em Preparo');
-            header("Location: ../Views/pedidos.php?nura_flash=" . urlencode("Pagamento aprovado com sucesso!") . "&nura_ft=success");
+
+            // Decrementar estoque de cada item do pedido
+            $pedido = Pedido::buscarPorId($id);
+            if ($pedido) {
+                $itens = json_decode($pedido['itens'] ?? '[]', true) ?: [];
+                global $pdo;
+                foreach ($itens as $item) {
+                    $prodId = (int) $item['id'];
+                    $qtd = (int) $item['qtd'];
+                    // Executa o decremento garantindo que o estoque não fique negativo
+                    $stmt = $pdo->prepare("UPDATE produtos SET estoque = GREATEST(0, estoque - :qtd) WHERE id = :prod_id");
+                    $stmt->bindValue(':qtd', $qtd, PDO::PARAM_INT);
+                    $stmt->bindValue(':prod_id', $prodId, PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+            }
+
+            // Redireciona para o comprovante em vez de voltar pra lista
+            header("Location: ../Views/Checkout/comprovante.php?id=" . $id);
             exit;
         }
         header("Location: ../Views/pedidos.php");
