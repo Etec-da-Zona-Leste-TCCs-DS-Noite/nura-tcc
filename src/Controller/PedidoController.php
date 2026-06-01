@@ -98,8 +98,8 @@ class PedidoController
                 }
             }
 
-            // Redireciona para o comprovante em vez de voltar pra lista
-            header("Location: ../Views/Checkout/comprovante.php?id=" . $id);
+            // Redireciona para a lista de pedidos com mensagem de sucesso
+            header("Location: ../Views/pedidos.php?nura_flash=" . urlencode("Pagamento aprovado com sucesso! Seu pedido já está em preparo.") . "&nura_ft=success");
             exit;
         }
         header("Location: ../Views/pedidos.php");

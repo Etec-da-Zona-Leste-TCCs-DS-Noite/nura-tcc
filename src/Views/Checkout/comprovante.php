@@ -299,8 +299,8 @@ $numeroRecibo = str_pad($pedido['id'], 6, '0', STR_PAD_LEFT);
         </div>
 
         <div class="qr-placeholder">
-            <!-- QR Code falso gerado via api google para simbolizar a nota -->
-            <img src="https://chart.googleapis.com/chart?chs=120x120&cht=qr&chl=<?php echo $chaveAcesso; ?>" alt="QR Code NFC-e">
+            <!-- QR Code falso gerado via api QuickChart para simbolizar a nota -->
+            <img src="https://quickchart.io/qr?text=<?php echo $chaveAcesso; ?>&size=120" alt="QR Code NFC-e">
         </div>
         
         <div class="text-center info-line" style="margin-top:1rem;">

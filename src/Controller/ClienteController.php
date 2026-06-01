@@ -115,6 +115,63 @@ class ClienteController
         header("Location: ../Views/index.php"); // Manda pra home ao sair
         exit;
     }
+
+    public function firebase_sync()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $uid = $_POST['uid'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $nome = $_POST['nome'] ?? '';
+            $telefone = $_POST['telefone'] ?? '';
+            $is_registration = $_POST['is_registration'] ?? 'false';
+
+            if (empty($email) || empty($uid)) {
+                echo json_encode(['success' => false, 'message' => 'Dados inválidos.']);
+                exit;
+            }
+
+            // Verifica se o cliente já existe
+            $dadosCliente = Cliente::buscarPorEmail($email);
+
+            if ($dadosCliente) {
+                // Já existe, apenas faz login
+                $_SESSION['cliente_id'] = $dadosCliente['id'];
+                $_SESSION['cliente_nome'] = $dadosCliente['nome'];
+                $_SESSION['login_recente'] = true;
+                echo json_encode(['success' => true]);
+                exit;
+            } else {
+                // Não existe
+                if ($is_registration === 'true') {
+                    // Completa o cadastro
+                    $cliente = new Cliente();
+                    $cliente->setNome($nome);
+                    $cliente->setEmail($email);
+                    $cliente->setTelefone($telefone);
+                    
+                    $senhaPost = $_POST['senha'] ?? bin2hex(random_bytes(16));
+                    $cliente->setSenha($senhaPost); 
+                    
+                    $novoId = $cliente->salvar();
+
+                    if ($novoId) {
+                        $_SESSION['cliente_id'] = $novoId;
+                        $_SESSION['cliente_nome'] = $nome;
+                        $_SESSION['conta_nova'] = true;
+                        echo json_encode(['success' => true]);
+                        exit;
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Falha ao salvar no banco.']);
+                        exit;
+                    }
+                } else {
+                    // Exige que o usuário complete o cadastro
+                    echo json_encode(['success' => false, 'requires_registration' => true]);
+                    exit;
+                }
+            }
+        }
+    }
 }
 
 if (isset($_GET['acao'])) {
@@ -130,5 +187,7 @@ if (isset($_GET['acao'])) {
         $controller->deletar();
     elseif ($acao == 'sair')
         $controller->sair();
+    elseif ($acao == 'firebase_sync')
+        $controller->firebase_sync();
 }
 ?>

@@ -18,11 +18,9 @@ $frete = floatval($_POST['frete'] ?? 0);
 $endereco = $_POST['endereco'] ?? '';
 $total = $subtotal + $frete;
 
-// Se não veio do carrinho corretamente com frete, voltar
-if ($frete <= 0 && $subtotal > 0) {
-    header("Location: ../carrinho.php");
-    exit;
-}
+// Frete será calculado nesta etapa agora
+$frete = 0;
+$total = $subtotal;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -167,8 +165,17 @@ if ($frete <= 0 && $subtotal > 0) {
 
                 <form id="form-checkout" action="../../Controller/PedidoController.php?acao=finalizar" method="POST">
                     <div class="form-group" style="margin-bottom: 1.5rem;">
-                        <label>Endereço Calculado</label>
-                        <input type="text" name="endereco" class="input input-large" value="<?php echo htmlspecialchars($endereco); ?>" readonly style="background: var(--surface-hover); color: var(--muted);">
+                        <label>CEP *</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="checkout-cep" name="cep" class="input input-large" placeholder="00000-000" style="flex: 1;" required>
+                            <button type="button" id="checkout-btn-geolocate" class="btn btn-outline" style="padding: 0 1rem;" title="Usar minha localização">
+                                <i class="ph-bold ph-map-pin"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label>Endereço *</label>
+                        <input type="text" id="checkout-endereco" name="endereco" class="input input-large" placeholder="Rua, Bairro, Cidade" readonly required style="background: var(--surface-hover); color: var(--muted);">
                     </div>
                     
                     <div class="checkout-form-grid-2">
@@ -244,7 +251,7 @@ if ($frete <= 0 && $subtotal > 0) {
 
                     </div>
                     
-                    <input type="hidden" name="frete" value="<?php echo $frete; ?>">
+                    <input type="hidden" name="frete" id="checkout-input-frete" value="0.00">
                     <input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
                 </form>
             </div>
@@ -267,11 +274,11 @@ if ($frete <= 0 && $subtotal > 0) {
                 </div>
                 <div class="summary-item">
                     <span>Frete</span>
-                    <span style="color: var(--foreground); font-weight: 600;">R$ <?php echo number_format($frete, 2, ',', '.'); ?></span>
+                    <span id="checkout-display-frete" style="color: var(--muted); font-weight: normal;">Calculando...</span>
                 </div>
                 <div class="summary-total">
                     <span>Total a Pagar</span>
-                    <span style="color: var(--primary);">R$ <?php echo number_format($total, 2, ',', '.'); ?></span>
+                    <span id="checkout-display-total" style="color: var(--primary);">R$ <?php echo number_format($subtotal, 2, ',', '.'); ?></span>
                 </div>
 
                 <button type="button" id="btn-submit-checkout" class="btn btn-primary btn-full" style="margin-top: 2rem; padding: 1.2rem; font-size: 1.1rem; border-radius: 1rem;">
@@ -293,7 +300,117 @@ if ($frete <= 0 && $subtotal > 0) {
             const selectParcelas = document.getElementById('select-parcelas');
             const parcelasContainer = document.getElementById('parcelas-container');
             const inputCartao = document.getElementById('input-cartao');
-            const total = <?php echo $total; ?>;
+            const subtotal = <?php echo $subtotal; ?>;
+            let currentTotal = subtotal;
+
+            const inputCep = document.getElementById('checkout-cep');
+            const btnGeolocate = document.getElementById('checkout-btn-geolocate');
+            const inputEndereco = document.getElementById('checkout-endereco');
+            const displayFrete = document.getElementById('checkout-display-frete');
+            const displayTotal = document.getElementById('checkout-display-total');
+            const inputFreteHidden = document.getElementById('checkout-input-frete');
+
+            const storeLat = -23.5505;
+            const storeLon = -46.6333;
+
+            function deg2rad(deg) { return deg * (Math.PI/180); }
+            function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+                var R = 6371; 
+                var dLat = deg2rad(lat2-lat1);  
+                var dLon = deg2rad(lon2-lon1); 
+                var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                return R * c; 
+            }
+
+            function atualizarFreteETotal(freteValor) {
+                inputFreteHidden.value = freteValor.toFixed(2);
+                displayFrete.textContent = 'R$ ' + freteValor.toFixed(2).replace('.', ',');
+                displayFrete.style.color = 'var(--foreground)';
+                displayFrete.style.fontWeight = '600';
+                currentTotal = subtotal + freteValor;
+                displayTotal.textContent = 'R$ ' + currentTotal.toFixed(2).replace('.', ',');
+                updatePaymentUI(); // Re-gera parcelas com o novo total
+            }
+
+            if(btnGeolocate) {
+                btnGeolocate.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        window.NuraNotify.toast('Geolocalização não suportada', 'error');
+                        return;
+                    }
+                    btnGeolocate.innerHTML = '<i class="ph ph-spinner ph-spin"></i>';
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        try {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+                            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                            const data = await response.json();
+                            
+                            if (data && data.address) {
+                                const road = data.address.road || data.address.pedestrian || '';
+                                const suburb = data.address.suburb || data.address.neighbourhood || '';
+                                const city = data.address.city || data.address.town || '';
+                                const postcode = data.address.postcode || '';
+                                
+                                inputEndereco.value = `${road}${suburb ? ', ' + suburb : ''}, ${city}`;
+                                if (postcode) inputCep.value = postcode;
+
+                                const distance = getDistanceFromLatLonInKm(storeLat, storeLon, lat, lon);
+                                const frete = 5.00 + (distance * 2.50);
+                                atualizarFreteETotal(frete);
+                                window.NuraNotify.toast('Frete calculado com base na sua localização!', 'success');
+                            }
+                        } catch (err) {
+                            window.NuraNotify.toast('Erro ao buscar o endereço', 'error');
+                        } finally {
+                            btnGeolocate.innerHTML = '<i class="ph-bold ph-map-pin"></i>';
+                        }
+                    }, () => {
+                        window.NuraNotify.toast('Permissão de localização negada.', 'error');
+                        btnGeolocate.innerHTML = '<i class="ph-bold ph-map-pin"></i>';
+                    });
+                });
+            }
+
+            if(inputCep) {
+                inputCep.addEventListener('input', async (e) => {
+                    let val = e.target.value.replace(/\D/g, '');
+                    if (val.length > 5) {
+                        val = val.substring(0, 5) + '-' + val.substring(5, 8);
+                    }
+                    e.target.value = val;
+
+                    const cepNumbers = val.replace(/\D/g, '');
+                    
+                    if (cepNumbers.length === 8) {
+                        inputEndereco.value = "Buscando endereço...";
+                        try {
+                            const response = await fetch(`https://viacep.com.br/ws/${cepNumbers}/json/`);
+                            const data = await response.json();
+                            if(!data.erro) {
+                                inputEndereco.value = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+                                atualizarFreteETotal(12.50);
+                                window.NuraNotify.toast('Endereço e frete atualizados com sucesso.', 'success');
+                            } else {
+                                inputEndereco.value = "";
+                                window.NuraNotify.toast('CEP não encontrado.', 'error');
+                            }
+                        } catch(err) {
+                            console.error(err);
+                            inputEndereco.value = "";
+                        }
+                    } else {
+                        if (inputFreteHidden.value !== "0.00") {
+                            atualizarFreteETotal(0);
+                            inputEndereco.value = "";
+                            displayFrete.textContent = 'Calculando...';
+                            displayFrete.style.color = 'var(--muted)';
+                            displayFrete.style.fontWeight = 'normal';
+                        }
+                    }
+                });
+            }
 
             // Mascara simples de cartao
             inputCartao.addEventListener('input', (e) => {
@@ -317,7 +434,7 @@ if ($frete <= 0 && $subtotal > 0) {
                     
                     if (checked === 'Crédito') {
                         parcelasContainer.style.display = 'block';
-                        gerarParcelas(total);
+                        gerarParcelas(currentTotal);
                     } else {
                         parcelasContainer.style.display = 'none';
                     }
@@ -342,6 +459,12 @@ if ($frete <= 0 && $subtotal > 0) {
             });
 
             btnSubmit.addEventListener('click', () => {
+                if (inputFreteHidden.value === "0.00" || !inputEndereco.value.trim()) {
+                    window.NuraNotify.toast('Por favor, informe um CEP válido para calcular o frete.', 'error');
+                    inputCep.focus();
+                    return;
+                }
+                
                 if (!inputNumero.value.trim()) {
                     window.NuraNotify.toast('Por favor, preencha o número da residência.', 'error');
                     inputNumero.focus();

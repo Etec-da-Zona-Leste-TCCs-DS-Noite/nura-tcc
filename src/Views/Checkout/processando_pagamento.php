@@ -116,8 +116,8 @@ $metodo = $pedido['metodo_pagamento'] ?? 'PIX';
                 <p style="color: var(--muted); margin-bottom: 1.5rem;">Aponte a câmera do seu celular para o QR Code abaixo para aprovar o seu pedido.</p>
                 
                 <div class="pix-code">
-                    <!-- QR Code Falso gerado pela API do Google Charts para o texto 'NURA-TCC-PIX-SIMULADO' -->
-                    <img src="https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=NURA-TCC-PIX-SIMULADO" alt="QR Code PIX">
+                    <!-- QR Code Falso gerado pela API do QuickChart para o texto 'NURA-TCC-PIX-SIMULADO' -->
+                    <img src="https://quickchart.io/qr?text=NURA-TCC-PIX-SIMULADO&size=250" alt="QR Code PIX">
                 </div>
 
                 <div style="background: var(--surface-hover); padding: 1rem; border-radius: var(--radius); margin-bottom: 2rem; font-family: monospace; font-size: 0.9rem; color: var(--muted); word-break: break-all;">
