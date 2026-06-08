@@ -14,10 +14,10 @@
 
 <body class="page-auth">
 
-    <header>
+    <header class="auth-top-navbar">
         <div class="container header-inner">
             <a href="index.php" class="logo" aria-label="Nura — Início">
-                <img class="logo-img" src="../assets/img/NURA_logo.png" alt="">
+                <img class="logo-img" src="../assets/img/NURA_logo.png" alt="Nura">
             </a>
             <a href="index.php" class="back-link">
                 <i class="ph-bold ph-arrow-left" aria-hidden="true"></i> Voltar
@@ -26,6 +26,7 @@
     </header>
 
     <div class="auth-split">
+        <!-- Coluna da Esquerda: Banner -->
         <div class="auth-split-image">
             <div class="auth-image-content">
                 <h2>Alimentação saudável que transforma seu dia.</h2>
@@ -33,12 +34,13 @@
             </div>
         </div>
 
+        <!-- Coluna da Direita: Formulário -->
         <div class="auth-split-form">
             <div class="auth-card">
 
                 <div class="auth-header">
                     <div class="auth-logo-wrap">
-                        <img class="auth-logo" src="../assets/img/NURA_logo.png" alt="Nura">
+                        <h1 class="auth-logo-text">Nura.</h1>
                     </div>
                     <p class="auth-tagline">Bem-vindo(a) de volta! Acesse ou crie sua conta.</p>
                 </div>
@@ -59,21 +61,23 @@
                     <span>ou</span>
                 </div>
 
+                <!-- Formulário de Login -->
                 <div id="login-form" class="form-content active" role="tabpanel" aria-labelledby="tab-login">
-                    <form id="firebase-login-form">
+                    <!-- Local Login Form -->
+                    <form id="local-login-form" action="../Controller/ClienteController.php?acao=login" method="POST">
                         <div class="form-group">
-                            <label for="login-email">Email</label>
+                            <label for="local-login-email">Email</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-envelope input-icon" aria-hidden="true"></i>
-                                <input id="login-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
+                                <input id="local-login-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
                                 <i class="ph-fill ph-check-circle input-success-icon" aria-hidden="true" style="display:none;"></i>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="login-senha">Senha</label>
+                            <label for="local-login-senha">Senha</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-lock input-icon" aria-hidden="true"></i>
-                                <input id="login-senha" type="password" name="senha" class="input input-with-icon" placeholder="••••••••" required autocomplete="current-password">
+                                <input id="local-login-senha" type="password" name="senha" class="input input-with-icon" placeholder="••••••••" required autocomplete="current-password">
                                 <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
                                     <i class="ph ph-eye" aria-hidden="true"></i>
                                 </button>
@@ -82,7 +86,7 @@
                         
                         <div class="auth-options">
                             <label class="remember-me">
-                                <input type="checkbox" name="remember" id="remember-me">
+                                <input type="checkbox" name="remember" id="local-remember-me">
                                 <span class="checkbox-custom"></span>
                                 Lembrar de mim
                             </label>
@@ -93,42 +97,44 @@
                     </form>
                 </div>
 
+                <!-- Formulário de Cadastro -->
                 <div id="signup-form" class="form-content" role="tabpanel" aria-labelledby="tab-signup">
-                    <form id="firebase-signup-form">
+                    <!-- Local Signup Form -->
+                    <form id="local-signup-form" action="../Controller/ClienteController.php?acao=cadastrar" method="POST">
                         <div class="form-group">
-                            <label for="signup-nome">Nome completo</label>
+                            <label for="local-signup-nome">Nome completo</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-user input-icon" aria-hidden="true"></i>
-                                <input id="signup-nome" type="text" name="nome" class="input input-with-icon" placeholder="Seu nome" required autocomplete="name">
+                                <input id="local-signup-nome" type="text" name="nome" class="input input-with-icon" placeholder="Seu nome" required autocomplete="name">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="signup-email">Email</label>
+                            <label for="local-signup-email">Email</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-envelope input-icon" aria-hidden="true"></i>
-                                <input id="signup-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
+                                <input id="local-signup-email" type="email" name="email" class="input input-with-icon" placeholder="seu@email.com" required autocomplete="email">
                                 <i class="ph-fill ph-check-circle input-success-icon" aria-hidden="true" style="display:none;"></i>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="signup-telefone">Telefone</label>
+                            <label for="local-signup-telefone">Telefone</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-phone input-icon" aria-hidden="true"></i>
-                                <input id="signup-telefone" type="text" name="telefone" class="input input-with-icon input-telefone" placeholder="(11) 90000-0000" autocomplete="tel">
+                                <input id="local-signup-telefone" type="text" name="telefone" class="input input-with-icon input-telefone" placeholder="(11) 90000-0000" autocomplete="tel">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="signup-senha">Senha</label>
+                            <label for="local-signup-senha">Senha</label>
                             <div class="input-wrapper">
                                 <i class="ph ph-lock input-icon" aria-hidden="true"></i>
-                                <input id="signup-senha" type="password" name="senha" class="input input-with-icon" placeholder="Crie uma senha forte" required autocomplete="new-password">
+                                <input id="local-signup-senha" type="password" name="senha" class="input input-with-icon" placeholder="Crie uma senha forte" required autocomplete="new-password">
                                 <button type="button" class="toggle-password" aria-label="Mostrar ou ocultar senha">
                                     <i class="ph ph-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
                             <div class="password-strength">
-                                <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
-                                <span class="strength-text" id="strength-text">Mínimo 8 caracteres</span>
+                                <div class="strength-bar"><div class="strength-fill" id="local-strength-fill"></div></div>
+                                <span class="strength-text" id="local-strength-text">Mínimo 8 caracteres</span>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary btn-full">Criar minha conta</button>
@@ -141,30 +147,6 @@
         </div>
     </div>
 
-    <div id="google-registration-modal" class="modal-overlay">
-        <div class="custom-modal" style="max-width: 400px; padding: 2rem; border-radius: 1rem; text-align: left;">
-            <h3 class="modal-title" style="margin-bottom: 1rem;">Completar Cadastro</h3>
-            <p class="modal-text" style="margin-bottom: 1.5rem;">Falta pouco! Confirme seus dados e crie uma senha para concluir o cadastro com Google.</p>
-            <form id="form-google-complete">
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nome</label>
-                    <input type="text" id="google-nome" class="input" required>
-                </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Telefone</label>
-                    <input type="text" id="google-telefone" class="input input-telefone" placeholder="(11) 90000-0000" required>
-                </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Criar Senha</label>
-                    <input type="password" id="google-senha" class="input" required placeholder="Crie uma senha forte" minlength="8">
-                </div>
-                <div class="modal-actions" style="margin-top: 2rem;">
-                    <button type="button" class="btn btn-outline" onclick="document.getElementById('google-registration-modal').classList.remove('active')">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="btn-google-complete-submit">Concluir</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <footer class="auth-footer">
         <div class="container">

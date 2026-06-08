@@ -147,5 +147,28 @@ class Pedido
         }
         return $resultados;
     }
+
+    public static function descriptografarDadosPagamento($dadosCriptografados)
+    {
+        if (empty($dadosCriptografados)) {
+            return null;
+        }
+        try {
+            $decoded = base64_decode($dadosCriptografados);
+            if (!$decoded) return null;
+
+            $parts = explode('::', $decoded, 2);
+            if (count($parts) !== 2) return null;
+
+            $encrypted = $parts[0];
+            $iv = $parts[1];
+
+            $decrypted = openssl_decrypt($encrypted, 'aes-256-cbc', NURA_SECRET_KEY, 0, $iv);
+            return $decrypted ? json_decode($decrypted, true) : null;
+        } catch (Exception $e) {
+            error_log("Erro ao descriptografar dados de pagamento: " . $e->getMessage());
+            return null;
+        }
+    }
 }
 ?>

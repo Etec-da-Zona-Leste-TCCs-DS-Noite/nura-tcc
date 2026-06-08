@@ -4,8 +4,8 @@ import {
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
     GoogleAuthProvider, 
-    signInWithPopup,
-    updatePassword
+    signInWithRedirect, // Mudado para Redirect para evitar bloqueios de popup
+    getRedirectResult   // Necessário para capturar o login após o retorno da página
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -24,8 +24,6 @@ const provider = new GoogleAuthProvider();
 
 // Função para sincronizar o usuário com o Backend PHP
 async function syncUserWithBackend(user, nomeOpcional = null) {
-    // Se o usuário logou com Google, usa o nome do perfil.
-    // Se criou conta por email, usa o nomeOpcional passado do formulário.
     const nome = user.displayName || nomeOpcional || user.email.split('@')[0];
     
     try {
@@ -37,11 +35,6 @@ async function syncUserWithBackend(user, nomeOpcional = null) {
         formData.append('uid', user.uid);
         formData.append('email', user.email);
         formData.append('nome', nome);
-        if (window.googleRegistrationData) {
-            formData.append('telefone', window.googleRegistrationData.telefone);
-            formData.append('senha', window.googleRegistrationData.senha);
-            formData.append('is_registration', 'true');
-        }
 
         const response = await fetch('../Controller/ClienteController.php?acao=firebase_sync', {
             method: 'POST',
@@ -52,11 +45,6 @@ async function syncUserWithBackend(user, nomeOpcional = null) {
         
         if (result.success) {
             window.location.href = '../Views/perfil.php';
-        } else if (result.requires_registration) {
-            if (typeof mostrarOverlayGlobal === 'function') {
-                document.getElementById('global-page-transition').classList.remove('active');
-            }
-            showGoogleRegistrationForm(user, nome);
         } else {
             if (typeof mostrarOverlayGlobal === 'function') {
                 document.getElementById('global-page-transition').classList.remove('active');
@@ -72,44 +60,20 @@ async function syncUserWithBackend(user, nomeOpcional = null) {
     }
 }
 
-function showGoogleRegistrationForm(user, nome) {
-    const modal = document.getElementById('google-registration-modal');
-    if (modal) {
-        modal.classList.add('active');
-        document.getElementById('google-nome').value = nome || '';
-        const form = document.getElementById('form-google-complete');
-        
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-google-complete-submit');
-            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Salvando...';
-            btn.disabled = true;
-
-            const telefone = document.getElementById('google-telefone').value;
-            const novoNome = document.getElementById('google-nome').value;
-            const senha = document.getElementById('google-senha').value;
-
-            try {
-                // Tenta definir a senha no Firebase para que o usuário possa logar por email também
-                await updatePassword(user, senha);
-                
-                window.googleRegistrationData = { telefone: telefone, senha: senha };
-                modal.classList.remove('active');
-                syncUserWithBackend(user, novoNome);
-            } catch (error) {
-                console.error("Erro ao definir senha no Firebase:", error);
-                window.NuraNotify.toast('Erro ao configurar senha. Tente outra mais forte.', 'error');
-                btn.innerHTML = 'Concluir';
-                btn.disabled = false;
-            }
-        };
-    } else {
-        window.NuraNotify.toast('É necessário completar o cadastro.', 'warning');
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     
+    // --- VERIFICA SE RETORNOU DO LOGIN DO GOOGLE ---
+    getRedirectResult(auth)
+        .then((result) => {
+            if (result && result.user) {
+                syncUserWithBackend(result.user);
+            }
+        })
+        .catch((error) => {
+            console.error("Erro ao retornar do Google Redirect:", error);
+            window.NuraNotify.toast('Erro ao processar login com Google.', 'error');
+        });
+
     // --- LOGIN COM EMAIL/SENHA ---
     const loginForm = document.getElementById('firebase-login-form');
     if (loginForm) {
@@ -170,15 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnGoogle = document.getElementById('btn-google-login');
     if (btnGoogle) {
         btnGoogle.addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    syncUserWithBackend(result.user);
-                }).catch((error) => {
-                    console.error(error);
-                    if(error.code !== 'auth/popup-closed-by-user') {
-                        window.NuraNotify.toast('Erro ao autenticar com Google.', 'error');
-                    }
-                });
+            signInWithRedirect(auth, provider);
         });
     }
 });

@@ -220,7 +220,7 @@ $total = $subtotal;
 
                         <div id="payment-form-card" class="payment-form-container">
                             <div class="form-group" style="margin-bottom: 1rem;">
-                                <label>Número do Cartão (Fictício)</label>
+                                <label>Número do Cartão</label>
                                 <input type="text" name="cartao_numero" id="input-cartao" class="input" placeholder="0000 0000 0000 0000" maxlength="19">
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">

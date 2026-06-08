@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="auth-header">
                     <div class="auth-logo-wrap">
-                        <img class="auth-logo" src="../../assets/img/NURA_logo.png" alt="Nura">
+                        <h1 class="auth-logo-text">Nura.</h1>
                     </div>
                     <p class="auth-tagline">Bem-vindo ao Painel Administrativo. Acesso restrito.</p>
                 </div>

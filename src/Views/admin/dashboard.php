@@ -255,12 +255,77 @@ $clientsDataJson = json_encode($clientsDataForModal);
         .modal-info-val { font-weight: 500; text-align: right; }
 
         /* PDF Styles */
-        .pdf-mode { padding: 20px; background: #fff; width: 1400px !important; max-width: none !important; margin: 0; }
-        .pdf-mode .profile-card { border: 1px solid #e5e5e5; box-shadow: none; margin-bottom: 2rem; }
-        .pdf-mode .chart-grid-3, .pdf-mode .chart-grid-2 { display: flex; flex-wrap: nowrap; gap: 20px; }
-        .pdf-mode .chart-grid-3 > div, .pdf-mode .chart-grid-2 > div { flex: 1; }
-        .pdf-mode .kpi-grid { display: flex; flex-wrap: nowrap; gap: 20px; }
-        .pdf-mode .kpi-grid > div { flex: 1; }
+        body.exporting-pdf {
+            overflow: visible !important;
+        }
+        body.exporting-pdf .profile-sidebar { 
+            display: none !important; 
+        }
+        body.exporting-pdf .dash-header, body.exporting-pdf header { 
+            display: none !important; 
+        }
+        body.exporting-pdf .profile-grid { 
+            display: block !important; 
+            width: 100% !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+        }
+        body.exporting-pdf .main-profile { 
+            max-width: 100% !important; 
+            width: 100% !important; 
+            padding: 0 !important; 
+            margin: 0 !important; 
+        }
+        
+        .pdf-mode {
+            background: #fff !important;
+            padding: 30px !important;
+            box-sizing: border-box !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            min-height: auto !important;
+        }
+        .pdf-mode .profile-card { 
+            border: 1px solid #e5e5e5; 
+            box-shadow: none; 
+            margin-bottom: 1.5rem; 
+        }
+        .pdf-mode .kpi-grid { 
+            display: grid !important; 
+            grid-template-columns: repeat(4, 1fr) !important; 
+            gap: 20px !important; 
+        }
+        .pdf-mode .chart-grid-3 { 
+            display: grid !important; 
+            grid-template-columns: 2fr 1fr 1fr !important; 
+            gap: 20px !important; 
+        }
+        .pdf-mode .chart-grid-2 { 
+            display: grid !important; 
+            grid-template-columns: 1fr 1fr !important; 
+            gap: 20px !important; 
+        }
+        .pdf-mode .chart-wrap {
+            height: auto !important;
+            min-height: 250px !important;
+        }
+        .pdf-mode canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100% !important;
+            display: block !important;
+        }
+        .pdf-mode .table-light { 
+            min-width: auto !important; 
+            width: 100% !important; 
+            font-size: 0.8rem !important; 
+        }
+        .pdf-mode .table-light th, .pdf-mode .table-light td { 
+            padding: 0.5rem !important; 
+        }
     </style>
 </head>
 <body class="page-perfil">
@@ -323,7 +388,7 @@ $clientsDataJson = json_encode($clientsDataForModal);
             <section class="profile-content" id="dashboard-content">
                 
                 <div style="display:none; text-align:center; margin-bottom:2rem;" id="pdf-header">
-                    <img src="../../assets/img/NURA_logo.png" alt="Nura Logo" style="height:40px; margin-bottom:10px; filter: brightness(0);">
+                    <img src="../../assets/img/NURA_logo.png" alt="Nura Logo" style="height:40px; margin-bottom:10px;">
                     <h2 style="margin:0; font-family:'Outfit';">Relatório Gerencial de Vendas</h2>
                     <p style="margin:5px 0 0 0; color:#666;">Período Analisado: Últimos <?php echo $period; ?> dias</p>
                     <hr style="border:none; border-top:1px solid #eee; margin-top:1rem;">
@@ -378,7 +443,13 @@ $clientsDataJson = json_encode($clientsDataForModal);
                             <?php else: ?>
                                 <?php foreach($topProducts as $tp): ?>
                                     <div class="product-item">
-                                        <img src="<?php echo htmlspecialchars($tp['img']); ?>" alt="Foto" class="product-img" onerror="this.src='../../assets/img/placeholder.png'">
+                                        <?php 
+                                            $prodImg = $tp['img'];
+                                            if (strpos($prodImg, 'freepik.com') !== false) {
+                                                $prodImg = '../../assets/img/limonada.jpg';
+                                            }
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($prodImg); ?>" alt="Foto" class="product-img" crossorigin="anonymous" onerror="this.src='../../assets/img/placeholder.png'">
                                         <div class="product-info">
                                             <div class="product-name"><?php echo htmlspecialchars($tp['nome']); ?></div>
                                             <div class="product-cat"><?php echo htmlspecialchars($tp['categoria']); ?></div>
@@ -457,6 +528,9 @@ $clientsDataJson = json_encode($clientsDataForModal);
         </div>
     </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
         const clientsDataDb = <?php echo $clientsDataJson; ?>;
 
@@ -491,9 +565,7 @@ $clientsDataJson = json_encode($clientsDataForModal);
                     <span class="modal-info-label">Telefone</span>
                     <span class="modal-info-val">${c.telefone}</span>
                 </div>
-                
                 <h4 style="margin: 1rem 0 0.5rem 0; font-family:'Outfit'; border-bottom:2px solid var(--primary-soft); display:inline-block;">Perfil Clínico de Produção</h4>
-                
                 <div class="modal-info-row">
                     <span class="modal-info-label">Peso / Altura</span>
                     <span class="modal-info-val">${peso} / ${altura}</span>
@@ -520,8 +592,8 @@ $clientsDataJson = json_encode($clientsDataForModal);
             if (event.target == modal) closeModal();
         }
 
+        // Inicialização correta dos Gráficos sem erros de sintaxe
         document.addEventListener("DOMContentLoaded", function() {
-            
             const chartLabels = <?php echo json_encode($chartLabels); ?>;
             const chartData = <?php echo json_encode($chartData); ?>;
             const catLabels = <?php echo json_encode($catLabels); ?>;
@@ -535,7 +607,7 @@ $clientsDataJson = json_encode($clientsDataForModal);
             Chart.defaults.color = '#737373';
             Chart.defaults.scale.grid.color = '#e5e5e5';
 
-            // 1. Faturamento
+            // 1. Gráfico de Faturamento
             const revCtx = document.getElementById('revenueChart').getContext('2d');
             const gradient = revCtx.createLinearGradient(0, 0, 0, 300);
             gradient.addColorStop(0, 'rgba(16, 185, 129, 0.4)'); 
@@ -546,65 +618,104 @@ $clientsDataJson = json_encode($clientsDataForModal);
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
 
-            // 2. Turnos (Bar)
+            // 2. Gráfico de Turnos
             const turCtx = document.getElementById('turnoChart').getContext('2d');
             new Chart(turCtx, {
                 type: 'bar',
-                data: { labels: turLabels, datasets: [{ data: turData, backgroundColor: ['#f59e0b', '#3b82f6', '#6366f1'], borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                data: { labels: turLabels, datasets: [{ data: turData, backgroundColor: ['#f59e0b', '#3b82f6', '#10b981'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // 3. Status (Pie)
+            // 3. Gráfico de Status
             const statCtx = document.getElementById('statusChart').getContext('2d');
             new Chart(statCtx, {
-                type: 'pie',
-                data: { labels: statLabels, datasets: [{ data: statData, backgroundColor: ['#f59e0b', '#10b981', '#6366f1', '#ef4444'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                type: 'doughnut',
+                data: { labels: statLabels, datasets: [{ data: statData, backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
             });
 
-            // 4. Categorias (Doughnut)
+            // 4. Gráfico de Categorias
             const catCtx = document.getElementById('categoryChart').getContext('2d');
             new Chart(catCtx, {
-                type: 'doughnut',
-                data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom' } } }
+                type: 'pie',
+                data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
             });
 
-            // PDF Export
-            document.getElementById('btn-export-pdf').addEventListener('click', function() {
-                const element = document.getElementById('dashboard-content');
-                const headerObj = document.getElementById('pdf-header');
-                
-                element.classList.add('pdf-mode');
-                headerObj.style.display = 'block';
-
-                setTimeout(() => {
-                    const pxHeight = element.scrollHeight + 60; 
-                    const pxWidth = 1400; 
-                    const mmHeight = pxHeight * 0.264583;
-                    const mmWidth = pxWidth * 0.264583;
-
-                    const opt = {
-                        margin:       10,
-                        filename:     'Relatorio_Dashboard_Nura.pdf',
-                        image:        { type: 'jpeg', quality: 1.0 },
-                        html2canvas:  { scale: 2, useCORS: true, windowWidth: 1400 }, 
-                        jsPDF:        { unit: 'mm', format: [mmWidth + 20, mmHeight + 20], orientation: 'portrait' }
-                    };
-
-                    const orgBtn = document.getElementById('btn-export-pdf').innerHTML;
-                    document.getElementById('btn-export-pdf').innerHTML = '<i class="ph-bold ph-spinner"></i> Processando...';
-                    document.getElementById('btn-export-pdf').style.opacity = '0.5';
-
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        element.classList.remove('pdf-mode');
-                        headerObj.style.display = 'none';
-                        document.getElementById('btn-export-pdf').innerHTML = orgBtn;
-                        document.getElementById('btn-export-pdf').style.opacity = '1';
-                    });
-                }, 100);
-            });
+            // Ativação do evento do botão de PDF
+            document.getElementById('btn-export-pdf').addEventListener('click', exportarParaPDF);
         });
+
+        // Função assíncrona utilizando jsPDF e html2canvas diretamente
+        async function exportarParaPDF() {
+            const btn = document.getElementById('btn-export-pdf');
+            const orgBtn = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Processando...';
+            btn.style.opacity = '0.5';
+
+            const elemento = document.getElementById('dashboard-content');
+
+            try {
+                const canvas = await html2canvas(elemento, {
+                    scale: 2,
+                    useCORS: true,
+                    windowWidth: 1250, 
+                    windowHeight: elemento.scrollHeight, 
+                    x: 0,
+                    y: 0,
+                    scrollX: 0,
+                    scrollY: 0,
+                    onclone: function(clonedDoc) {
+                        const style = clonedDoc.createElement('style');
+                        style.innerHTML = `
+                            * { overflow: visible !important; }
+                            html, body { width: 1250px !important; max-width: 1250px !important; margin: 0 !important; padding: 0 !important; background: #fff !important; }
+                            .profile-grid { display: block !important; width: 100% !important; }
+                            .admin-table-wrapper { overflow: visible !important; width: 100% !important; }
+                            .table-light { width: 100% !important; min-width: 100% !important; }
+                            #dashboard-content { width: 1250px !important; max-width: 1250px !important; padding: 40px !important; box-sizing: border-box !important; }
+                            #pdf-header { display: block !important; }
+                            .chart-wrap { height: 260px !important; }
+                        `;
+                        clonedDoc.head.appendChild(style);
+                    }
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const { jsPDF } = window.jspdf;
+                
+                // Formato Paisagem ('l') para os gráficos ficarem perfeitos lado a lado
+                const doc = new jsPDF('l', 'mm', 'a4'); 
+
+                const pageWidth = doc.internal.pageSize.getWidth();   
+                const pageHeight = doc.internal.pageSize.getHeight(); 
+
+                const imgWidth = pageWidth - 20; 
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                let heightLeft = imgHeight;
+                let position = 10; 
+
+                doc.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight + 10;
+                    doc.addPage();
+                    doc.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                doc.save('Relatorio_Dashboard_Nura.pdf');
+
+            } catch (error) {
+                console.error("Erro ao gerar PDF:", error);
+            } finally {
+                btn.innerHTML = orgBtn;
+                btn.style.opacity = '1';
+            }
+        }
     </script>
 </body>
 </html>

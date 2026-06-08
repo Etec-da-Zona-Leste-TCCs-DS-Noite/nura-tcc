@@ -61,7 +61,7 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
     </header>
 
     <main class="container main-profile">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+        <div class="pedidos-page-header">
             <h1 class="perfil-page-title" style="margin-bottom: 0;">Meus Pedidos</h1>
             <a href="perfil.php" class="btn btn-outline"><i class="ph ph-arrow-left"></i> Voltar ao Perfil</a>
         </div>
@@ -137,19 +137,19 @@ $pedidos = Pedido::buscarPorClienteId($_SESSION['cliente_id']);
                                 </div>
 
                                 <div class="pedido-total-block">
-                                    <div style="display: flex; justify-content: space-between; width: 250px; font-size: 0.9rem; color: var(--muted);">
+                                    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 280px; font-size: 0.9rem; color: var(--muted);">
                                         <span>Subtotal</span>
                                         <span>R$ <?php echo number_format($pedido['subtotal'] ?? 0, 2, ',', '.'); ?></span>
                                     </div>
-                                    <div style="display: flex; justify-content: space-between; width: 250px; font-size: 0.9rem; color: var(--muted);">
+                                    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 280px; font-size: 0.9rem; color: var(--muted);">
                                         <span>Frete</span>
                                         <span>R$ <?php echo number_format($pedido['frete'] ?? 0, 2, ',', '.'); ?></span>
                                     </div>
-                                    <div style="display: flex; justify-content: space-between; width: 250px; font-size: 1.1rem; color: var(--foreground); font-weight: 700; font-family: 'Outfit'; margin-top: 0.5rem;">
+                                    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 280px; font-size: 1.1rem; color: var(--foreground); font-weight: 700; font-family: 'Outfit'; margin-top: 0.5rem;">
                                         <span>Total pago</span>
                                         <span style="color: var(--primary);">R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></span>
                                     </div>
-                                    <div style="margin-top: 1rem; width: 250px;">
+                                    <div style="margin-top: 1rem; width: 100%; max-width: 280px;">
                                         <a href="Checkout/comprovante.php?id=<?php echo $pedido['id']; ?>" target="_blank" class="btn btn-outline" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.5rem;">
                                             <i class="ph ph-receipt"></i> Ver Nota Fiscal
                                         </a>

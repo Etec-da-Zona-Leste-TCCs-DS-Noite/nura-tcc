@@ -293,7 +293,7 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
                         <!-- PIX -->
                         <span class="payment-badge payment-badge--pix" title="Pix" aria-label="Pix">
                             <svg viewBox="0 0 36 24" xmlns="http://www.w3.org/2000/svg" class="payment-svg">
-                                <path d="M17.4 5.6l3 3a1 1 0 0 0 1.4 0l3-3a2.5 2.5 0 0 1 3.5 0l.1.1-4.8 4.8a2 2 0 0 1-2.8 0l-4.8-4.8.1-.1a2.5 2.5 0 0 1 3.3 0z" fill="#32BCAD"/>
+                                <path d="M17.4 5.6l3 3a1 1 0 0 0 1.4 0l3-3a2.5 2.5 0 0 1 3.5 0l.1.1-4.8 4.8a2 2 0 0 1-2.8 0l-4.8-4.8.1-.1a2.5 2.5 0 0 1-3.3 0z" fill="#32BCAD"/>
                                 <path d="M28.4 8.2l.1.1a2.5 2.5 0 0 1 0 3.5l-3 3a1 1 0 0 0 0 1.4l3 3a2.5 2.5 0 0 1 0 3.5l-.1.1-4.8-4.8a2 2 0 0 1 0-2.8l4.8-4.8z" fill="#32BCAD"/>
                                 <path d="M18.6 18.4l-3-3a1 1 0 0 0-1.4 0l-3 3a2.5 2.5 0 0 1-3.5 0l-.1-.1 4.8-4.8a2 2 0 0 1 2.8 0l4.8 4.8-.1.1a2.5 2.5 0 0 1-3.3 0z" fill="#32BCAD"/>
                                 <path d="M7.6 15.8l-.1-.1a2.5 2.5 0 0 1 0-3.5l3-3a1 1 0 0 0 0-1.4l-3-3a2.5 2.5 0 0 1 0-3.5l.1-.1 4.8 4.8a2 2 0 0 1 0 2.8L7.6 15.8z" fill="#32BCAD"/>
@@ -326,6 +326,9 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
             <p>© 2026 Nura. Todos os direitos reservados.</p>
         </div>
     </footer>
+
+    <!-- Renderiza o widget flutuante do chat no canto inferior direito -->
+    <?php include __DIR__ . '/chat_widget.php'; ?>
 
     <script src="../script.js"></script>
 </body>

@@ -38,8 +38,17 @@ class PedidoController
             $cartaoNome = $_POST['cartao_nome'] ?? '';
             $cartaoVal = $_POST['cartao_validade'] ?? '';
             $cartaoCvv = $_POST['cartao_cvv'] ?? '';
-            $parcelas = $_POST['parcelas'] ?? '1';
+            $parcelas = intval($_POST['parcelas'] ?? 1);
             
+            $juros = 0.0;
+            if ($metodoPagamento === 'Crédito' && $parcelas > 3) {
+                // Cálculo idêntico ao JS do checkout: fator = pow(1.015, parcelas)
+                $fator = pow(1.015, $parcelas);
+                $totalComJuros = $total * $fator;
+                $juros = $totalComJuros - $total;
+                $total = $totalComJuros;
+            }
+
             // Mascarando para não salvar tudo, mantendo apenas os 4 últimos dígitos
             $cartaoMascarado = str_pad(substr($cartaoNum, -4), 16, '*', STR_PAD_LEFT);
             $dadosPagamentoStr = json_encode([
@@ -47,7 +56,9 @@ class PedidoController
                 'cartao' => $cartaoMascarado,
                 'validade' => $cartaoVal,
                 'cvv' => '***',
-                'parcelas' => $parcelas
+                'parcelas' => $parcelas,
+                'juros' => $juros,
+                'total_sem_juros' => $subtotalForm + $freteForm
             ]);
         }
 

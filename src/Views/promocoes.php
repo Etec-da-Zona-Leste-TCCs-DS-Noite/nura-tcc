@@ -273,6 +273,9 @@ $produtosDestaque = array_slice($produtoController->listarTodos(), 0, 12);
         </div>
     </footer>
 
+     <!-- Renderiza o widget flutuante do chat no canto inferior direito -->
+    <?php include __DIR__ . '/chat_widget.php'; ?>
+
     <script src="../script.js"></script>
 </body>
 

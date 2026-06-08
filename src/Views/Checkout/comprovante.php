@@ -23,6 +23,7 @@ if (!$pedido || $pedido['cliente_id'] != $_SESSION['cliente_id']) {
 
 $cliente = Cliente::buscarPorId($_SESSION['cliente_id']);
 $itens = json_decode($pedido['itens'] ?? '[]', true) ?: [];
+$dadosPagamento = Pedido::descriptografarDadosPagamento($pedido['dados_pagamento']);
 
 // Gera uma chave de acesso aleatória simulada de 44 dígitos
 $chaveAcesso = '';
@@ -268,6 +269,12 @@ $numeroRecibo = str_pad($pedido['id'], 6, '0', STR_PAD_LEFT);
                 <td>FRETE/ENTREGA</td>
                 <td class="text-right">R$ <?php echo number_format($pedido['frete'], 2, ',', '.'); ?></td>
             </tr>
+            <?php if (isset($dadosPagamento['juros']) && $dadosPagamento['juros'] > 0): ?>
+            <tr>
+                <td>JUROS PARCELAMENTO (<?php echo $dadosPagamento['parcelas']; ?>x)</td>
+                <td class="text-right">R$ <?php echo number_format($dadosPagamento['juros'], 2, ',', '.'); ?></td>
+            </tr>
+            <?php endif; ?>
             <tr class="bold">
                 <td>VALOR A PAGAR</td>
                 <td class="text-right">R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></td>
@@ -282,7 +289,14 @@ $numeroRecibo = str_pad($pedido['id'], 6, '0', STR_PAD_LEFT);
                 <td class="text-right">VALOR PAGO</td>
             </tr>
             <tr>
-                <td><?php echo htmlspecialchars($pedido['metodo_pagamento']); ?></td>
+                <td>
+                    <?php 
+                    echo htmlspecialchars($pedido['metodo_pagamento']); 
+                    if (isset($dadosPagamento['parcelas']) && $pedido['metodo_pagamento'] === 'Crédito') {
+                        echo ' (' . $dadosPagamento['parcelas'] . 'x)';
+                    }
+                    ?>
+                </td>
                 <td class="text-right">R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></td>
             </tr>
         </table>

@@ -447,6 +447,9 @@ function filtrarPorTag($lista, $tag)
         </div>
     </footer>
 
+     <!-- Renderiza o widget flutuante do chat no canto inferior direito -->
+    <?php include __DIR__ . '/chat_widget.php'; ?>
+
   <script src="../script.js"></script>
 </body>
 

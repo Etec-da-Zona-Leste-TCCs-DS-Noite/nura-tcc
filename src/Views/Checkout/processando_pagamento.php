@@ -143,42 +143,60 @@ $metodo = $pedido['metodo_pagamento'] ?? 'PIX';
 
     <script src="../../script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let timeLeft = 15;
-            const timerEl = document.getElementById('timer-count');
-            const statusText = document.getElementById('status-text');
-            const btnForce = document.getElementById('btn-force-pay');
-            const pedidoId = <?php echo $pedidoId; ?>;
+    document.addEventListener('DOMContentLoaded', () => {
+        let timeLeft = 30 * 60; // 1800 segundos
+        const timerEl = document.getElementById('timer-count');
+        const statusText = document.getElementById('status-text');
+        const btnForce = document.getElementById('btn-force-pay');
+        const pedidoId = <?php echo $pedidoId; ?>;
+        
+        // Função interna para formatar os segundos em "30:00" ou "30 min"
+        function formatarTempo(segundosTotais) {
+            const minutos = Math.floor(segundosTotais / 60);
+            const segundos = segundosTotais % 60;
             
-            const interval = setInterval(() => {
-                timeLeft--;
-                timerEl.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(interval);
-                    statusText.textContent = "Tempo esgotado. Redirecionando...";
-                    statusText.style.color = "var(--danger)";
-                    // Redireciona para pedidos, deixando como 'Pagamento Pendente'
-                    setTimeout(() => {
-                        window.location.href = '../pedidos.php?nura_flash=' + encodeURIComponent('Tempo de pagamento expirado. Você pode tentar novamente mais tarde.') + '&nura_ft=warning';
-                    }, 1500);
-                }
-            }, 1000);
+            // Adiciona o zero à esquerda se os segundos forem menores que 10
+            const segundosFormatados = segundos < 10 ? '0' + segundos : segundos;
+            
+            // Retorna no formato clássico de relógio (Ex: 29:59). 
+            // Se quiser escrito "min", mude para: `${minutos} min e ${segundosFormatados} s`
+            return `${minutos}:${segundosFormatados}`;
+        }
 
-            // Botão de Forçar Pagamento (Aprovação simulada)
-            btnForce.addEventListener('click', () => {
+        // Exibe o tempo inicial (30:00) assim que a página carrega
+        timerEl.textContent = formatarTempo(timeLeft);
+        
+        const interval = setInterval(() => {
+            timeLeft--;
+            
+            // AQUI ESTÁ A MUDANÇA: Agora passa pelo formatador antes de exibir
+            timerEl.textContent = formatarTempo(timeLeft);
+            
+            if (timeLeft <= 0) {
                 clearInterval(interval);
-                timerEl.textContent = "OK";
-                statusText.textContent = "Pagamento aprovado!";
-                statusText.style.color = "var(--green-leaf)";
-                btnForce.style.display = "none";
-                
-                // Redireciona para o controller atualizar para Em Preparo
+                statusText.textContent = "Tempo esgotado. Redirecionando...";
+                statusText.style.color = "var(--danger)";
+                // Redireciona para pedidos, deixando como 'Pagamento Pendente'
                 setTimeout(() => {
-                    window.location.href = '../../Controller/PedidoController.php?acao=aprovar_pagamento&id=' + pedidoId;
-                }, 1000);
-            });
+                    window.location.href = '../pedidos.php?nura_flash=' + encodeURIComponent('Tempo de pagamento expirado. Você pode tentar novamente mais tarde.') + '&nura_ft=warning';
+                }, 1500);
+            }
+        }, 1000);
+
+        // Botão de Forçar Pagamento (Aprovação simulada)
+        btnForce.addEventListener('click', () => {
+            clearInterval(interval);
+            timerEl.textContent = "OK";
+            statusText.textContent = "Pagamento aprovado!";
+            statusText.style.color = "var(--green-leaf)";
+            btnForce.style.display = "none";
+            
+            // Redireciona para o controller atualizar para Em Preparo
+            setTimeout(() => {
+                window.location.href = '../../Controller/PedidoController.php?acao=aprovar_pagamento&id=' + pedidoId;
+            }, 1000);
         });
-    </script>
+    });
+</script>
 </body>
 </html>

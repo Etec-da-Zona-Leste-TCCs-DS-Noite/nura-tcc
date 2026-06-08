@@ -109,9 +109,9 @@ img {
 
 /* --- UTILITÁRIOS --- */
 .container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 clamp(1rem, 4vw, 3rem);
 }
 
 .text-gradient {
@@ -255,7 +255,8 @@ body>header .logo img {
     padding: 0.6rem 1rem 0.6rem 2.5rem;
     border: 1px solid hsla(168, 30%, 82%, 1);
     border-radius: 99px;
-    background: hsla(168, 42%, 94%, 0.7); /* Subtle green tone */
+    background: hsla(168, 42%, 94%, 0.7);
+    /* Subtle green tone */
     font-size: 0.95rem;
     color: var(--foreground);
     transition: all 0.2s ease;
@@ -282,7 +283,7 @@ body>header .logo img {
     width: 100%;
     background: #fff;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid hsla(150, 22%, 85%, 1);
     overflow: hidden;
     z-index: 1000;
@@ -409,7 +410,9 @@ body>header .logo img {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .header-actions {
@@ -718,6 +721,7 @@ body>header .logo img {
     }
 }
 
+
 .carousel-btn {
     position: absolute;
     top: calc(50% - 25px);
@@ -877,18 +881,24 @@ body>header .logo img {
 }
 
 .auth-header .auth-logo-wrap {
-    text-align: center;
-    margin-bottom: 0.35rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1.5rem;
 }
 
-.auth-logo {
-    height: clamp(72px, 14vw, 100px);
-    width: auto;
-    object-fit: contain;
-    margin: 0 auto;
-    display: block;
-    transform: none;
-    filter: drop-shadow(0 12px 28px hsla(168, 45%, 40%, 0.2));
+.auth-logo-text {
+    font-family: 'Prata', 'Playfair Display', Georgia, serif !important;
+    font-size: clamp(2rem, 6vw, 2.75rem);
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+    color: #11382b;
+    letter-spacing: 0.12em;
+    margin: 0;
+    margin-bottom: 8px;
+    text-shadow: none !important;
+    -webkit-font-smoothing: antialiased;
 }
 
 .tabs {
@@ -918,6 +928,7 @@ body>header .logo img {
     color: var(--primary);
     box-shadow: var(--shadow-sm);
 }
+
 
 .form-content {
     display: none;
@@ -957,7 +968,8 @@ body>header .logo img {
     width: 100%;
     padding: 0.8rem 1rem;
     border-radius: var(--radius);
-    background: hsla(168, 42%, 96%, 0.8); /* Subtle green tone */
+    background: hsla(168, 42%, 96%, 0.8);
+    /* Subtle green tone */
     border: 1px solid hsla(168, 30%, 85%, 1);
     font-size: 0.9375rem;
     color: var(--foreground);
@@ -978,42 +990,7 @@ body>header .logo img {
     align-items: start;
 }
 
-@media (max-width: 900px) {
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
-    .profile-sidebar {
-        padding: 0.75rem;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-    }
-    .sidebar-menu {
-        display: flex;
-        gap: 0.5rem;
-        overflow-x: auto;
-        padding-bottom: 0.5rem;
-        scrollbar-width: none; /* Firefox */
-    }
-    .sidebar-menu::-webkit-scrollbar {
-        display: none; /* Safari and Chrome */
-    }
-    .sidebar-link {
-        flex-shrink: 0;
-        width: auto;
-        white-space: nowrap;
-        margin-bottom: 0;
-        padding: 0.6rem 1rem;
-        font-size: 0.875rem;
-        background: var(--surface);
-        border: 1px solid var(--border);
-    }
-    .sidebar-link.active {
-        background: var(--primary-soft);
-        border-color: hsla(168, 40%, 40%, 0.2);
-    }
-}
-
+/* Base styles FIRST, then media query overrides */
 .profile-sidebar {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -1028,6 +1005,8 @@ body>header .logo img {
     border-radius: var(--radius-lg);
     padding: 2rem;
     box-shadow: var(--shadow-sm);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .sidebar-link {
@@ -1053,12 +1032,69 @@ body>header .logo img {
     background: #f8fafc;
     color: var(--foreground);
     transform: translateX(4px);
-    /* Puxão fluido pro lado */
 }
 
 .sidebar-link.active {
     background: var(--primary-soft);
     color: var(--primary-deep);
+}
+
+/* Mobile: sidebar vira barra horizontal de abas */
+@media (max-width: 1024px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        min-width: 0;
+    }
+
+    .profile-sidebar {
+        padding: 0.5rem 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding: 0.25rem 0 0.75rem 0;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sidebar-link {
+        flex-shrink: 0;
+        width: auto !important;
+        white-space: nowrap;
+        margin-bottom: 0 !important;
+        padding: 0.55rem 1rem !important;
+        font-size: 0.875rem !important;
+        border-radius: 2rem !important;
+        background: var(--surface) !important;
+        border: 1px solid var(--border) !important;
+        transform: none !important;
+    }
+
+    .sidebar-link:hover {
+        transform: none !important;
+        background: var(--secondary) !important;
+    }
+
+    .sidebar-link.active {
+        background: var(--primary-soft) !important;
+        color: var(--primary-deep) !important;
+        border-color: hsla(168, 40%, 40%, 0.3) !important;
+    }
 }
 
 /* --- HERO CAROUSEL --- */
@@ -1301,8 +1337,8 @@ body>header .logo img {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
-    margin-bottom: 1.5rem;
+    gap: 3.5rem;
+    margin-bottom: 2.5rem;
 }
 
 .footer-payments {
@@ -1337,14 +1373,14 @@ body>header .logo img {
     padding: 0.2rem 0.4rem;
     height: 24px;
     min-width: 36px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
     transition: border-color 0.2s, box-shadow 0.2s;
     cursor: default;
 }
 
 .payment-badge:hover {
     border-color: hsla(152, 50%, 55%, 0.4);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
 }
 
 .payment-svg {
@@ -1371,7 +1407,7 @@ body>header .logo img {
     border: 1px solid hsla(215, 20%, 88%, 0.9);
     border-radius: 6px;
     padding: 0.35rem 0.6rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
 }
 
 .safe-badge-icon {
@@ -1406,6 +1442,7 @@ body>header .logo img {
         text-align: center;
         gap: 2rem;
     }
+
     .footer-brand,
     .footer-nav-col,
     .footer-about-col,
@@ -1414,27 +1451,34 @@ body>header .logo img {
         min-width: unset;
         flex: unset;
     }
+
     .footer-payments-icons {
         justify-content: center;
     }
+
     .footer-payments-label {
         text-align: center;
     }
+
     .safe-badge-inner {
         margin: 0 auto;
     }
+
     .footer-safe-badge {
         display: flex;
         justify-content: center;
     }
+
     .footer-contact {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
+
     .footer-contact h4 {
         text-align: center;
     }
+
     .footer-contact-list {
         align-items: flex-start;
     }
@@ -1564,7 +1608,26 @@ body>header .logo img {
     }
 
     .header-actions {
-        margin-left: auto;
+        margin-left: auto !important;
+        display: flex !important;
+        gap: 0.25rem !important;
+        align-items: center !important;
+    }
+
+    .header-actions .btn {
+        padding: 0.4rem 0.6rem !important;
+        width: auto !important;
+        flex: none !important;
+    }
+
+    .header-user-label,
+    #header-user-name {
+        display: none !important;
+    }
+
+    .header-user-chip {
+        gap: 0.35rem !important;
+        padding: 0.25rem !important;
     }
 
     .nav-links a::after {
@@ -2178,6 +2241,9 @@ body>header .logo img {
     color: var(--muted);
     font-size: 0.9rem;
     line-height: 1.45;
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 .auth-trust {
@@ -2386,7 +2452,7 @@ body>header .logo img {
     padding: clamp(3rem, 8vw, 4.5rem) 1.5rem;
     border: 2px dashed hsla(150, 22%, 85%, 1);
     border-radius: 2rem;
-    background: hsla(140, 30%, 99%, 0.8);
+    background: hsla(140, 30%, 99%, 0.8)
 }
 
 .cart-empty .cart-empty-icon {
@@ -2837,9 +2903,12 @@ button.sidebar-link--button {
 /* Social login buttons */
 .social-login {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Se você tem apenas 1 botão ou quer que eles se ajustem melhor: */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 0.75rem;
     margin-bottom: 1.25rem;
+    width: 100%;
+    /* Garante que o container use todo o espaço disponível */
 }
 
 .btn-social {
@@ -2851,7 +2920,8 @@ button.sidebar-link--button {
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--foreground);
-    padding: 0.7rem 0.5rem;
+    /* Aumentamos o padding lateral de 0.5rem para 1rem para dar mais espaço */
+    padding: 0.7rem 1rem;
     border-radius: var(--radius);
     font-size: 0.85rem;
     font-weight: 500;
@@ -2859,6 +2929,9 @@ button.sidebar-link--button {
     transition: background 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     font-family: var(--font-main);
+
+    /* Evita que o texto quebre em duas linhas dentro do botão */
+    white-space: nowrap;
 }
 
 .btn-social img {
@@ -3046,7 +3119,9 @@ button.sidebar-link--button {
     gap: 0.4rem;
     font-size: 0.8rem;
     color: var(--muted);
-}/* --- GLOBAL PAGE TRANSITION --- */
+}
+
+/* --- GLOBAL PAGE TRANSITION --- */
 .page-transition-overlay {
     position: fixed;
     top: 0;
@@ -3104,7 +3179,9 @@ button.sidebar-link--button {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* --- FLY-TO-CART ANIMATION --- */
@@ -3125,9 +3202,18 @@ button.sidebar-link--button {
 }
 
 @keyframes cartBounce {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3) translateY(-2px); color: var(--primary); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.3) translateY(-2px);
+        color: var(--primary);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* ==========================================================================
@@ -3146,6 +3232,7 @@ button.sidebar-link--button {
     .carousel-track {
         grid-template-columns: 1fr !important;
     }
+
     .social-login {
         grid-template-columns: 1fr;
     }
@@ -3161,16 +3248,19 @@ button.sidebar-link--button {
         align-items: center;
         padding: 1rem;
     }
+
     .order-card-thumb {
         width: 70px;
         height: 70px;
         grid-column: 1;
         grid-row: 1;
     }
+
     .order-card-body {
         grid-column: 2;
         grid-row: 1;
     }
+
     .qty-row {
         grid-column: 1 / span 2;
         grid-row: 2;
@@ -3188,6 +3278,7 @@ button.sidebar-link--button {
     gap: 1.5rem;
     margin-top: 0.5rem;
 }
+
 .pedido-header {
     display: flex;
     justify-content: space-between;
@@ -3195,6 +3286,7 @@ button.sidebar-link--button {
     border-bottom: 1px solid var(--border);
     padding-bottom: 1.5rem;
 }
+
 .pedido-total-block {
     border-top: 1px solid var(--border);
     padding-top: 1rem;
@@ -3204,6 +3296,7 @@ button.sidebar-link--button {
     align-items: flex-end;
     gap: 0.25rem;
 }
+
 .pedido-filter-tabs {
     display: flex;
     gap: 0.5rem;
@@ -3212,10 +3305,12 @@ button.sidebar-link--button {
     padding: 0 0 0.5rem 0;
     margin-bottom: 2.5rem;
 }
+
 .pedido-filter-tabs .tab-btn {
     background: transparent;
     border: 1px solid transparent;
 }
+
 .pedido-filter-tabs .tab-btn.active {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -3227,20 +3322,29 @@ button.sidebar-link--button {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+
     .pedido-filter-tabs {
-        overflow-x: auto;
-        scrollbar-width: none;
-        padding-bottom: 0.75rem;
-        margin-bottom: 1.5rem;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        overflow: visible !important;
+        gap: 0.5rem !important;
+        padding-bottom: 0.75rem !important;
+        margin-bottom: 1.5rem !important;
+        justify-content: center !important;
     }
+
     .pedido-filter-tabs::-webkit-scrollbar {
-        display: none;
+        display: none !important;
     }
+
     .pedido-filter-tabs .tab-btn {
-        flex-shrink: 0;
-        white-space: nowrap;
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        flex: 1 1 auto !important;
+        width: auto !important;
+        justify-content: center !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        padding: 0.6rem 0.8rem !important;
+        font-size: 0.85rem !important;
     }
 }
 
@@ -3250,7 +3354,8 @@ button.sidebar-link--button {
         gap: 1rem;
         align-items: stretch;
     }
-    .pedido-header > div:last-child {
+
+    .pedido-header>div:last-child {
         justify-content: flex-start;
     }
 }
@@ -3259,7 +3364,8 @@ button.sidebar-link--button {
     .pedido-total-block {
         align-items: stretch;
     }
-    .pedido-total-block > div {
+
+    .pedido-total-block>div {
         width: auto !important;
     }
 }
@@ -3270,41 +3376,517 @@ button.sidebar-link--button {
     grid-template-columns: 1fr 2fr;
     gap: 1.5rem;
 }
+
 @media (max-width: 480px) {
     .checkout-form-grid-2 {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
 }
+
 @media (max-width: 768px) {
-    .profile-card {
-        padding: 1.25rem !important;
-    }
     .summary-card {
         padding: 1.25rem !important;
     }
 }
+
 @media (max-width: 560px) {
     .processing-card {
         padding: 1.5rem !important;
         margin: 2rem 1rem !important;
     }
+
     .pix-code {
         width: 200px !important;
         height: 200px !important;
     }
 }
 
-/* Botões do Perfil - Adaptar para 100% largura */
+
+/* ==========================================================================
+   RESPONSIVIDADE COMPLETA — PROFILE, HEADER, FOOTER, GLOBAL
+   ========================================================================== */
+
+/* Pedidos page header — empilha no mobile */
+.pedidos-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 480px) {
+    .pedidos-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .pedidos-page-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Inputs nunca vazam do container */
+input,
+select,
+textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* ── Global overflow protection ── */
+html,
+body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.main-profile {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* ── Header user chip — truncar em telas pequenas ── */
+.header-user-chip {
+    overflow: hidden;
+    max-width: 200px;
+}
+
+#header-user-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+    display: inline-block;
+}
+
+/* ── Profile page global fixes ── */
+.profile-card {
+    overflow: hidden;
+    word-break: break-word;
+    max-width: 100%;
+}
+
+.profile-content {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* ── Digital Twin responsive ── */
+.digital-twin-inner {
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.avatar-stage {
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.digital-twin-mascot {
+    max-width: 100%;
+}
+
+.digital-twin-mascot svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ── Cabeçalho Responsivo em Duas Linhas (≤ 640px) ── */
+@media (max-width: 640px) {
+    .header-inner {
+        flex-wrap: wrap !important;
+        padding: 0.75rem 1rem !important;
+        min-height: auto !important;
+        gap: 0.5rem 0 !important;
+    }
+
+    .header-search {
+        order: 3 !important;
+        display: flex !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0.5rem 0 0 0 !important;
+        flex: none !important;
+    }
+
+    body>header {
+        height: auto !important;
+    }
+
+    .logo-img,
+    body>header .logo img {
+        height: 38px !important;
+    }
+
+    #header-user-name {
+        max-width: 80px;
+        font-size: 0.82rem;
+    }
+
+    .header-user-chip {
+        max-width: 140px;
+    }
+
+    .header-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ── Profile grid stacking (≤ 1024px) — sidebar → horizontal scroll tabs ── */
+/* Already handled at line 988. These are reinforcement overrides. */
+
+/* ── Profile card & form layout (≤ 768px) ── */
+@media (max-width: 768px) {
+    .main-profile {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .perfil-page-title {
+        font-size: 1.5rem;
+    }
+
+    .profile-card {
+        padding: 1.25rem !important;
+    }
+
+    .profile-card h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-card .lead {
+        font-size: 0.9rem;
+    }
+
+    /* Digital twin avatar */
+    .avatar-stage {
+        padding: 2rem 0.75rem;
+    }
+
+    .digital-twin-mascot {
+        width: 120px;
+        height: 150px;
+    }
+
+    .digital-twin-mascot svg:first-of-type {
+        width: 60px !important;
+        height: 60px !important;
+        left: 30px !important;
+    }
+
+    /* Avatar stat grid */
+    .avatar-stat {
+        padding: 1rem;
+    }
+
+    .avatar-stat h4 {
+        font-size: 0.72rem;
+    }
+
+    .avatar-stat p {
+        font-size: 0.95rem;
+    }
+
+    /* Welcome hero */
+    .welcome-hero__inner {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .welcome-hero__actions {
+        justify-content: center;
+    }
+}
+
+/* ── Profile optimizations for small mobile (≤ 576px) ── */
+@media (max-width: 576px) {
+    .profile-card {
+        padding: 1rem !important;
+        border-radius: var(--radius) !important;
+    }
+
+    .avatar-stat-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .profile-grid {
+        gap: 1.25rem;
+    }
+
+    .sidebar-menu {
+        gap: 0.35rem;
+    }
+
+    .sidebar-link {
+        padding: 0.45rem 0.7rem !important;
+        font-size: 0.78rem !important;
+    }
+
+    .sidebar-link i {
+        font-size: 0.9rem;
+    }
+
+    .form-group label {
+        font-size: 0.78rem;
+    }
+
+    .input {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.88rem;
+    }
+
+    /* Perfil title */
+    .perfil-page-title {
+        font-size: 1.35rem;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Digital twin smaller */
+    .digital-twin-mascot {
+        width: 100px;
+        height: 130px;
+    }
+
+    .digital-twin-mascot svg:first-of-type {
+        width: 50px !important;
+        height: 50px !important;
+        left: 25px !important;
+    }
+
+    .avatar-stage {
+        padding: 1.5rem 0.5rem;
+    }
+}
+
+/* ── Profile actions for narrow phones (≤ 480px) ── */
 @media (max-width: 480px) {
     .profile-actions {
         flex-direction: column;
         align-items: stretch;
     }
+
     .profile-actions .btn,
     .profile-actions button,
     .profile-actions .btn-muted-solid {
         width: 100%;
         text-align: center;
     }
+
+    /* Carrinho */
+    .order-card {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+        padding: 1.25rem 1rem !important;
+    }
+
+    .order-card-thumb {
+        width: 100% !important;
+        height: 140px !important;
+        object-fit: cover !important;
+        border-radius: var(--radius) !important;
+    }
+
+    .order-card-body {
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .qty-row {
+        width: 100% !important;
+        justify-content: center !important;
+        gap: 1rem !important;
+        border-top: 1px solid var(--border) !important;
+        padding-top: 1rem !important;
+    }
+
+    .carousel-track {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* form-grid-2 already stacks at 560px */
+    .checkbox-list label {
+        font-size: 0.88rem;
+        padding: 0.35rem 0.5rem;
+    }
+
+    /* Modal responsiveness */
+    .custom-modal {
+        width: 95%;
+        padding: 1.5rem;
+    }
+
+    .custom-modal--wide {
+        max-width: 95%;
+    }
+
+    .delete-reason-option {
+        font-size: 0.85rem;
+        padding: 0.45rem 0.5rem;
+    }
+
+    /* Header chip hide name on very small */
+    #header-user-name {
+        display: none;
+    }
 }
+
+/* ── Footer responsive fine-tuning ── */
+@media (max-width: 480px) {
+    .footer {
+        padding: 3rem 0 1.5rem;
+    }
+
+    .footer h4 {
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .footer a {
+        font-size: 0.88rem;
+    }
+
+    .footer-trust {
+        gap: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-bottom {
+        margin-top: 2rem;
+        font-size: 0.78rem;
+    }
+
+    .footer .logo-img-footer {
+        height: 70px;
+    }
+}
+
+
+/* =========================================================
+   ABAS DO PERFIL: MÚLTIPLAS LINHAS (WRAP) NO MOBILE
+   ========================================================= */
+@media (max-width: 1024px) {
+    .profile-sidebar {
+        overflow: visible !important;
+    }
+
+    .sidebar-menu {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        /* A mágica que empurra os botões para baixo */
+        overflow: visible !important;
+        /* Remove qualquer rolagem */
+        gap: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        justify-content: center !important;
+    }
+
+    .sidebar-link {
+        flex: 1 1 auto !important;
+        /* Faz os botões crescerem para preencher os espaços */
+        width: auto !important;
+        justify-content: center !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+        padding: 0.6rem 0.8rem !important;
+        /* Ajuste leve no espaçamento interno */
+    }
+}
+
+/* =========================================================
+   BARRA DE PESQUISA 100% NO MOBILE
+   ========================================================= */
+@media (max-width: 768px) {
+    .header-search {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+        /* Força o elemento a ocupar a linha inteira */
+        margin: 0.8rem 0 0 0 !important;
+        /* Dá um leve respiro em cima */
+    }
+
+    .search-input-wrapper {
+        width: 100% !important;
+    }
+
+    .search-input-wrapper input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* =========================================================
+   CORREÇÕES DO CARRINHO MOBILE
+   ========================================================= */
+
+/* 1. Corrige o card do produto e a foto esticada */
+@media (max-width: 560px) {
+    .order-card {
+        display: grid !important;
+        grid-template-columns: 80px 1fr !important; /* Espaço exato para a foto */
+        grid-template-rows: auto auto !important;
+        gap: 1rem !important;
+        align-items: center !important;
+        padding: 1.25rem 1rem !important;
+        flex-direction: unset !important; /* Anula a quebra da regra de 480px */
+    }
+
+    .order-card-thumb {
+        width: 80px !important;
+        height: 80px !important;
+        object-fit: cover !important; /* Garante que a foto não distorça */
+        border-radius: 0.75rem !important;
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+    }
+
+    .order-card-body {
+        grid-column: 2 !important;
+        grid-row: 1 !important;
+        text-align: left !important;
+        width: 100% !important;
+    }
+
+    .qty-row {
+        grid-column: 1 / span 2 !important;
+        grid-row: 2 !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-top: 1px solid var(--border) !important;
+        padding-top: 1rem !important;
+        gap: 0 !important;
+    }
+}
+
+/* 2. Separa o texto "Total estimado" do valor em Reais */
+.cart-summary-total {
+    display: flex !important;
+    flex-wrap: wrap !important; /* Se não couber, quebra a linha em vez de colar */
+    justify-content: space-between !important; /* Joga os textos para as pontas */
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+@media (max-width: 480px) {
+    .cart-summary-total {
+        font-size: 1.25rem !important; /* Diminui levemente a fonte no iPhone */
+    }
+}
+

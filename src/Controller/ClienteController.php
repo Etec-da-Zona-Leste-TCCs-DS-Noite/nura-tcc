@@ -100,7 +100,10 @@ class ClienteController
         PerfilClinico::deletar($id);
 
         if (Cliente::deletar($id)) {
-            session_destroy();
+            unset($_SESSION['cliente_id']);
+            unset($_SESSION['cliente_nome']);
+            unset($_SESSION['login_recente']);
+            unset($_SESSION['conta_nova']);
             header('Location: ../Views/index.php?nura_ft=success&nura_flash=' . rawurlencode('Sua conta foi encerrada. Até logo!'));
             exit;
         } else {
@@ -111,7 +114,10 @@ class ClienteController
 
     public function sair()
     {
-        session_destroy();
+        unset($_SESSION['cliente_id']);
+        unset($_SESSION['cliente_nome']);
+        unset($_SESSION['login_recente']);
+        unset($_SESSION['conta_nova']);
         header("Location: ../Views/index.php"); // Manda pra home ao sair
         exit;
     }
@@ -123,7 +129,6 @@ class ClienteController
             $email = $_POST['email'] ?? '';
             $nome = $_POST['nome'] ?? '';
             $telefone = $_POST['telefone'] ?? '';
-            $is_registration = $_POST['is_registration'] ?? 'false';
 
             if (empty($email) || empty($uid)) {
                 echo json_encode(['success' => false, 'message' => 'Dados inválidos.']);
@@ -134,39 +139,33 @@ class ClienteController
             $dadosCliente = Cliente::buscarPorEmail($email);
 
             if ($dadosCliente) {
-                // Já existe, apenas faz login
+                // Já existe, apenas faz login e associa a sessão
                 $_SESSION['cliente_id'] = $dadosCliente['id'];
                 $_SESSION['cliente_nome'] = $dadosCliente['nome'];
                 $_SESSION['login_recente'] = true;
                 echo json_encode(['success' => true]);
                 exit;
             } else {
-                // Não existe
-                if ($is_registration === 'true') {
-                    // Completa o cadastro
-                    $cliente = new Cliente();
-                    $cliente->setNome($nome);
-                    $cliente->setEmail($email);
-                    $cliente->setTelefone($telefone);
-                    
-                    $senhaPost = $_POST['senha'] ?? bin2hex(random_bytes(16));
-                    $cliente->setSenha($senhaPost); 
-                    
-                    $novoId = $cliente->salvar();
+                // Não existe: Cria a conta automaticamente usando as informações do Firebase
+                $cliente = new Cliente();
+                $cliente->setNome($nome);
+                $cliente->setEmail($email);
+                $cliente->setTelefone($telefone);
+                
+                // Gera uma senha aleatória para preencher o campo obrigatório do banco
+                $senhaProvisoria = bin2hex(random_bytes(16));
+                $cliente->setSenha($senhaProvisoria); 
+                
+                $novoId = $cliente->salvar();
 
-                    if ($novoId) {
-                        $_SESSION['cliente_id'] = $novoId;
-                        $_SESSION['cliente_nome'] = $nome;
-                        $_SESSION['conta_nova'] = true;
-                        echo json_encode(['success' => true]);
-                        exit;
-                    } else {
-                        echo json_encode(['success' => false, 'message' => 'Falha ao salvar no banco.']);
-                        exit;
-                    }
+                if ($novoId) {
+                    $_SESSION['cliente_id'] = $novoId;
+                    $_SESSION['cliente_nome'] = $nome;
+                    $_SESSION['conta_nova'] = true;
+                    echo json_encode(['success' => true]);
+                    exit;
                 } else {
-                    // Exige que o usuário complete o cadastro
-                    echo json_encode(['success' => false, 'requires_registration' => true]);
+                    echo json_encode(['success' => false, 'message' => 'Falha ao salvar o novo usuário no banco.']);
                     exit;
                 }
             }
