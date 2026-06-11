@@ -1,217 +1,466 @@
-<script src="https://unpkg.com/@phosphor-icons/web"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-    .nura-chat-widget {
+    .nura-widget {
         position: fixed;
-        bottom: 25px;
-        right: 25px;
+        bottom: 28px;
+        right: 28px;
         z-index: 9999;
-        font-family: 'DM Sans', sans-serif;
+        font-family: 'Inter', sans-serif;
     }
 
-    /* O botão redondo verde com visual de carrinho */
-    .chat-trigger-btn {
-        width: 60px;
-        height: 60px;
-        background: #10b981;
+    /* === BOTÃO TRIGGER === */
+    .nura-trigger {
+        width: 56px;
+        height: 56px;
+        background: #16a34a;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 26px;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        transition: transform 0.2s ease, background 0.2s;
         position: relative;
+        border: none;
+        box-shadow: 0 4px 16px rgba(22,163,74,0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .chat-trigger-btn:hover {
-        transform: scale(1.05);
-        background: #059669;
+    .nura-trigger:hover {
+        transform: scale(1.08);
+        box-shadow: 0 6px 20px rgba(22,163,74,0.45);
     }
+    .nura-trigger svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    .nura-trigger .icon-chat { opacity: 1; transform: scale(1); position: absolute; }
+    .nura-trigger .icon-close { opacity: 0; transform: scale(0.5) rotate(-90deg); position: absolute; }
+    .nura-widget.is-open .nura-trigger .icon-chat { opacity: 0; transform: scale(0.5) rotate(90deg); }
+    .nura-widget.is-open .nura-trigger .icon-close { opacity: 1; transform: scale(1) rotate(0deg); }
 
-    /* Bolinha vermelha de notificação de itens no carrinho */
-    .widget-cart-badge {
+    .nura-badge {
         position: absolute;
-        top: -2px;
-        right: -2px;
+        top: -3px;
+        right: -3px;
         background: #ef4444;
         color: white;
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 10px;
+        font-weight: 600;
         border-radius: 50%;
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 2px solid white;
     }
 
-    /* Caixa do Chat Inteligente */
-    .chat-box-window {
+    /* Pulso animado no trigger quando fechado */
+    .nura-trigger::after {
+        content: '';
         position: absolute;
-        bottom: 75px;
+        inset: -4px;
+        border-radius: 50%;
+        border: 2px solid rgba(22,163,74,0.4);
+        animation: nura-pulse 2.5s ease-out infinite;
+        pointer-events: none;
+    }
+    .nura-widget.is-open .nura-trigger::after { display: none; }
+    @keyframes nura-pulse {
+        0% { transform: scale(1); opacity: 0.6; }
+        70% { transform: scale(1.4); opacity: 0; }
+        100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    /* === JANELA DO CHAT === */
+    .nura-window {
+        position: absolute;
+        bottom: 70px;
         right: 0;
         width: 360px;
-        height: 500px;
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        display: none;
+        height: 520px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+        display: flex;
         flex-direction: column;
         overflow: hidden;
-        border: 1px solid #e2e8f0;
+        border: 1px solid rgba(0,0,0,0.06);
+        transform-origin: bottom right;
+        transform: scale(0.85) translateY(12px);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), opacity 0.18s ease;
+    }
+    .nura-widget.is-open .nura-window {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        pointer-events: all;
     }
 
-    .chat-box-window.open {
+    /* Header */
+    .nura-header {
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        padding: 16px 18px;
         display: flex;
-    }
-
-    .chat-box-header {
-        background: #10b981;
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
         align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+    .nura-avatar {
+        width: 38px;
+        height: 38px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .nura-header-info { flex: 1; }
+    .nura-header-name {
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+    .nura-header-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 2px;
+    }
+    .nura-status-dot {
+        width: 7px;
+        height: 7px;
+        background: #86efac;
+        border-radius: 50%;
+        animation: nura-blink 2s ease-in-out infinite;
+    }
+    @keyframes nura-blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+    .nura-header-status span {
+        color: rgba(255,255,255,0.85);
+        font-size: 11px;
     }
 
-    .chat-box-header h4 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
-    .chat-box-header button { background: transparent; border: none; color: white; cursor: pointer; font-size: 20px; }
-
-    .chat-box-messages {
+    /* Mensagens */
+    .nura-messages {
         flex: 1;
-        padding: 15px;
+        padding: 16px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        background: #f8fafc;
+        gap: 10px;
+        background: #f9fafb;
+        scroll-behavior: smooth;
     }
+    .nura-messages::-webkit-scrollbar { width: 4px; }
+    .nura-messages::-webkit-scrollbar-track { background: transparent; }
+    .nura-messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
 
-    .widget-msg { display: flex; width: 100%; }
-    .widget-msg.user { justify-content: flex-end; }
-    .widget-msg.ia { justify-content: flex-start; }
+    .nura-row { display: flex; align-items: flex-end; gap: 7px; }
+    .nura-row.user { flex-direction: row-reverse; }
 
-    .widget-bubble {
-        max-width: 80%;
-        padding: 10px 14px;
-        border-radius: 12px;
-        font-size: 14px;
-        line-height: 1.4;
-    }
-    .widget-msg.user .widget-bubble { background: #10b981; color: white; border-bottom-right-radius: 2px; }
-    .widget-msg.ia .widget-bubble { background: white; color: #334155; border-bottom-left-radius: 2px; border: 1px solid #e2e8f0; }
-
-    .chat-box-footer {
-        padding: 12px;
-        border-top: 1px solid #e2e8f0;
+    .nura-row-avatar {
+        width: 26px;
+        height: 26px;
+        background: #dcfce7;
+        border-radius: 50%;
         display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+        margin-bottom: 2px;
+    }
+
+    .nura-bubble {
+        max-width: 78%;
+        padding: 10px 13px;
+        border-radius: 16px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        animation: nura-pop 0.18s ease-out;
+    }
+    @keyframes nura-pop {
+        from { transform: scale(0.92); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .nura-row.ia .nura-bubble {
+        background: white;
+        color: #1f2937;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+        border: 1px solid #f3f4f6;
+    }
+    .nura-row.user .nura-bubble {
+        background: #16a34a;
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    /* Typing indicator */
+    .nura-typing {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .nura-typing-dots {
+        background: white;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+        padding: 10px 14px;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+    .nura-typing-dots span {
+        width: 6px;
+        height: 6px;
+        background: #9ca3af;
+        border-radius: 50%;
+        animation: nura-dot 1.2s ease-in-out infinite;
+    }
+    .nura-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .nura-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes nura-dot {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+        30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* Sugestões rápidas */
+    .nura-suggestions {
+        padding: 8px 16px 4px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        background: #f9fafb;
+        flex-shrink: 0;
+    }
+    .nura-chip {
+        background: white;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        font-size: 11.5px;
+        font-family: 'Inter', sans-serif;
+        padding: 5px 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+    .nura-chip:hover {
+        background: #f0fdf4;
+        border-color: #16a34a;
+        color: #16a34a;
+    }
+
+    /* Footer */
+    .nura-footer {
+        padding: 10px 12px 12px;
+        background: white;
+        border-top: 1px solid #f3f4f6;
+        flex-shrink: 0;
+    }
+    .nura-input-row {
+        display: flex;
+        align-items: center;
         gap: 8px;
+        background: #f9fafb;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 8px 8px 8px 14px;
+        transition: border-color 0.15s;
+    }
+    .nura-input-row:focus-within {
+        border-color: #16a34a;
         background: white;
     }
-
-    .chat-box-footer input {
+    .nura-input-row input {
         flex: 1;
-        padding: 10px 12px;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        outline: none;
-        font-size: 14px;
-    }
-
-    .chat-box-footer input:focus { border-color: #10b981; }
-
-    .chat-box-footer button {
-        background: #10b981;
-        color: white;
         border: none;
-        padding: 0 14px;
+        background: transparent;
+        outline: none;
+        font-size: 13.5px;
+        font-family: 'Inter', sans-serif;
+        color: #1f2937;
+    }
+    .nura-input-row input::placeholder { color: #9ca3af; }
+    .nura-send-btn {
+        width: 32px;
+        height: 32px;
+        background: #16a34a;
+        border: none;
         border-radius: 8px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: background 0.15s, transform 0.1s;
+    }
+    .nura-send-btn:hover { background: #15803d; }
+    .nura-send-btn:active { transform: scale(0.93); }
+    .nura-send-btn svg { width: 15px; height: 15px; fill: white; }
+    .nura-send-btn:disabled { background: #d1d5db; cursor: not-allowed; transform: none; }
+
+    .nura-footer-note {
+        text-align: center;
+        font-size: 10.5px;
+        color: #9ca3af;
+        margin-top: 7px;
     }
 </style>
 
-<div class="nura-chat-widget">
-    <div class="chat-box-window" id="nuraChatWindow">
-        <div class="chat-box-header">
-            <h4><i class="ph-bold ph-shopping-cart-simple"></i> Suporte de Compras Nura</h4>
-            <button onclick="toggleNuraChat()"><i class="ph-bold ph-x"></i></button>
-        </div>
-        <div class="chat-box-messages" id="nuraChatMessages">
-            <div class="widget-msg ia">
-                <div class="widget-bubble">Olá! Sou o assistente de compras da Nura. 🥗 Precisa de ajuda com o seu carrinho, formas de pagamento ou dúvidas sobre os pratos? Pode me perguntar!</div>
+<div class="nura-widget" id="nuraWidget">
+
+    <!-- JANELA DO CHAT -->
+    <div class="nura-window" id="nuraWindow">
+
+        <!-- Header -->
+        <div class="nura-header">
+            <div class="nura-avatar">🥗</div>
+            <div class="nura-header-info">
+                <div class="nura-header-name">NutriBot · Nura</div>
+                <div class="nura-header-status">
+                    <div class="nura-status-dot"></div>
+                    <span>Online agora</span>
+                </div>
             </div>
         </div>
-        <div class="chat-box-footer">
-            <input type="text" id="nuraWidgetInput" placeholder="Pergunte sobre sua compra..." autocomplete="off">
-            <button id="nuraWidgetBtn"><i class="ph-bold ph-paper-plane-right"></i></button>
+
+        <!-- Mensagens -->
+        <div class="nura-messages" id="nuraMessages">
+            <div class="nura-row ia">
+                <div class="nura-row-avatar">🥗</div>
+                <div class="nura-bubble">Olá! Sou a NutriBot da Nura 🍃<br>Posso ajudar com pratos, pagamento ou navegação no site. O que você precisa?</div>
+            </div>
+        </div>
+
+        <!-- Sugestões rápidas -->
+        <div class="nura-suggestions" id="nuraSuggestions">
+            <button class="nura-chip" onclick="enviarSugestao('Ver cardápio completo')">🥗 Ver cardápio</button>
+            <button class="nura-chip" onclick="enviarSugestao('Formas de pagamento')">💳 Pagamento</button>
+            <button class="nura-chip" onclick="enviarSugestao('Tenho alergia alimentar')">⚠️ Alergias</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="nura-footer">
+            <div class="nura-input-row">
+                <input type="text" id="nuraInput" placeholder="Pergunte sobre sua compra..." autocomplete="off">
+                <button class="nura-send-btn" id="nuraSendBtn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="nura-footer-note">Nura · Alimentação saudável 🍃</div>
         </div>
     </div>
 
-    <div class="chat-trigger-btn" onclick="toggleNuraChat()">
-        <i class="ph-bold ph-chat-circle-dots"></i>
-        
+    <!-- BOTÃO TRIGGER -->
+    <button class="nura-trigger" id="nuraTrigger" onclick="toggleNura()">
+        <!-- Ícone chat -->
+        <svg class="icon-chat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+        </svg>
+        <!-- Ícone fechar -->
+        <svg class="icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
         <?php if (isset($qtdCarrinho) && $qtdCarrinho > 0): ?>
-            <span class="widget-cart-badge"><?php echo $qtdCarrinho; ?></span>
+            <span class="nura-badge"><?php echo $qtdCarrinho; ?></span>
         <?php endif; ?>
-    </div>
+    </button>
+</div>
 
 <script>
-    const nuraChatWindow = document.getElementById('nuraChatWindow');
-    const nuraChatMessages = document.getElementById('nuraChatMessages');
-    const nuraWidgetInput = document.getElementById('nuraWidgetInput');
-    const nuraWidgetBtn = document.getElementById('nuraWidgetBtn');
+    const nuraWidget   = document.getElementById('nuraWidget');
+    const nuraMessages = document.getElementById('nuraMessages');
+    const nuraInput    = document.getElementById('nuraInput');
+    const nuraSendBtn  = document.getElementById('nuraSendBtn');
+    const nuraSuggestions = document.getElementById('nuraSuggestions');
 
-    function toggleNuraChat() {
-        nuraChatWindow.classList.toggle('open');
-        if(nuraChatWindow.classList.contains('open')) {
-            nuraWidgetInput.focus();
+    function toggleNura() {
+        nuraWidget.classList.toggle('is-open');
+        if (nuraWidget.classList.contains('is-open')) {
+            nuraInput.focus();
         }
     }
 
-    function appendWidgetMessage(sender, text) {
+    function addMessage(sender, text) {
+        // Esconde sugestões após primeira interação do usuário
+        if (sender === 'user') nuraSuggestions.style.display = 'none';
+
         const row = document.createElement('div');
-        row.classList.add('widget-msg', sender);
-        row.innerHTML = `<div class="widget-bubble">${text}</div>`;
-        nuraChatMessages.appendChild(row);
-        nuraChatMessages.scrollTop = nuraChatMessages.scrollHeight;
+        row.classList.add('nura-row', sender);
+
+        if (sender === 'ia') {
+            row.innerHTML = `<div class="nura-row-avatar">🥗</div><div class="nura-bubble">${text}</div>`;
+        } else {
+            row.innerHTML = `<div class="nura-bubble">${text}</div>`;
+        }
+
+        nuraMessages.appendChild(row);
+        nuraMessages.scrollTop = nuraMessages.scrollHeight;
     }
 
-    async function enviarMensagemCliente() {
-        const msg = nuraWidgetInput.value.trim();
-        if(!msg) return;
+    function showTyping() {
+        const el = document.createElement('div');
+        el.classList.add('nura-row', 'ia');
+        el.id = 'nuraTyping';
+        el.innerHTML = `
+            <div class="nura-row-avatar">🥗</div>
+            <div class="nura-typing-dots">
+                <span></span><span></span><span></span>
+            </div>`;
+        nuraMessages.appendChild(el);
+        nuraMessages.scrollTop = nuraMessages.scrollHeight;
+    }
 
-        appendWidgetMessage('user', msg);
-        nuraWidgetInput.value = '';
-        nuraWidgetInput.disabled = true;
-        nuraWidgetBtn.disabled = true;
+    function removeTyping() {
+        const el = document.getElementById('nuraTyping');
+        if (el) el.remove();
+    }
+
+    async function enviar(msg) {
+        if (!msg) return;
+        addMessage('user', msg);
+        nuraInput.value = '';
+        nuraInput.disabled = true;
+        nuraSendBtn.disabled = true;
+        showTyping();
 
         try {
-            const response = await fetch('../api/chat.php', { 
+            const response = await fetch('../api/chat.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mensagem: msg })
             });
-
             const data = await response.json();
-            appendWidgetMessage('ia', data.resposta);
-
-        } catch (error) {
-            appendWidgetMessage('ia', "Desculpe, tive um problema ao processar. Tente novamente.");
+            removeTyping();
+            addMessage('ia', data.resposta);
+        } catch (e) {
+            removeTyping();
+            addMessage('ia', 'Desculpe, tive um problema de conexão. Tente novamente 🙏');
         } finally {
-            nuraWidgetInput.disabled = false;
-            nuraWidgetBtn.disabled = false;
-            nuraWidgetInput.focus();
+            nuraInput.disabled = false;
+            nuraSendBtn.disabled = false;
+            nuraInput.focus();
         }
     }
 
-    nuraWidgetBtn.addEventListener('click', enviarMensagemCliente);
-    nuraWidgetInput.addEventListener('keypress', function(e) {
-        if(e.key === 'Enter') enviarMensagemCliente();
-    });
+    function enviarSugestao(texto) {
+        enviar(texto);
+    }
+
+    nuraSendBtn.addEventListener('click', () => enviar(nuraInput.value.trim()));
+    nuraInput.addEventListener('keypress', e => { if (e.key === 'Enter') enviar(nuraInput.value.trim()); });
 </script>
