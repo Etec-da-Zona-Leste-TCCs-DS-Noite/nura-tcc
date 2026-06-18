@@ -66,8 +66,6 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Como Rodar o Projeto
 
-## Como Rodar o Projeto
-
 Este projeto utiliza **Docker** para simplificar o ambiente de desenvolvimento local, gerenciando os containers do PHP (servidor web) e do Banco de Dados (SQL).
 
 ### Pré-requisitos
@@ -78,25 +76,33 @@ Antes de começar, você precisará ter instalado em sua máquina:
 
 ### Passo a Passo
 #### 1. Clonar o Repositório
-Abra o seu terminal (Prompt de Comando, PowerShell ou Terminal do Linux/Mac) e clone o projeto:
+ - Abra o seu terminal (Prompt de Comando, PowerShell ou Terminal do Linux/Mac) e clone o projeto:
 
-git clone 
-cd 
+#### 2.Preparando o ambiente no seu computador
+ - git clone https://github.com/Etec-da-Zona-Leste-TCCs-DS-Noite/nura-tcc.git
+ - cd nura-tcc
 
-#### 2.Configurar as Variáveis de Ambiente
-cp .env.example .env
+#### 3. Criando a configuração do Docker para a pasta "src"
+FROM php:8.2-apache
 
-#### 3. Subir os Containers do Docker
-docker compose up -d
+# Instala extensões necessárias para o PHP se conectar ao banco SQL
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Aponta o servidor Apache para ler a pasta src/ do seu projeto
+ENV APACHE_DOCUMENT_ROOT /var/www/html/src
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Habilita o módulo de reescrita do Apache (caso usem rotas amigáveis)
+RUN a2enmod rewrite
+ 
 
 #### 4. Instalar as Dependências (Se aplicável)
 docker compose exec app composer install
 
 ## Screenshots
+<img width="1899" height="877" alt="imagem" src="https://github.com/user-attachments/assets/7dea795b-888b-47e4-b2ca-8e10fa88212e" />
 
-> *Exemplo:*  
-> ![Tela inicial](./imagens/tela-inicial.png)  
-> *(Substitua pelo caminho e imagem reais do seu projeto)*
 
 ## Como Contribuir
 
