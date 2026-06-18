@@ -23,9 +23,10 @@ NURA é uma plataforma digital responsiva voltada à comercialização de produt
 
 ## Integrantes
 
-- Wellington Pereira Cavalcanti – RM 26530  
-- Matheus Chagas Colasso Ferreira – RM 23280  
-- Jairo Machado Alves do Carmo – RM 26529  
+- Wellington Pereira Cavalcanti – RM 26530 - engwellingtoncavalcanti@gmail.com
+- Matheus Chagas Colasso Ferreira – RM 23280 - matheuscolasso2006@gmail.com
+- Jairo Machado Alves do Carmo – RM 26529 - jairomahadoalves35@gmail.com
+- Kauan Araujo Santos - RM 26670 - kauan.santos.andre@gmail.com 
 
 ## Tema Central do TCC
 
@@ -54,11 +55,42 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Tecnologias Utilizadas
 
-- (Adicione as tecnologias que vocês estão usando, ex: HTML, CSS, JavaScript, React, Node.js, etc.)
+- PHP
+- HTML5
+- CSS3
+- JavaScript
+- Docker
+- Azure
+- FireBase
+- SQL
 
 ## Como Rodar o Projeto
 
-(Descreva aqui como rodar localmente ou acessar a plataforma, quando disponível.)
+## Como Rodar o Projeto
+
+Este projeto utiliza **Docker** para simplificar o ambiente de desenvolvimento local, gerenciando os containers do PHP (servidor web) e do Banco de Dados (SQL).
+
+### Pré-requisitos
+
+Antes de começar, você precisará ter instalado em sua máquina:
+- [Git](https://git-scm.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (já inclui o Docker Compose)
+
+### Passo a Passo
+#### 1. Clonar o Repositório
+Abra o seu terminal (Prompt de Comando, PowerShell ou Terminal do Linux/Mac) e clone o projeto:
+
+git clone 
+cd 
+
+#### 2.Configurar as Variáveis de Ambiente
+cp .env.example .env
+
+#### 3. Subir os Containers do Docker
+docker compose up -d
+
+#### 4. Instalar as Dependências (Se aplicável)
+docker compose exec app composer install
 
 ## Screenshots
 
@@ -76,9 +108,10 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Contato
 
-- Wellington Pereira: [github.com/wellingtonp](https://github.com/wellingtonp)  
-- Matheus Chagas: [github.com/matheuschagas](https://github.com/matheuschagas)  
-- Jairo Machado: [github.com/jairomachado](https://github.com/jairomachado)  
+- Wellington Pereira: [github.com/wellingtonpc17](https://github.com/wellingtonpc17)  
+- Matheus Chagas: [github.com/mcolasso](https://github.com/mcolasso)  
+- Jairo Machado: [github.com/jairoalves2741](https://github.com/jairoalves2741)
+- Kauan Araujo: [github.com/kauansantos9](https://github.com/kauansantos9)
 
 ## Roadmap
 
@@ -87,9 +120,9 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 - [x] Desenvolvimento do front-end responsivo  
 - [x] Implementação do sistema de filtros e carrinho de compras  
 - [x] Desenvolvimento da área administrativa  
-- [ ] Integração com sistema de entrega  
-- [ ] Testes e ajustes finais  
-- [ ] Deploy e documentação completa  
+- [x] Integração com sistema de entrega  
+- [x] Testes e ajustes finais  
+- [x] Deploy e documentação completa  
 
 ## Licença
 
