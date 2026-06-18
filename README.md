@@ -66,39 +66,27 @@ Em desenvolvimento. Atualizações serão feitas conforme novas funcionalidades 
 
 ## Como Rodar o Projeto
 
-Este projeto utiliza **Docker** para simplificar o ambiente de desenvolvimento local, gerenciando os containers do PHP (servidor web) e do Banco de Dados (SQL).
+Este projeto utiliza **Docker** para gerenciar e isolar o ambiente de desenvolvimento local (servidor web PHP e banco de dados SQL), dispensando a necessidade de instalações manuais na sua máquina física.
 
 ### Pré-requisitos
 
-Antes de começar, você precisará ter instalado em sua máquina:
-- [Git](https://git-scm.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (já inclui o Docker Compose)
+Antes de começar, certifique-se de ter instalado:
+ - [Git](https://git-scm.com/)
+ - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (deve estar aberto e rodando durante a execução do projeto)
 
 ### Passo a Passo
-#### 1. Clonar o Repositório
- - Abra o seu terminal (Prompt de Comando, PowerShell ou Terminal do Linux/Mac) e clone o projeto:
 
-#### 2.Preparando o ambiente no seu computador
- - git clone https://github.com/Etec-da-Zona-Leste-TCCs-DS-Noite/nura-tcc.git
- - cd nura-tcc
+- Abra o seu terminal (Prompt de Comando, PowerShell ou Terminal do Linux/Mac) e execute o comando abaixo para clonar o projeto:
 
-#### 3. Criando a configuração do Docker para a pasta "src"
-FROM php:8.2-apache
+- git clone [https://github.com/Etec-da-Zona-Leste-TCCs-DS-Noite/nura-tcc.git](https://github.com/Etec-da-Zona-Leste-TCCs-DS-Noite/nura-tcc.git)
 
-# Instala extensões necessárias para o PHP se conectar ao banco SQL
-RUN docker-php-ext-install pdo pdo_mysql mysqli
+- cd nura-tcc
 
-# Aponta o servidor Apache para ler a pasta src/ do seu projeto
-ENV APACHE_DOCUMENT_ROOT /var/www/html/src
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+- cd src
 
-# Habilita o módulo de reescrita do Apache (caso usem rotas amigáveis)
-RUN a2enmod rewrite
- 
+- docker compose up -d --build
 
-#### 4. Instalar as Dependências (Se aplicável)
-docker compose exec app composer install
+- http://localhost:80
 
 ## Screenshots
 <img width="1899" height="877" alt="imagem" src="https://github.com/user-attachments/assets/7dea795b-888b-47e4-b2ca-8e10fa88212e" />
